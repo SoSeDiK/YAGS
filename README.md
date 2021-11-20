@@ -1,4 +1,12 @@
 ## 🎈 Yet Another Genshin Script
+
+<table>
+  <tr>
+    <td valign="center"><img src="data/lang_en.png" width="16"/> English</td>
+    <td valign="center"><a href="README_RU.md"><img src="data/lang_ru.png" width="16"/> Русский</a></td>
+  </tr>
+</table>
+
 YEGS was made for personal usage to make the daily Genshin routine less annoying.
 
 This script tries to improve controls, automate repeatable things, and bring some useful shortcuts.
@@ -67,7 +75,7 @@ There are no plans to adapt it to other resolutions in the near future.
     - Some characters have different charge attacks depending on the duration. You can hold `RMB` a bit more if needed.
 
 ### ⚙ Additional info
-All links are stored inside `data/links.ini` file. You may remove/add your own stuff to your liking.
+All links are stored inside the [data/links.ini](data/links.ini) file. You may remove/add your own stuff to your liking.
 
 Just in case:
 - `LMB`: Left Mouse Button
