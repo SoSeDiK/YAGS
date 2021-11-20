@@ -7,7 +7,7 @@
   </tr>
 </table>
 
-YEGS was made for personal usage to make the daily Genshin routine less annoying.
+YAGS was made for personal usage to make the daily Genshin routine less annoying.
 
 This script tries to improve controls, automate repeatable things, and bring some useful shortcuts.
 
@@ -20,7 +20,7 @@ There are no plans to adapt it to other resolutions in the near future.
 ### ❓ How to
 1. Download and install [AutoHotkey](https://www.autohotkey.com/) (only version 2).
 2. Download this repository.
-3. Run `YEGS.ahk`.
+3. Run `YAGS.ahk`.
 4. Configure settings in the GUI if needed.
 5. Run the game and enjoy.
 6. Press `End` in case of an emergency to stop the script.

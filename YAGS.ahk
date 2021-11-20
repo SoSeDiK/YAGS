@@ -384,7 +384,7 @@ GetLanguagePath(Lang) {
 
 
 
-ExitYEGS() {
+ExitYAGS() {
 	WinClose "ahk_pid " AutoWalkThread
 	WinClose "ahk_pid " QuickActionsThread
 	WinClose "ahk_pid " BetterMapClickThread
@@ -404,7 +404,7 @@ ExitYEGS() {
 
 
 ButtonQuit(*) {
-	ExitYEGS()
+	ExitYAGS()
 }
 
 ButtonHide(*) {
@@ -419,5 +419,5 @@ ShowGui(*) {
 
 ; Exit script
 $End:: {
-	ExitYEGS()
+	ExitYAGS()
 }
