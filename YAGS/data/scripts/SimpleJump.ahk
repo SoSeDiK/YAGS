@@ -8,12 +8,25 @@ OnMessage 0x4000, SetupHotkeys
 
 
 Global PressingXButton := False
+Global PressingSpace := False
 
 
 
 SetupHotkeys()
 
 
+
+~*Space:: {
+	Global
+	PressingSpace := True
+	If IsGameScreen()
+		Bunnyhop(&PressingSpace)
+}
+
+~*Space Up:: {
+	Global
+	PressingSpace := False
+}
 
 XButton(*) {
 	Global
@@ -29,6 +42,7 @@ XButtonUp(*) {
 
 
 Jump() {
+	Global
 	; Long jump if in boat
 	If IsInBoat() {
 		Send "{Space Down}"
@@ -41,8 +55,12 @@ Jump() {
 	Send "{Space}"
 
 	; Let the user release the button
-	If IsFullScreenMenuOpen() or IsGameScreen()
+	If IsFullScreenMenuOpen()
 		Return
+	If IsGameScreen() {
+		Bunnyhop(&PressingXButton)
+		Return
+	}
 
 	; Click if in dialogue
 	While (PressingXButton) {
@@ -50,6 +68,14 @@ Jump() {
 		If PixelSearch(&FoundX, &FoundY, 1310, 840, 1310, 580, "0xFFFFFF")
 			MouseClick "Left", FoundX, FoundY
 		Sleep 20
+	}
+}
+
+Bunnyhop(&JumpingKey) {
+	Global
+	While (JumpingKey) {
+		Sleep 50
+		Send "{Space}"
 	}
 }
 
