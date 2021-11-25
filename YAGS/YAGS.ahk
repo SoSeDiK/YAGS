@@ -286,7 +286,7 @@ ConfigureContextualBindings() {
 	FullScreenMenu := IsFullScreenMenuOpen()
 	MapMenu := FullScreenMenu and PixelGetColor(27, 427) = "0xEDE5DA" ; Resin "+" symbol
 	GameScreen := not FullScreenMenu and IsGameScreen()
-	DialogueActive := not FullScreenMenu and not GameScreen and PixelGetColor(86, 48) = "0xECE5D8" ; Play or Pause button
+	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	FishingActive := GameScreen and PixelGetColor(1626, 1029) = "0xFFE92C" ; Is 3rd action icon bound to LMB
 	
 	If (MapBindingsEnabled and not MapMenu) {

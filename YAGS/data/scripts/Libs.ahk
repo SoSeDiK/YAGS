@@ -48,6 +48,11 @@ IsGameScreen() {
 	Return PixelGetColor(276, 58) = "0xFFFFFF" ; Eye icon next to the map
 }
 
+; Note: always better to check if not IsFullScreenMenuOpen() and not IsGameScreen() before checking the dialogue screen
+IsDialogueScreen() {
+	Return PixelGetColor(86, 48) = "0xECE5D8" ; Play or Pause button
+}
+
 IsInBoat() {
 	Color := PixelGetColor(828, 976)
 	Return Color = "0xECE5D8" ; Boat icon color

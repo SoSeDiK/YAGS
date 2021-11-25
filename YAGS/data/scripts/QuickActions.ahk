@@ -137,6 +137,16 @@ Global RedNotificationColor := "0xE6455F"
 		MouseMove X, Y
 		Return
 	}
+	; =======================================
+	; Toggle Auto Dialogue
+	; =======================================
+	If (not IsFullScreenMenuOpen() and not IsGameScreen() and IsDialogueScreen()) {
+		MouseGetPos &X, &Y
+		MouseClick "Left", 98, 49
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
 }
 
 IsAvailableForStock() {
