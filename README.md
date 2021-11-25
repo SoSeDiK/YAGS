@@ -34,14 +34,17 @@ There are no plans to adapt it to other resolutions in the near future.
 - Hold `XButton1` to spam `F` even more!
   - For some reason, it's easier for me to use a mouse than to press `F`.
   - You may also use this to skip dialogues (you still have to do the choices manually).
-- Press `XButton2` to jump!
-  - Yep, I'm too lazy for `Spacebar`.
+- Hold `Space` to jump continuously.
+  - Can be used to Bunnyhop (enter the sprinting mode and start jumping).
+- Hold `XButton2` to jump continuously too!
+  - Yes, I'm too lazy for `Spacebar`. Bunnyhop is possible as well.
   - Works with Waveriders.
   - May be used to skip dialogues too, but in addition also auto picks up the latest dialogue choice.
 - Hold `1-4` keys to switch characters.
   - I can not be the only one who have chosen the wrong character in the past, and had to rage spam my keyboard to get another character asap, right? RIGHT?!
 - Press `MMB` to toggle AutoWalk!
-  - Press `LShift` or `RMB` to toggle sprint while auto walking.
+  - Press `RMB` to toggle sprint while auto walking.
+  - `LShift` can be used for manual sprinting (useful to enter the sprinting mode and start Bunnyhopping).
 - Press `H` to toggle Vision!
   - Makes it much easier, less annoying, and had to be done since `MMB` was changed.
 - Hold `V` to "smart attack" (9N2CJ) with Hu Tao!
@@ -54,6 +57,7 @@ There are no plans to adapt it to other resolutions in the near future.
   - Quickly purchase weapons or artifacts from the shop. Should work with other shops too, but be careful.
   - Select and craft max ores (or other things in Blacksmith's menu).
   - Lock artifact.
+  - Toggle «Auto-Play Story» mode in dialogue.
 - `Numpad -` + `Numpad 1-4` to change current party.
 - `Numpad 5` to go to the Serenitea Pot (via gadget).
 - `Numpad 6` to receive and resend expeditions (use GUI to configure),
