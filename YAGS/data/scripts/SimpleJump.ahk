@@ -54,7 +54,7 @@ Jump() {
 	; Just jump
 	Send "{Space}"
 
-	; Let the user release the button
+	; Extra checks
 	If IsFullScreenMenuOpen()
 		Return
 	If IsGameScreen() {
@@ -73,6 +73,8 @@ Jump() {
 
 Bunnyhop(&JumpingKey) {
 	Global
+	; Let the user release the button
+	Sleep 200
 	While (JumpingKey) {
 		Sleep 50
 		Send "{Space}"
