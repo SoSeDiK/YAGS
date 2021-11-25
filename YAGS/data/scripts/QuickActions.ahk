@@ -102,7 +102,7 @@ Global RedNotificationColor := "0xE6455F"
 		Return
 	}
 	; Artifacts menu
-	Else If (PixelGetColor(60, 999) = "0x3B4255" and PixelGetColor(558, 1010) = "0x5A5E6C") {
+	If (PixelGetColor(60, 999) = "0x3B4255" and PixelGetColor(558, 1010) = "0x5A5F6C") {
 		If not PixelSearch(&FoundX, &FoundY, 1480, 265, 1480, 375, "0xFFCC32")
 			Return
 		MouseGetPos &X, &Y
@@ -112,9 +112,27 @@ Global RedNotificationColor := "0xE6455F"
 		Return
 	}
 	; Artifacts enhancement menu
-	Else If (PixelGetColor(1109, 42) = "0xECE5D8" and PixelGetColor(1180, 190) = "0x96552A") {
+	If (PixelGetColor(1109, 42) = "0xECE5D8" and PixelGetColor(1181, 547) = "0xECE5D8") {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1620, 500
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+	; Domain artifacts
+	If (PixelGetColor(720, 500) = "0xECE5D8") {
+		If not PixelSearch(&FoundX, &FoundY, 753, 475, 753, 310, "0xFFCC32")
+			Return
+		MouseGetPos &X, &Y
+		MouseClick "Left", 1160, FoundY + 60
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+	; Mystic Offering
+	If (PixelGetColor(1663, 1016) = "0x947B2F" and PixelGetColor(989, 580) = "0xECE5D8") {
+		MouseGetPos &X, &Y
+		MouseClick "Left", 1428, 500
 		Sleep 50
 		MouseMove X, Y
 		Return
