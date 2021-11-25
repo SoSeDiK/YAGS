@@ -25,19 +25,14 @@ Global PressingLShift := False
 	PressingW := False
 }
 
-*LShift:: {
+~*LShift:: {
 	Global
 	PressingLShift := True
-	ToggleAutoSprint()
-	If not AutoWalk and not AutoSprint
-		Send "{LShift Down}"
 }
 
-*LShift Up:: {
+~*LShift Up:: {
 	Global
 	PressingLShift := False
-	If not AutoWalk and not AutoSprint
-		Send "{LShift Up}"
 }
 
 
@@ -49,11 +44,12 @@ Global PressingLShift := False
 
 
 DoAutoWalk() {
-	Send "{w Down}"
+	If (not PressingLShift)
+		Send "{w Down}"
 }
 
 DoAutoSprint() {
-	If IsInBoat() or IsExtraRun() {
+	If (IsInBoat() or IsExtraRun()) {
 		Send "{LShift Down}"
 		Return
 	}
@@ -65,7 +61,7 @@ DoAutoSprint() {
 ToggleAutoWalk() {
 	Global
 	AutoWalk := !AutoWalk
-	If AutoWalk {
+	If (AutoWalk) {
 		UpdateScriptState("EasierCombat", 0)
 		Hotkey "*RButton", ToggleAutoSprint, "On"
 		SetTimer DoAutoWalk, 100
@@ -74,10 +70,10 @@ ToggleAutoWalk() {
 			UpdateScriptState("EasierCombat", 1)
 		Hotkey "*RButton", ToggleAutoSprint, "Off"
 		SetTimer DoAutoWalk, 0
-		If not PressingW
+		If (not PressingW)
 			Send "{w Up}"
 
-		If AutoSprint {
+		If (AutoSprint) {
 			AutoSprint := False
 			SetTimer DoAutoSprint, 0
 			If not PressingLShift
@@ -88,16 +84,18 @@ ToggleAutoWalk() {
 
 ToggleAutoSprint(*) {
 	Global
-	If not AutoWalk
+	If (not AutoWalk)
+		Return
+	If (A_TimeSincePriorHotkey < 200)
 		Return
 
 	AutoSprint := !AutoSprint
-	If AutoSprint {
+	If (AutoSprint) {
 		DoAutoSprint()
 		SetTimer DoAutoSprint, 850
 	} else {
 		SetTimer DoAutoSprint, 0
-		If not PressingLShift
+		If (not PressingLShift)
 			Send "{LShift Up}"
 	}
 }
@@ -108,7 +106,7 @@ SetSuspended(Suspended, *) {
 	Global
 	Suspend Suspended
 	If (A_IsSuspended) {
-		If AutoWalk
+		If (AutoWalk)
 			ToggleAutoWalk()
 		PressingW := False
 		PressingLShift := False
