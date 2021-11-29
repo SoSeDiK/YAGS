@@ -35,6 +35,7 @@ DoMapClick() {
 			,"0x99ECF5"							; Statue of The Seven
 			,"0x05EDF6"							; Domain
 			,"0x00FFFF"							; One-time dungeon
+			,"0x5E615F"							; Sub-Space Waypoint
 			,"0x63635F" ]						; Portable Waypoint
 
 		; Find the upper available teleport
