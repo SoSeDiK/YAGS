@@ -74,7 +74,7 @@ Global RedNotificationColor := "0xE6455F"
 	; =======================================
 	; Select maximum stacks and craft ores
 	; =======================================
-	If (PixelGetColor(68, 49) = "0xB5A27E") {
+	If (PixelGetColor(62, 52) = "0xD3BC8E") {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1467, 669 ; Max stacks
 		Sleep 50
