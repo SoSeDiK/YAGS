@@ -54,8 +54,7 @@ IsDialogueScreen() {
 }
 
 IsInBoat() {
-	Color := PixelGetColor(828, 976)
-	Return Color = "0xECE5D8" ; Boat icon color
+	Return PixelGetColor(828, 976) = "0xEDE5D9" ; Boat icon color
 }
 
 WaitDeployButtonActive(Timeout) {
