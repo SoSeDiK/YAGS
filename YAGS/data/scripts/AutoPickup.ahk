@@ -25,8 +25,10 @@ LootOnce() {
 
 HasPickup() {
 	; Search for "F" icon
-	If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484") ; Icon wasn't found
-		Return False
+	If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484") { ; Icon wasn't found
+		If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x383838")
+			Return False
+	}
 
 	; Small delay to minimize error
 	Sleep 10
