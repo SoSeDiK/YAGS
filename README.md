@@ -55,6 +55,7 @@ There are no plans to adapt it to other resolutions in the near future.
 ### ✨ Minor (possibly useful) additions
 - Press `MMB` to:
   - Quickly purchase weapons or artifacts from the shop. Should work with other shops too, but be careful.
+  - Quickly buy max of a current item in the tea pot shop.
   - Select and craft max ores (or other things in Blacksmith's menu).
   - Lock artifact.
   - Toggle «Auto-Play Story» mode in dialogue.

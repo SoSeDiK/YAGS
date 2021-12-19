@@ -55,6 +55,20 @@ Global RedNotificationColor := "0xE6455F"
 
 ~MButton:: {
 	; =======================================
+	; Quick buying things in a tea pot
+	; =======================================
+	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
+		ClickOnBottomRightButton()
+		If not WaitPixelColor("0x4A5366", 1050, 750, 1000, True) ; Wait for tab to be active
+			Return
+		MouseClick "Left", 1178, 625 ; Max stacks
+		Sleep 10
+		MouseClick "Left", 1050, 750 ; Click Exchange
+		WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
+		ClickOnBottomRightButton() ; Skip purchased dialogue
+		Return
+	}
+	; =======================================
 	; Quick buying artifacts and weapons
 	; (you may try in other shops too :/)
 	; =======================================
@@ -111,8 +125,8 @@ Global RedNotificationColor := "0xE6455F"
 		MouseMove X, Y
 		Return
 	}
-	; Artifacts enhancement menu
-	If (PixelGetColor(1109, 42) = "0xECE5D8" and PixelGetColor(1181, 547) = "0xECE5D8") {
+	; Artifacts/weapons enhancement menu
+	If (PixelGetColor(1109, 42) = "0xECE5D8" and PixelGetColor(1181, 700) = "0xECE5D8") {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1620, 500
 		Sleep 50

@@ -102,13 +102,16 @@ MoveCursorToCenter() {
 ;
 ; Color - hex string in RGB format, for example "0xA0B357".
 ; Timeout - timeout in milliseconds.
-WaitPixelColor(Color, X, Y, Timeout) {
+; ReturnOnTimeout - whether to return False instead of throwing an exception on timeout
+WaitPixelColor(Color, X, Y, Timeout, ReturnOnTimeout := False) {
 	StartTime := A_TickCount
 	Loop {
 		CurrentColor := PixelGetColor(X, Y)
 		If (CurrentColor = Color) {
-			Return
+			Return True
 		} If (A_TickCount - StartTime >= Timeout) {
+			If ReturnOnTimeout
+				Return False
 			throw Error("Timeout " . Timeout . " ms")
 		}
 	}
