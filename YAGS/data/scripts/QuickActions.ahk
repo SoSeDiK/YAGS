@@ -55,33 +55,16 @@ Global RedNotificationColor := "0xE6455F"
 
 ~MButton:: {
 	; =======================================
-	; Quick buying things in a tea pot
+	; Quick buying things in shops
+	; Made for artifacts, weapons, and tea pot
+	; May work in other shops too
 	; =======================================
 	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
-		ClickOnBottomRightButton()
-		If not WaitPixelColor("0x4A5366", 1050, 750, 1000, True) ; Wait for tab to be active
-			Return
-		MouseClick "Left", 1178, 625 ; Max stacks
-		Sleep 10
-		MouseClick "Left", 1050, 750 ; Click Exchange
-		WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
-		ClickOnBottomRightButton() ; Skip purchased dialogue
-		Return
-	}
-	; =======================================
-	; Quick buying artifacts and weapons
-	; (you may try in other shops too :/)
-	; =======================================
-	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1785, 1018) = "0xECE5D8") {
-		While IsAvailableForStock() {
-			ClickOnBottomRightButton()
-			WaitPixelColor("0x4A5366", 1050, 750, 1000) ; Wait for tab to be active
-			MouseClick "Left", 1178, 625 ; Max stacks
-			Sleep 10
-			MouseClick "Left", 1050, 750 ; Click Purchase
-			WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
-			ClickOnBottomRightButton() ; Skip purchased dialogue
+		Loop 20 {
+			BuyOnce()
 			Sleep 300
+			If not IsAvailableForStock()
+				Return
 		}
 		Return
 	}
@@ -166,6 +149,17 @@ Global RedNotificationColor := "0xE6455F"
 IsAvailableForStock() {
 	Color := PixelGetColor(230, 182)
 	Return Color = "0xFFFFEF" ; Mora icon
+}
+
+BuyOnce() {
+	ClickOnBottomRightButton()
+	If not WaitPixelColor("0x4A5366", 1050, 750, 1000, True) ; Wait for tab to be active
+		Return
+	MouseClick "Left", 1178, 625 ; Max stacks
+	Sleep 10
+	MouseClick "Left", 1050, 750 ; Click Exchange
+	WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
+	ClickOnBottomRightButton() ; Skip purchased dialogue
 }
 
 
