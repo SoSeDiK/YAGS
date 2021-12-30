@@ -55,32 +55,7 @@ Global RedNotificationColor := "0xE6455F"
 
 ~MButton:: {
 	; =======================================
-	; Quick buying things in shops
-	; Made for artifacts, weapons, and tea pot
-	; May work in other shops too
-	; =======================================
-	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
-		Loop 20 {
-			BuyOnce()
-			Sleep 300
-			If not IsAvailableForStock()
-				Return
-		}
-		Return
-	}
-	; =======================================
-	; Select maximum stacks and craft ores
-	; =======================================
-	If (PixelGetColor(62, 52) = "0xD3BC8E") {
-		MouseGetPos &X, &Y
-		MouseClick "Left", 1467, 669 ; Max stacks
-		Sleep 50
-		ClickOnBottomRightButton()
-		MouseMove X, Y
-		Return
-	}
-	; =======================================
-	; Lock Artifact
+	; Lock Artifact or Weapons
 	; =======================================
 	; Backpack
 	If (PixelGetColor(75, 45) = "0xD3BC8E" and PixelGetColor(165, 1010) = "0x3B4255") {
@@ -92,6 +67,14 @@ Global RedNotificationColor := "0xE6455F"
 	}
 	; Artifact details
 	If (PixelGetColor(75, 70) = "0xD3BC8E" and PixelGetColor(1838, 44) = "0x3B4255") {
+		MouseGetPos &X, &Y
+		MouseClick "Left", 1825, 440
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+	; Weapon details
+	If (PixelGetColor(97, 25) = "0xD3BC8E" and PixelGetColor(1838, 44) = "0x3B4255") {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1825, 440
 		Sleep 50
@@ -131,6 +114,34 @@ Global RedNotificationColor := "0xE6455F"
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1428, 500
 		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+	; =======================================
+	; Quick buying things in shops
+	; Made for artifacts, weapons, and tea pot
+	; May work in other shops too
+	; =======================================
+	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
+		MouseGetPos &X, &Y
+		Loop 20 {
+			BuyOnce()
+			Sleep 300
+			If not IsAvailableForStock()
+				Break
+		}
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+	; =======================================
+	; Select maximum stacks and craft ores
+	; =======================================
+	If (PixelGetColor(62, 52) = "0xD3BC8E") {
+		MouseGetPos &X, &Y
+		MouseClick "Left", 1467, 669 ; Max stacks
+		Sleep 50
+		ClickOnBottomRightButton()
 		MouseMove X, Y
 		Return
 	}
