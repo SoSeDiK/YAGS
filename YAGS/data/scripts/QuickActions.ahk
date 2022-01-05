@@ -58,7 +58,7 @@ Global RedNotificationColor := "0xE6455F"
 	; Lock Artifact or Weapons
 	; =======================================
 	; Backpack
-	If (PixelGetColor(75, 45) = "0xD3BC8E" and PixelGetColor(165, 1010) = "0x3B4255") {
+	If (PixelGetColor(75, 43) = "0xD3BC8E" and PixelGetColor(165, 1010) = "0x3B4255") {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1738, 440
 		Sleep 50
@@ -120,13 +120,13 @@ Global RedNotificationColor := "0xE6455F"
 	; =======================================
 	; Quick buying things in shops
 	; Made for artifacts, weapons, and tea pot
-	; May work in other shops too
+	; Should work in other shops too
 	; =======================================
 	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
 		MouseGetPos &X, &Y
 		Loop 20 {
 			BuyOnce()
-			Sleep 300
+			Sleep 400
 			If not IsAvailableForStock()
 				Break
 		}
@@ -158,8 +158,7 @@ Global RedNotificationColor := "0xE6455F"
 }
 
 IsAvailableForStock() {
-	Color := PixelGetColor(230, 182)
-	Return Color = "0xFFFFEF" ; Mora icon
+	Return PixelGetColor(230, 182) = "0x464C51" ; Mora icon
 }
 
 BuyOnce() {
@@ -319,7 +318,7 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 }
 
 ReceiveBpExp() {
-	global RedNotIficationColor
+	Global RedNotIficationColor
 
 	; Check for available BP experience and receive If any
 	Color := PixelGetColor(993, 20)
@@ -341,7 +340,7 @@ ReceiveBpExp() {
 }
 
 ReceiveBpRewards() {
-	global RedNotIficationColor
+	Global RedNotIficationColor
 
 	; Check for available BP experience and receive if any
 	Color := PixelGetColor(899, 20)
