@@ -250,6 +250,7 @@ ScriptsDir := A_ScriptDir "/data/scripts/"
 Run '*RunAs "' ScriptsDir 	'AutoWalk' 				'.ahk"', , , &AutoWalkThread
 Run '*RunAs "' ScriptsDir 	'QuickShopBuying' 		'.ahk"', , , &QuickShopBuying
 Run '*RunAs "' ScriptsDir 	'QuickActions' 			'.ahk"', , , &QuickActionsThread
+Run '*RunAs "' ScriptsDir 	'TimeSkip' 				'.ahk"', , , &TimeSkipThread
 Run '*RunAs "' ScriptsDir 	'BetterMapClick' 		'.ahk"', , , &BetterMapClickThread
 Run '*RunAs "' ScriptsDir 	'BetterCharacterSwitch' '.ahk"', , , &BetterCharacterSwitchThread
 Run '*RunAs "' ScriptsDir 	'QuickPartySwitch' 		'.ahk"', , , &QuickPartySwitchThread
@@ -260,7 +261,7 @@ Run '*RunAs "' ScriptsDir 	'AutoPickup' 			'.ahk"', , , &AutoPickupThread
 Run '*RunAs "' ScriptsDir 	'AutoUnfreeze' 			'.ahk"', , , &AutoUnfreezeThread
 Run '*RunAs "' ScriptsDir 	'AlternateVision' 		'.ahk"', , , &AlternateVisionThread
 Run '*RunAs "' ScriptsDir 	'AutoFish' 				'.ahk"', , , &AutoFishThread
-Run '*RunAs "' ScriptsDir 	'AutoAttackMode' 			'.ahk"', , , &AutoAttackMode
+Run '*RunAs "' ScriptsDir 	'AutoAttackMode' 		'.ahk"', , , &AutoAttackModeThread
 
 ; Lazy workaround for when the user reruns the script multiple times without closing it first
 Sleep 300
@@ -377,6 +378,7 @@ ExitYAGS() {
 	CloseScript(AutoWalkThread)
 	CloseScript(QuickShopBuying)
 	CloseScript(QuickActionsThread)
+	CloseScript(TimeSkipThread)
 	CloseScript(BetterMapClickThread)
 	CloseScript(BetterCharacterSwitchThread)
 	CloseScript(QuickPartySwitchThread)
@@ -387,7 +389,7 @@ ExitYAGS() {
 	CloseScript(AutoUnfreezeThread)
 	CloseScript(AlternateVisionThread)
 	CloseScript(AutoFishThread)
-	CloseScript(AutoAttackMode)
+	CloseScript(AutoAttackModeThread)
 	ExitApp
 }
 

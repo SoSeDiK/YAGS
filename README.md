@@ -19,7 +19,7 @@ There are no plans to adapt it to other resolutions in the near future.
 
 ### ❓ How to
 1. Download and install [AutoHotkey](https://www.autohotkey.com/) (only version 2).
-2. Download this repository.
+2. Download this repository, extract `YAGS` folder.
 3. Run `YAGS.ahk`.
 4. Configure settings in the GUI if needed.
 5. Run the game and enjoy.
@@ -66,13 +66,26 @@ There are no plans to adapt it to other resolutions in the near future.
 - Press `XButton1` to quickly purchase items from the shop.
   - Press `XButton2` to purchase items continuously, mainly for weapons or artifacts. Press again to stop.
 - `Numpad -` + `Numpad 1-4` to change current party.
-- `Numpad 5` to go to the Serenitea Pot (via gadget).
-- `Numpad 6` to receive and resend expeditions (use GUI to configure),
-- `Numpad 7` to skip till the next night.
-  - Hold `Numpad -` at the beginning to skip till the next day.
-- `Numpad 8` to obtain all BP experience and rewards.
-- `Numpad .` to relogin.
-  - Useful for resetting bosses if your game loads quickly.
+- `Numpad -` + `Numpad 5` to go to the Serenitea Pot (via gadget).
+- `Numpad -` + `Numpad 6` to receive and resend expeditions (use GUI to configure),
+- `Numpad -` + `Numpad 8` to obtain all BP experience and rewards.
+- `Numpad -` + `Numpad .` to relogin.
+  - Useful for resetting bosses.
+- `Numpad /` + `Numpad 1-9` to quickly change the time.
+  - Think of numbers as of the in-game clock:
+    - Numpad:        Time:
+    - `7` `8` `9`   ` 9` `12` `15`
+    - `4` ` ` `6`   ` 6` `  ` `18`
+    - `1` `2` `3`   ` 3` `24` `21`
+    - ` ` `0` `.`   `  ` `+1` `-1`
+  - For example, `Numpad /` + `Numpad 7` will set the time to `9`.
+  - Press `Numpad 0` inbetween to add 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `10`.
+  - Press `Numpad .` inbetween to subtract 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `8`.
+  - Press `Numpad *` inbetween to add 24 hours. For example, `Numpad /` + `Numpad *` + `Numpad 7` will set the time to `9` tomorrow.
+  - And yes, you guessed it, `Numpad /` + `Numpad *` + `Numpad 0` + `Numpad 7` will set the time to `10` tomorrow.
+    - `/` to trigger, `*` for tomorrow, `0` to add 1 hour, `7` for 9 hours. Tomorrow at 9 + 1 = 10. Simple :)
+	- Some keyboards might limit such combinations, but you won't need them most times anyway.
+  - `Numpad /` + `Numpad 5` is imposter, so it just opens the clock screen for you.
 
 ### 🎣 Automation (toggleable)
 - Auto loot pickup.

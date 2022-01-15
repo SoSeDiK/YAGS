@@ -147,7 +147,7 @@ Global RedNotificationColor := "0xE6455F"
 ; =======================================
 
 ; Recieve all expenition rewards and resend back
-~Numpad6:: {
+~NumpadSub & Numpad6:: {
 	ParseExpeditions()
 	Send "{Esc}"
 }
@@ -275,7 +275,7 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 ; Receive all BP exp and rewards
 ; =======================================
 
-~Numpad8:: {
+~NumpadSub & Numpad8:: {
 	Send "{f4}"
 	WaitFullScreenMenu()
 
@@ -331,7 +331,7 @@ ReceiveBpRewards() {
 ; Go to the Serenitea Pot
 ; =======================================
 
-~Numpad5:: {
+~NumpadSub & Numpad5:: {
 	OpenInventory()
 
 	MouseClick "Left", 1050, 50 ; Gadgets tab
@@ -347,66 +347,10 @@ ReceiveBpRewards() {
 
 
 ; =======================================
-; Wait for the next night
-; =======================================
-
-~Numpad7:: {
-	WaitUntilInGameTime("18")
-}
-
-~NumpadSub & Numpad7:: {
-	WaitUntilInGameTime("06")
-}
-
-WaitUntilInGameTime(Time) {
-	OpenMenu()
-
-	MouseClick "Left", 45, 715 ; Clock icon
-	WaitPixelColor("0xECE5D8", 1870, 50, 5000) ; Wait for the clock menu
-
-	ClockCenterX := 1440
-	ClockCenterY := 501
-	Offset := 30
-
-	If (Time = "18") {
-		ClickOnClock(ClockCenterX, ClockCenterY + Offset) ; 00:00
-		ClickOnClock(ClockCenterX - Offset, ClockCenterY) ; 06:00
-		ClickOnClock(ClockCenterX, ClockCenterY - Offset) ; 12:00
-		ClickOnClock(ClockCenterX + Offset, ClockCenterY) ; 18:00
-	} Else If (Time = "06") {
-		ClickOnClock(ClockCenterX, ClockCenterY - Offset) ; 12:00
-		ClickOnClock(ClockCenterX + Offset, ClockCenterY) ; 18:00
-		ClickOnClock(ClockCenterX, ClockCenterY + Offset) ; 00:00
-		ClickOnClock(ClockCenterX - Offset, ClockCenterY - 1) ; 06:00
-	} Else {
-		throw "Unexpected time argument" . Time
-	}
-
-	MouseClick "Left", 1440, 1000 ; "Confirm" button
-
-	Sleep 100
-	WaitPixelColor("0xECE5D8", 1870, 50, 30000) ; Wait for the clock menu
-
-	Send "{Esc}"
-	WaitMenu()
-
-	Send "{Esc}"
-}
-
-ClickOnClock(X, Y) {
-	MouseClick "Left", X, Y, , , "Down"
-	Sleep 50
-	MouseClick "Left", X, Y, , , "Up"
-	Sleep 100
-}
-
-
-
-; =======================================
 ; Relogin
 ; =======================================
 
-~NumpadDot:: {
+~NumpadSub & NumpadDot:: {
 	OpenMenu()
 
 	MouseClick "Left", 49, 1022 ; Logout button
