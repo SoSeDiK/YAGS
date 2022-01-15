@@ -167,3 +167,7 @@ GetExpeditions(SideScript := False) {
 GetSetting(Setting, Def, SideScript := False) {
 	Return IniRead(GetSettings(SideScript), "Settings", Setting, Def)
 }
+
+UpdateSetting(Setting, NewValue, SideScript := False) {
+	IniWrite NewValue, GetSettings(SideScript), "Settings", Setting
+}

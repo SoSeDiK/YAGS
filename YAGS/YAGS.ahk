@@ -211,7 +211,7 @@ SetupGui() {
 ToggleFeature(&Feature, &FeatureBinding, FeatureName, *) {
 	Global
 	Feature := ScriptGui[FeatureName].Value
-	IniWrite Feature, GetSettings(), "Settings", FeatureName
+	UpdateSetting(FeatureName, Feature)
 	If not Feature {
 		FeatureBinding := False
 		UpdateScriptState(FeatureName, 0)
@@ -219,7 +219,7 @@ ToggleFeature(&Feature, &FeatureBinding, FeatureName, *) {
 }
 
 SwapSideMouseButtons(*) {
-	IniWrite ScriptGui["SwapSideMouseButtons"].Value, GetSettings(), "Settings", "SwapSideMouseButtons"
+	UpdateSetting("SwapSideMouseButtons", ScriptGui["SwapSideMouseButtons"].Value)
 	UpdateScriptState("SimpleJump", 3)
 	UpdateScriptState("QuickPickup", 3)
 }
@@ -235,7 +235,7 @@ UpdateLanguage(Lang, *) {
 	Global
 	If (Lang = Language)
 		Return
-	IniWrite Lang, GetSettings(), "Settings", "Language"
+	UpdateSetting("Language", Lang)
 	Language := Lang
 	ScriptGui.GetPos(&x, &y)
 	ScriptGui.Destroy()
@@ -263,7 +263,7 @@ Run '*RunAs "' ScriptsDir 	'AutoPickup' 			'.ahk"', , , &AutoPickupThread
 Run '*RunAs "' ScriptsDir 	'AutoUnfreeze' 			'.ahk"', , , &AutoUnfreezeThread
 Run '*RunAs "' ScriptsDir 	'AlternateVision' 		'.ahk"', , , &AlternateVisionThread
 Run '*RunAs "' ScriptsDir 	'AutoFish' 				'.ahk"', , , &AutoFishThread
-Run '*RunAs "' ScriptsDir 	'HuTaoMode' 			'.ahk"', , , &HuTaoModeThread
+Run '*RunAs "' ScriptsDir 	'AutoAttackMode' 			'.ahk"', , , &AutoAttackMode
 
 ; Lazy workaround for when the user reruns the script multiple times without closing it first
 Sleep 300
@@ -340,13 +340,13 @@ ConfigureContextualBindings() {
 	If (not GameScreenBindingsEnabled and GameScreen) {
 		UpdateScriptState("AutoWalk", 1)
 		UpdateScriptState("AlternateVision", 1)
-		UpdateScriptState("HuTaoMode", 1)
+		UpdateScriptState("AutoAttackMode", 1)
 		UpdateScriptState("BetterCharacterSwitch", 1)
 		GameScreenBindingsEnabled := True
 	} Else If (GameScreenBindingsEnabled and not GameScreen) {
 		UpdateScriptState("AutoWalk", 0)
 		UpdateScriptState("AlternateVision", 0)
-		UpdateScriptState("HuTaoMode", 0)
+		UpdateScriptState("AutoAttackMode", 0)
 		UpdateScriptState("BetterCharacterSwitch", 0)
 		GameScreenBindingsEnabled := False
 	}
