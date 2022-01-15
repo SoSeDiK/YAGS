@@ -33,9 +33,9 @@ DoMapClick() {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
 		TeleportablePointColors := [ "0x2D91D9"	; Teleport Waypoint
 			,"0x99ECF5"							; Statue of The Seven
-			,"0x05EDF6"							; Domain
+			,"0x05EFF7"							; Domain
 			,"0x00FFFF"							; One-time dungeon
-			,"0x5E615F"							; Sub-Space Waypoint
+			,"0x62645E"							; Sub-Space Waypoint
 			,"0x63655F" ]						; Portable Waypoint
 
 		; Find the upper available teleport
