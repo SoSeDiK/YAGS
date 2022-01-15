@@ -385,20 +385,26 @@ GetLanguagePath(Lang) {
 
 
 ExitYAGS() {
-	WinClose "ahk_pid " AutoWalkThread
-	WinClose "ahk_pid " QuickActionsThread
-	WinClose "ahk_pid " BetterMapClickThread
-	WinClose "ahk_pid " BetterCharacterSwitchThread
-	WinClose "ahk_pid " QuickPartySwitchThread
-	WinClose "ahk_pid " QuickPickupThread
-	WinClose "ahk_pid " SimpleJumpThread
-	WinClose "ahk_pid " EasierCombatThread
-	WinClose "ahk_pid " AutoPickupThread
-	WinClose "ahk_pid " AutoUnfreezeThread
-	WinClose "ahk_pid " AlternateVisionThread
-	WinClose "ahk_pid " AutoFishThread
-	WinClose "ahk_pid " HuTaoModeThread
+	CloseScript(AutoWalkThread)
+	CloseScript(QuickActionsThread)
+	CloseScript(BetterMapClickThread)
+	CloseScript(BetterCharacterSwitchThread)
+	CloseScript(QuickPartySwitchThread)
+	CloseScript(QuickPickupThread)
+	CloseScript(SimpleJumpThread)
+	CloseScript(EasierCombatThread)
+	CloseScript(AutoPickupThread)
+	CloseScript(AutoUnfreezeThread)
+	CloseScript(AlternateVisionThread)
+	CloseScript(AutoFishThread)
+	CloseScript(AutoAttackMode)
 	ExitApp
+}
+
+CloseScript(ScriptName) {
+	ScriptName := "ahk_pid " ScriptName
+	If WinExist(ScriptName)
+		WinClose ScriptName
 }
 
 
