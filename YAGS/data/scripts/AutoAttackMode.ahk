@@ -43,7 +43,7 @@ Global AttackMode := GetSetting("AutoAttackMode", "None", True)
 UpdateAttackMode(NewAttackMode) {
 	Global
 	AttackMode := NewAttackMode
-	ToolTip "Auto attack mode set to: " AttackMode, 160, 1050
+	ToolTip Langed("AutoAttackMode", "Current attack mode: ", True) AttackMode, 160, 1050
 	UpdateSetting("AutoAttackMode", AttackMode, True)
 	Sleep 2000
 	If (AttackMode = NewAttackMode)

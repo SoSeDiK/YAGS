@@ -47,7 +47,12 @@ There are no plans to adapt it to other resolutions in the near future.
   - `LShift` can be used for manual sprinting (useful to enter the sprinting mode and start Bunnyhopping).
 - Press `H` to toggle Vision!
   - Makes it much easier, less annoying, and had to be done since `MMB` was changed.
-- Hold `V` to "smart attack" (9N2CJ) with Hu Tao!
+- Hold `V` to auto attack!
+  - By default does nothing. Press `Numpad *` + `Numpad 1-4` to change currently available modes:
+    - `1`: Klee Simple Jump Cancel (NJ)
+    - `2`: Klee Charged Attack (CJ)
+    - `3`: Hu Tao Dash Cancel (9N2CD)
+    - `4`: Hu Tao Jump Cancel (9N2CJ)
   - Probably will be reworked in the future with support for more characters and… stuff.
 - Press `MMB` while on the map to quickly teleport.
   - Especially useful when there are multiple icons near the teleportation point. Saves a few clicks, seconds, and your sanity.
@@ -62,7 +67,8 @@ There are no plans to adapt it to other resolutions in the near future.
 - `Numpad -` + `Numpad 1-4` to change current party.
 - `Numpad 5` to go to the Serenitea Pot (via gadget).
 - `Numpad 6` to receive and resend expeditions (use GUI to configure),
-- (Optional: `Numpad -` +) `Numpad 7` to skip till the next (day/) night.
+- `Numpad 7` to skip till the next night.
+  - Hold `Numpad -` at the beginning to skip till the next day.
 - `Numpad 8` to obtain all BP experience and rewards.
 - `Numpad .` to relogin.
   - Useful for resetting bosses if your game loads quickly.

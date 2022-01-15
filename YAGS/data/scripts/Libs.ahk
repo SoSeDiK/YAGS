@@ -171,3 +171,11 @@ GetSetting(Setting, Def, SideScript := False) {
 UpdateSetting(Setting, NewValue, SideScript := False) {
 	IniWrite NewValue, GetSettings(SideScript), "Settings", Setting
 }
+
+Langed(Key, Def := "", SideScript := False) {
+	Return IniRead(GetLanguagePath(GetSetting("Language", "en", SideScript), SideScript), "Locales", Key, Def = "" ? Key : Def)
+}
+
+GetLanguagePath(Lang, SideScript := False) {
+	Return SideScript ? A_ScriptDir "/../lang_" Lang ".ini" : A_ScriptDir "/data/lang_" Lang ".ini"
+}

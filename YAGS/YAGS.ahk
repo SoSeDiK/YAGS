@@ -22,10 +22,6 @@ If !A_IsAdmin {
 
 
 
-Global Language := GetSetting("Language", "en")
-
-
-
 Global QuickPickupBindingsEnabled := True
 Global MapBindingsEnabled := True
 Global AutoFisinghBindingsEnabled := True
@@ -233,10 +229,9 @@ UpdateExpeditions(Expeditions, ExpeditionNum, *) {
 
 UpdateLanguage(Lang, *) {
 	Global
-	If (Lang = Language)
+	If (Lang = GetSetting("Language", "en"))
 		Return
 	UpdateSetting("Language", Lang)
-	Language := Lang
 	ScriptGui.GetPos(&x, &y)
 	ScriptGui.Destroy()
 	ScriptGui := Gui()
@@ -370,16 +365,6 @@ SuspendOnGameInactive() {
 		WinWaitNotActive GameProcessName
 		SetTimer ConfigureContextualBindings, 0
 	}
-}
-
-
-
-Langed(Key, Def := "") {
-	Return IniRead(GetLanguagePath(Language), "Locales", Key, Def = "" ? Key : Def)
-}
-
-GetLanguagePath(Lang) {
-	Return "data/lang_" Lang ".ini"
 }
 
 
