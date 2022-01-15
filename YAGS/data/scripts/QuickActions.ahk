@@ -118,23 +118,6 @@ Global RedNotificationColor := "0xE6455F"
 		Return
 	}
 	; =======================================
-	; Quick buying things in shops
-	; Made for artifacts, weapons, and tea pot
-	; Should work in other shops too
-	; =======================================
-	If (PixelGetColor(80, 50) = "0xD3BC8E" and PixelGetColor(1840, 46) = "0x3B4255" and PixelGetColor(1740, 995) = "0xECE5D8") {
-		MouseGetPos &X, &Y
-		Loop 20 {
-			BuyOnce()
-			Sleep 400
-			If not IsAvailableForStock()
-				Break
-		}
-		Sleep 50
-		MouseMove X, Y
-		Return
-	}
-	; =======================================
 	; Select maximum stacks and craft ores
 	; =======================================
 	If (PixelGetColor(62, 52) = "0xD3BC8E") {
@@ -155,21 +138,6 @@ Global RedNotificationColor := "0xE6455F"
 		MouseMove X, Y
 		Return
 	}
-}
-
-IsAvailableForStock() {
-	Return PixelGetColor(230, 182) = "0x464C51" ; Mora icon
-}
-
-BuyOnce() {
-	ClickOnBottomRightButton()
-	If not WaitPixelColor("0x4A5366", 1050, 750, 1000, True) ; Wait for tab to be active
-		Return
-	MouseClick "Left", 1178, 625 ; Max stacks
-	Sleep 10
-	MouseClick "Left", 1050, 750 ; Click Exchange
-	WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
-	ClickOnBottomRightButton() ; Skip purchased dialogue
 }
 
 

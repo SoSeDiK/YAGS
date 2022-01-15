@@ -59,11 +59,12 @@ There are no plans to adapt it to other resolutions in the near future.
 
 ### ✨ Minor (possibly useful) additions
 - Press `MMB` to:
-  - Quickly purchase weapons or artifacts from the shop. Should work with other shops too, but be careful.
   - Quickly buy max of a current item in the tea pot shop.
   - Select and craft max ores (or other things in Blacksmith's menu).
   - Lock/Unlock artifact or weapon.
   - Toggle «Auto-Play Story» mode in dialogue.
+- Press `XButton1` to quickly purchase items from the shop.
+  - Press `XButton2` to purchase items continuously, mainly for weapons or artifacts. Press again to stop.
 - `Numpad -` + `Numpad 1-4` to change current party.
 - `Numpad 5` to go to the Serenitea Pot (via gadget).
 - `Numpad 6` to receive and resend expeditions (use GUI to configure),

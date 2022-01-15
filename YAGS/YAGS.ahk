@@ -216,6 +216,7 @@ ToggleFeature(&Feature, &FeatureBinding, FeatureName, *) {
 
 SwapSideMouseButtons(*) {
 	UpdateSetting("SwapSideMouseButtons", ScriptGui["SwapSideMouseButtons"].Value)
+	UpdateScriptState("QuickShopBuying", 3)
 	UpdateScriptState("SimpleJump", 3)
 	UpdateScriptState("QuickPickup", 3)
 }
@@ -247,6 +248,7 @@ UpdateLanguage(Lang, *) {
 ; =======================================
 ScriptsDir := A_ScriptDir "/data/scripts/"
 Run '*RunAs "' ScriptsDir 	'AutoWalk' 				'.ahk"', , , &AutoWalkThread
+Run '*RunAs "' ScriptsDir 	'QuickShopBuying' 		'.ahk"', , , &QuickShopBuying
 Run '*RunAs "' ScriptsDir 	'QuickActions' 			'.ahk"', , , &QuickActionsThread
 Run '*RunAs "' ScriptsDir 	'BetterMapClick' 		'.ahk"', , , &BetterMapClickThread
 Run '*RunAs "' ScriptsDir 	'BetterCharacterSwitch' '.ahk"', , , &BetterCharacterSwitchThread
@@ -348,9 +350,11 @@ ConfigureContextualBindings() {
 	
 	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActive)) {
 		UpdateScriptState("QuickPickup", 1)
+		UpdateScriptState("QuickShopBuying", 0)
 		QuickPickupBindingsEnabled := True
 	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActive)) {
 		UpdateScriptState("QuickPickup", 0)
+		UpdateScriptState("QuickShopBuying", 1)
 		QuickPickupBindingsEnabled := False
 	}
 }
@@ -371,6 +375,7 @@ SuspendOnGameInactive() {
 
 ExitYAGS() {
 	CloseScript(AutoWalkThread)
+	CloseScript(QuickShopBuying)
 	CloseScript(QuickActionsThread)
 	CloseScript(BetterMapClickThread)
 	CloseScript(BetterCharacterSwitchThread)
