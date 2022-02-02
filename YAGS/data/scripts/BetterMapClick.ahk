@@ -16,10 +16,10 @@ OnMessage 0x4000, SetSuspended
 
 DoMapClick() {
 	MapClick()
-	try {
+	Try {
 		; Wait for a little white arrow or teleport button
 		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCC33" } ])
-	} catch {
+	} Catch {
 		Return
 	}
 
@@ -33,9 +33,9 @@ DoMapClick() {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
 		TeleportablePointColors := [ "0x2D91D9"	; Teleport Waypoint
 			,"0x99ECF5"							; Statue of The Seven
-			,"0x05EFF7"							; Domain
+			,"0xCCFFFF"							; Domain
 			,"0x00FFFF"							; One-time dungeon
-			,"0x62645E"							; Sub-Space Waypoint
+			,"0xFFCC00"							; Sub-Space Waypoint
 			,"0x63655F" ]						; Portable Waypoint
 
 		; Find the upper available teleport

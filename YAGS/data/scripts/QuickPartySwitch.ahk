@@ -27,7 +27,11 @@ ChangeParty(NewPartyNum) {
 	CurrentPartyNum := 1
 
 	Send "{l}"
-	WaitFullScreenMenu(5000)
+	Try {
+		WaitFullScreenMenu(5000)
+	} Catch {
+		Return
+	}
 
 	Loop 4 {
 		Color := PixelGetColor(875 + (A_Index * 35), 48)
