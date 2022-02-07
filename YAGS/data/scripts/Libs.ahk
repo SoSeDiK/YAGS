@@ -50,7 +50,7 @@ IsGameScreen() {
 
 ; Note: always better to check if not IsFullScreenMenuOpen() and not IsGameScreen() before checking the dialogue screen
 IsDialogueScreen() {
-	Return PixelGetColor(86, 48) = "0xECE5D8" ; Play or Pause button
+	Return PixelGetColor(109, 56) = "0xECE5D8" ; Play or Pause button
 }
 
 IsInBoat() {
@@ -157,11 +157,11 @@ UpdateScriptState(Script, State) {
 }
 
 GetSettings(SideScript := False) {
-	Return SideScript ? A_ScriptDir "/../settings.ini" : A_ScriptDir "/data/settings.ini"
+	Return SideScript ? A_ScriptDir "\..\settings.ini" : A_ScriptDir "\data\settings.ini"
 }
 
 GetExpeditions(SideScript := False) {
-	Return SideScript ? A_ScriptDir "/../expeditions.ini" : A_ScriptDir "/data/expeditions.ini"
+	Return SideScript ? A_ScriptDir "\..\expeditions.ini" : A_ScriptDir "\data\expeditions.ini"
 }
 
 GetSetting(Setting, Def, SideScript := False) {
@@ -177,5 +177,5 @@ Langed(Key, Def := "", SideScript := False) {
 }
 
 GetLanguagePath(Lang, SideScript := False) {
-	Return SideScript ? A_ScriptDir "/../lang_" Lang ".ini" : A_ScriptDir "/data/lang_" Lang ".ini"
+	Return SideScript ? A_ScriptDir "\..\lang_" Lang ".ini" : A_ScriptDir "\data\lang_" Lang ".ini"
 }

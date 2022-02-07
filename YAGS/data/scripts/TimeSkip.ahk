@@ -100,7 +100,7 @@ SkipToTime(NeededTime) {
 	Clicks := NeededTime - Time
 	If (Clicks < 0)
 		Clicks += 24
-	If NextDay
+	If (NextDay and Time <= NeededTime)
 		Clicks += 24
 	Clicks := Round(Clicks / 6)
 	

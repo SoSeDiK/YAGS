@@ -4,17 +4,17 @@
 ; =======================================
 
 #SingleInstance Force
-#Include "data/scripts/Libs.ahk"
+#Include "data\scripts\Libs.ahk"
 
-TraySetIcon "data/genicon.ico", , 1
+TraySetIcon "data\genicon.ico", , 1
 
 
 
 ; Rerun script with the administrator rights if required
 If !A_IsAdmin {
-	try {
+	Try {
 		Run '*RunAs "' A_ScriptFullPath '"'
-	} catch {
+	} Catch {
 		MsgBox "Failed to run the script with administrator rights"
 		ExitApp
 	}
@@ -84,11 +84,11 @@ SetupGui() {
 	ScriptGui.Add("Checkbox", "vSwapSideMouseButtons x15 y150 " (GetSetting("SwapSideMouseButtons", "0") ? "Checked" : ""), Langed("SwapSideMouseButtons", "Swap side mouse buttons"))
 	ScriptGui["SwapSideMouseButtons"].OnEvent("Click", SwapSideMouseButtons)
 
-	ScriptGui.Add("Picture", "x235 y26 w242 h246 +BackgroundTrans", "data/Venti.png")
+	ScriptGui.Add("Picture", "x235 y26 w242 h246 +BackgroundTrans", "data\Venti.png")
 
 	ScriptGui.Add("GroupBox", "x8 y230 w65 h43", Langed("Language", "English"))
-	ScriptGui.Add("Picture", "x14 y245 w24 h24 +BackgroundTrans", "data/lang_en.png").OnEvent("Click", UpdateLanguage.Bind("en"))
-	ScriptGui.Add("Picture", "x42 y245 w24 h24 +BackgroundTrans", "data/lang_ru.png").OnEvent("Click", UpdateLanguage.Bind("ru"))
+	ScriptGui.Add("Picture", "x14 y245 w24 h24 +BackgroundTrans", "data\lang_en.png").OnEvent("Click", UpdateLanguage.Bind("en"))
+	ScriptGui.Add("Picture", "x42 y245 w24 h24 +BackgroundTrans", "data\lang_ru.png").OnEvent("Click", UpdateLanguage.Bind("ru"))
 
 
 	ScriptGuiTabs.UseTab(2)
@@ -96,7 +96,7 @@ SetupGui() {
 	Loop 3 {
 		X := 8 + 152 * (A_Index - 1)
 		ScriptGui.Add("GroupBox", "y24 w147 h244 x" X, Langed("LinksTab" A_Index))
-		Links := IniRead("data/links.ini", "LinksTab" A_Index)
+		Links := IniRead("data\links.ini", "LinksTab" A_Index)
 		Links := StrSplit(Links, "`n")
 		X := 16 + X
 		Loop Links.Length {
@@ -233,12 +233,14 @@ UpdateLanguage(Lang, *) {
 	If (Lang = GetSetting("Language", "en"))
 		Return
 	UpdateSetting("Language", Lang)
-	ScriptGui.GetPos(&x, &y)
+	ScriptGui.GetPos(&X, &Y)
+	XN := X
+	YN := Y
 	ScriptGui.Destroy()
 	ScriptGui := Gui()
 	SetupGui()
 	SetupTray()
-	ScriptGui.Move(x, y)
+	ScriptGui.Move(XN, YN)
 }
 
 
@@ -246,9 +248,9 @@ UpdateLanguage(Lang, *) {
 ; =======================================
 ; Run tasks
 ; =======================================
-ScriptsDir := A_ScriptDir "/data/scripts/"
+ScriptsDir := A_ScriptDir "\data\scripts\"
 Run '*RunAs "' ScriptsDir 	'AutoWalk' 				'.ahk"', , , &AutoWalkThread
-Run '*RunAs "' ScriptsDir 	'QuickShopBuying' 		'.ahk"', , , &QuickShopBuying
+Run '*RunAs "' ScriptsDir 	'QuickShopBuying' 		'.ahk"', , , &QuickShopBuyingThread
 Run '*RunAs "' ScriptsDir 	'QuickActions' 			'.ahk"', , , &QuickActionsThread
 Run '*RunAs "' ScriptsDir 	'TimeSkip' 				'.ahk"', , , &TimeSkipThread
 Run '*RunAs "' ScriptsDir 	'BetterMapClick' 		'.ahk"', , , &BetterMapClickThread
@@ -284,7 +286,7 @@ ConfigureContextualBindings() {
 	FullScreenMenu := IsFullScreenMenuOpen()
 	MapMenu := FullScreenMenu and PixelGetColor(27, 427) = "0xEDE5DA" ; Resin "+" symbol
 	GameScreen := not FullScreenMenu and IsGameScreen()
-	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
+	DialogueActiveOrNotShop := not FullScreenMenu and not GameScreen and (IsDialogueScreen() or PixelGetColor(1855, 45) != "0xECE5D8") ; "X" button in menus
 	FishingActive := GameScreen and PixelGetColor(1626, 1029) = "0xFFE92C" ; Is 3rd action icon bound to LMB
 	
 	If (MapBindingsEnabled and not MapMenu) {
@@ -349,11 +351,11 @@ ConfigureContextualBindings() {
 		GameScreenBindingsEnabled := False
 	}
 	
-	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActive)) {
+	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActiveOrNotShop)) {
 		UpdateScriptState("QuickPickup", 1)
 		UpdateScriptState("QuickShopBuying", 0)
 		QuickPickupBindingsEnabled := True
-	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActive)) {
+	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActiveOrNotShop)) {
 		UpdateScriptState("QuickPickup", 0)
 		UpdateScriptState("QuickShopBuying", 1)
 		QuickPickupBindingsEnabled := False
@@ -363,20 +365,32 @@ ConfigureContextualBindings() {
 
 
 SuspendOnGameInactive() {
+	ResetScripts()
 	Loop {
 		WinWaitActive GameProcessName
 		SetTimer ConfigureContextualBindings, 250
 
 		WinWaitNotActive GameProcessName
 		SetTimer ConfigureContextualBindings, 0
+		ResetScripts()
 	}
+}
+
+ResetScripts() {
+	Global
+	UpdateScriptState("AutoPickup", 0)
+	AutoPickupBindingsEnabled := False
+	UpdateScriptState("AutoFish", 0)
+	AutoFisinghBindingsEnabled := False
+	UpdateScriptState("AutoUnfreeze", 0)
+	AutoUnfreezeBindingsEnabled := False
 }
 
 
 
 ExitYAGS() {
 	CloseScript(AutoWalkThread)
-	CloseScript(QuickShopBuying)
+	CloseScript(QuickShopBuyingThread)
 	CloseScript(QuickActionsThread)
 	CloseScript(TimeSkipThread)
 	CloseScript(BetterMapClickThread)
