@@ -23,6 +23,7 @@ If !A_IsAdmin {
 
 
 Global QuickPickupBindingsEnabled := True
+Global QuickShopBindingsEnabled := True
 Global MapBindingsEnabled := True
 Global AutoFisinghBindingsEnabled := True
 Global GameScreenBindingsEnabled := True
@@ -286,7 +287,8 @@ ConfigureContextualBindings() {
 	FullScreenMenu := IsFullScreenMenuOpen()
 	MapMenu := FullScreenMenu and PixelGetColor(27, 427) = "0xEDE5DA" ; Resin "+" symbol
 	GameScreen := not FullScreenMenu and IsGameScreen()
-	DialogueActiveOrNotShop := not FullScreenMenu and not GameScreen and (IsDialogueScreen() or PixelGetColor(1855, 45) != "0xECE5D8") ; "X" button in menus
+	DialogueActive:= not FullScreenMenu and not GameScreen and IsDialogueScreen()
+	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and PixelGetColor(1855, 45) != "0xECE5D8" and PixelGetColor(1292, 778) != "0x4A5366") ; "X" button in menus and "Purchase" dialogue
 	FishingActive := GameScreen and PixelGetColor(1626, 1029) = "0xFFE92C" ; Is 3rd action icon bound to LMB
 	
 	If (MapBindingsEnabled and not MapMenu) {
@@ -351,14 +353,20 @@ ConfigureContextualBindings() {
 		GameScreenBindingsEnabled := False
 	}
 	
-	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActiveOrNotShop)) {
+	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActive)) {
 		UpdateScriptState("QuickPickup", 1)
-		UpdateScriptState("QuickShopBuying", 0)
 		QuickPickupBindingsEnabled := True
-	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActiveOrNotShop)) {
+	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActive)) {
 		UpdateScriptState("QuickPickup", 0)
-		UpdateScriptState("QuickShopBuying", 1)
 		QuickPickupBindingsEnabled := False
+	}
+	
+	If (not QuickShopBindingsEnabled and (GameScreen or DialogueActiveOrNotShop)) {
+		UpdateScriptState("QuickShopBuying", 0)
+		QuickShopBindingsEnabled := True
+	} Else If (QuickShopBindingsEnabled and (not GameScreen and not DialogueActiveOrNotShop)) {
+		UpdateScriptState("QuickShopBuying", 1)
+		QuickShopBindingsEnabled := False
 	}
 }
 
