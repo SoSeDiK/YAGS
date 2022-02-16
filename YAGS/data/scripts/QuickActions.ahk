@@ -92,7 +92,7 @@ Global RedNotificationColor := "0xE6455F"
 		Return
 	}
 	; Artifacts/weapons enhancement menu
-	If (PixelGetColor(1109, 42) = "0xECE5D8" and PixelGetColor(1181, 700) = "0xECE5D8") {
+	If (PixelGetColor(1109, 42) = "0xECE5D8" and (PixelGetColor(1215, 432) = "0xFFCC32" or PixelGetColor(1215, 432) = "0xFCCA32")) {
 		MouseGetPos &X, &Y
 		MouseClick "Left", 1620, 500
 		Sleep 50
@@ -337,7 +337,7 @@ ReceiveBpRewards() {
 	MouseClick "Left", 1050, 50 ; Gadgets tab
 	WaitPixelColor("0xD3BC8E", 1055, 92, 1000) ; Wait for tab to be active
 
-	MouseClick "Left", 270, 180 ; Select the first gadget
+	MouseClick "Left", 170, 180 ; Select the first gadget
 	ClickOnBottomRightButton()
 
 	WaitDialogMenu()
