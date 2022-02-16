@@ -54,7 +54,7 @@ DoMapClick() {
 
 Teleport(Y) {
 	MouseClick "Left", 1298, Y
-	WaitPixelColor("0xFFCB33", 1480, 1011, 1200) ; "Teleport" button
+	WaitPixelColor("0xFFCC33", 1480, 1011, 1200) ; "Teleport" button
 
 	ClickOnBottomRightButton()
 	Sleep 50
