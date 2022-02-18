@@ -35,7 +35,6 @@ DoMapClick() {
 			,"0x99ECF5"							; Statue of The Seven
 			,"0xCCFFFF"							; Domain
 			,"0x00FFFF"							; One-time dungeon
-			,"0xFFCC00"							; Sub-Space Waypoint
 			,"0x63655F" ]						; Portable Waypoint
 
 		; Find the upper available teleport
@@ -43,6 +42,13 @@ DoMapClick() {
 		For Index, TeleportablePointColor in TeleportablePointColors {
 			If PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, TeleportablePointColor) {
 				If (Y = -1 or FoundY < Y)
+					Y := FoundY
+			}
+		}
+		
+		If (Y = -1) {
+			If PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00") { ; Sub-Space Waypoint
+				If (PixelGetColor(FoundX, FoundY - 10) = "0xFFFFFF")
 					Y := FoundY
 			}
 		}
