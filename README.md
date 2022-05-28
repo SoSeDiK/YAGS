@@ -1,4 +1,8 @@
-## 🎈 Yet Another Genshin Script
+## 🎈 [UNMAINTAINED] Yet Another Genshin Script
+
+**My laptop can no longer run Genshin Impact (the game screen just freezes, many times even in the menu), and all my messages to support had no luck, so I have no way now of updating the script.**
+
+---
 
 <table>
   <tr>
