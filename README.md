@@ -1,8 +1,4 @@
-## 🎈 [UNMAINTAINED] Yet Another Genshin Script
-
-**My laptop can no longer run Genshin Impact (the game screen just freezes, many times even in the menu), and all my messages to support had no luck, so I have no way now of updating the script.**
-
----
+## 🎈 [WIP] Yet Another Genshin Script
 
 <table>
   <tr>
@@ -15,7 +11,7 @@ YAGS was made for personal usage to make the daily Genshin routine less annoying
 
 This script tries to improve controls, automate repeatable things, and bring some useful shortcuts.
 
-Script is made solely for 1920x1080 game resolution in [borderless window mode](https://gaming.stackexchange.com/a/376533) with 60FPS in mind.
+Script is made solely for 1920x1080 game resolution in [borderless window mode](https://gaming.stackexchange.com/a/376533) with 60FPS and low ping in mind.
 
 There are no plans to adapt it to other resolutions in the near future.
 
@@ -41,14 +37,14 @@ There are no plans to adapt it to other resolutions in the near future.
 - Hold `Space` to jump continuously.
   - Can be used to Bunnyhop (enter the sprinting mode and start jumping).
 - Hold `XButton2` to jump continuously too!
-  - Yes, I'm too lazy for `Spacebar`. Bunnyhop is possible as well.
+  - Yes, I'm too lazy for `Spacebar` (mouse walking-sprinting-jumping power!). Bunnyhop is possible as well.
   - Works with Waveriders.
-  - May be used to skip dialogues too, but in addition also auto picks up the latest dialogue choice.
+  - May be used to skip dialogues too, but in addition also auto picks up the mission option, if available, or the latest dialogue choice.
 - Hold `1-4` keys to switch characters.
   - I can not be the only one who have chosen the wrong character in the past, and had to rage spam my keyboard to get another character asap, right? RIGHT?!
 - Press `MMB` to toggle AutoWalk!
-  - Press `RMB` to toggle sprint while auto walking.
-  - `LShift` can be used for manual sprinting (useful to enter the sprinting mode and start Bunnyhopping).
+  - Press `RMB` to toggle sprint while auto walking. Hold `RMB` to continiously run instead of dashing (useful to start Bunnyhopping).
+  - `LShift` can be used too for manual sprinting.
 - Press `H` to toggle Vision!
   - Makes it much easier, less annoying, and had to be done since `MMB` was changed.
 - Hold `V` to auto attack!
@@ -63,12 +59,12 @@ There are no plans to adapt it to other resolutions in the near future.
 
 ### ✨ Minor (possibly useful) additions
 - Press `MMB` to:
-  - Quickly buy max of a current item in the tea pot shop.
   - Select and craft max ores (or other things in Blacksmith's menu).
-  - Lock/Unlock artifact or weapon.
+  - Obtain crafted item.
+  - Lock/Unlock an artifact or a weapon.
   - Toggle «Auto-Play Story» mode in dialogue.
 - Press `XButton1` to quickly purchase items from the shop.
-  - Press `XButton2` to purchase items continuously, mainly for weapons or artifacts. Press again to stop.
+  - Press `XButton2` to purchase items continuously. Press again to stop.
 - `Numpad -` + `Numpad 1-4` to change current party.
 - `Numpad -` + `Numpad 5` to go to the Serenitea Pot (via gadget).
 - `Numpad -` + `Numpad 6` to receive and resend expeditions (use GUI to configure),

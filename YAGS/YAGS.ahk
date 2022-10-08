@@ -2,42 +2,304 @@
 ; YetAnotherGenshinScript
 ; 				~SoSeDiK's Edition
 ; =======================================
+#Requires AutoHotkey v2.0-beta
 
 #SingleInstance Force
-#Include "data\scripts\Libs.ahk"
 
-TraySetIcon "data\genicon.ico", , 1
+TraySetIcon "data\graphics\genicon.ico", , 1
+A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
+Thread "interrupt", 0 ; Make all threads always-interruptible
+
+ScriptVersion := "1.0.0-Beta"
 
 
 
-; Rerun script with the administrator rights if required
-If !A_IsAdmin {
+; Rerun script with the administrator privileges if required
+If (not A_IsAdmin) {
 	Try {
 		Run '*RunAs "' A_ScriptFullPath '"'
 	} Catch {
-		MsgBox "Failed to run the script with administrator rights"
-		ExitApp
+		MsgBox "Failed to run the script with administrator privileges"
 	}
+	ExitApp
 }
 
 
 
-Global QuickPickupBindingsEnabled := True
-Global QuickShopBindingsEnabled := True
-Global MapBindingsEnabled := True
-Global AutoFisinghBindingsEnabled := True
-Global GameScreenBindingsEnabled := True
 
 
+; Static variables
+Global GameProcessName := "ahk_exe GenshinImpact.exe"
+
+Global LightMenuColor := "0xECE5D8"
+
+
+
+Global ScriptEnabled := False
+
+
+
+Global AutoWalkEnabled := GetSetting("AutoWalk", True)
+Global AutoWalkBindingsEnabled := False
+
+Global SimplifiedJumpEnabled := GetSetting("SimplifiedJump", True)
+Global SimplifiedJumpBindingsEnabled := False
+
+Global QuickPickupEnabled := GetSetting("QuickPickup", True)
+Global QuickPickupBindingsEnabled := False
+
+Global SimplifiedCombatEnabled := GetSetting("SimplifiedCombat", True)
+Global SimplifiedCombatBindingsEnabled := False
+
+Global DialogueSkippingEnabled := GetSetting("DialogueSkipping", True)
+Global DialogueSkippingBindingsEnabled := False
+
+Global BetterCharacterSwitchEnabled := GetSetting("BetterCharacterSwitch", True)
+Global BetterCharacterSwitchBindingsEnabled := False
 
 Global AutoPickupEnabled := GetSetting("AutoPickup", True)
-Global AutoPickupBindingsEnabled := AutoPickupEnabled
+Global AutoPickupBindingsEnabled := False
+
 Global AutoUnfreezeEnabled := GetSetting("AutoUnfreeze", True)
-Global AutoUnfreezeBindingsEnabled := AutoUnfreezeEnabled
+Global AutoUnfreezeBindingsEnabled := False
+
+Global AlternateVisionEnabled := GetSetting("AlternateVision", True)
+Global AlternateVisionBindingsEnabled := False
+
+Global BetterMapClickEnabled := GetSetting("BetterMapClick", True)
+Global BetterMapClickBindingsEnabled := False
+
+Global QuickPartySwitchEnabled := GetSetting("QuickPartySwitch", True)
+Global QuickPartySwitchBindingsEnabled := False
+
+Global QuickShopBuyingEnabled := GetSetting("QuickShopBuying", True)
+Global QuickShopBindingsEnabled := False
+
+Global ClockManagementEnabled := GetSetting("ClockManagement", True)
+Global ClockManagementBindingsEnabled := False
+
+Global SendExpeditionsEnabled := GetSetting("SendExpeditions", True)
+Global SendExpeditionsBindingsEnabled := False
+
+Global SereniteaPotEnabled := GetSetting("SereniteaPot", True)
+Global SereniteaPotBindingsEnabled := False
+
+Global ReceiveBPRewardsEnabled := GetSetting("ReceiveBPRewards", True)
+Global ReceiveBPRewardsBindingsEnabled := False
+
+Global ReloginEnabled := GetSetting("Relogin", True)
+Global ReloginBindingsEnabled := False
+
+Global AutoAttackEnabled := GetSetting("AutoAttack", True)
+Global AutoAttackBindingsEnabled := False
+
 Global AutoFishEnabled := GetSetting("AutoFish", True)
-Global AutoFishBindingsEnabled := AutoFishEnabled
-Global EasierCombatEnabled := GetSetting("EasierCombat", True)
-Global EasierCombatBindingsEnabled := EasierCombatEnabled
+Global AutoFishBindingsEnabled := False
+
+
+
+
+
+; =======================================
+; Configure GUI
+; =======================================
+Global ScriptGui := Gui()
+SetupGui()
+SetupGui() {
+	Global
+	ScriptGui.BackColor := "F9F1F0"
+
+	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
+	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w469 h277", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("About")])
+
+
+	ScriptGuiTabs.UseTab(1)
+
+	ScriptGui.Add("GroupBox", "x8 y25 w250 h100", Langed("Tasks"))
+	ScriptGui.Add("Checkbox", "vAutoPickup x15 y45 " (AutoPickupEnabled ? "Checked" : ""), Langed("AutoPickup", "Auto pickup items"))
+	ScriptGui["AutoPickup"].OnEvent("Click", ToggleFeature.Bind(&AutoPickupEnabled, "AutoPickup"))
+	ScriptGui.Add("Checkbox", "vAutoUnfreeze " (AutoUnfreezeEnabled ? "Checked" : ""), Langed("AutoUnfreeze", "Auto unfreeze/unbubble"))
+	ScriptGui["AutoUnfreeze"].OnEvent("Click", ToggleFeature.Bind(&AutoUnfreezeEnabled, "AutoUnfreeze"))
+	ScriptGui.Add("Checkbox", "vAutoFish " (AutoFishEnabled ? "Checked" : ""), Langed("AutoFish", "Auto fishing"))
+	ScriptGui["AutoFish"].OnEvent("Click", ToggleFeature.Bind(&AutoFishEnabled, "AutoFish"))
+	ScriptGui.Add("Checkbox", "vSimplifiedCombat " (SimplifiedCombatEnabled ? "Checked" : ""), Langed("SimplifiedCombat", "Lazy combat mode"))
+	ScriptGui["SimplifiedCombat"].OnEvent("Click", ToggleFeature.Bind(&SimplifiedCombatEnabled, "SimplifiedCombat"))
+
+	ScriptGui.Add("GroupBox", "x8 y130 w250 h60", Langed("Options"))
+	ScriptGui.Add("Checkbox", "vSwapSideMouseButtons x15 y150 " (GetSetting("SwapSideMouseButtons", False) ? "Checked" : ""), Langed("SwapSideMouseButtons", "Swap side mouse buttons"))
+	ScriptGui["SwapSideMouseButtons"].OnEvent("Click", SwapSideMouseButtons)
+
+	; Venti picture
+	ScriptGui.Add("Picture", "x250 y23 w223 h270 +BackgroundTrans", "data\graphics\Venti.png")
+
+	; Language settings
+	ScriptGui.Add("GroupBox", "x8 y230 w65 h43", Langed("Language", "English"))
+	ScriptGui.Add("Picture", "x14 y245 w24 h24 +BackgroundTrans", "data\graphics\lang_en.png").OnEvent("Click", UpdateLanguage.Bind("en"))
+	ScriptGui.Add("Picture", "x42 y245 w24 h24 +BackgroundTrans", "data\graphics\lang_ru.png").OnEvent("Click", UpdateLanguage.Bind("ru"))
+
+	; Links
+	ScriptGuiTabs.UseTab(2)
+
+	Loop (3) {
+		X := 8 + 152 * (A_Index - 1)
+		ScriptGui.Add("GroupBox", "y24 w147 h244 x" X, Langed("LinksTab" A_Index))
+		Links := IniRead("data\links.ini", "LinksTab" A_Index)
+		Links := StrSplit(Links, "`n")
+		X := 16 + X
+		Loop (Links.Length) {
+			Data := StrSplit(Links[A_Index], "=")
+			LinkName := Data[1]
+			Link := Data[2]
+			Y := 24 + 24 * A_Index
+			Options := "w120 h23 x" X " y" Y
+			ScriptGui.Add("Link", Options, '<a href="' Link '">' LinkName '</a>')
+		}
+	}
+
+	; Expeditions
+	ScriptGuiTabs.UseTab(3)
+
+	ScriptGui.Add("GroupBox", "x8 y24 w315 h150", Langed("ExpeditionsTab", "Expedition, Duration, Character Number In List"))
+
+	Expeditions := Array()
+	Expeditions.Push({Types: "", Id: "DoNotSend"})
+	; 💎 Ores
+	Expeditions.Push({Types: "💎🪨", Id: "WhisperingWoodsExpedition"})		; Mondstandt
+	Expeditions.Push({Types: "💎🪨", Id: "DadaupaGorgeExpedition"})			; Mondstandt
+	Expeditions.Push({Types: "💎🪨", Id: "YaoguangShoalExpedition"})		; Liyue
+	; 💰 Mora
+	Expeditions.Push({Types: "💰🪙", Id: "StormterrorLairExpedition"})		; Mondstandt
+	Expeditions.Push({Types: "💰🪙", Id: "JueyunKarstExpedition"})			; Liyue
+	Expeditions.Push({Types: "💰🪙", Id: "GuiliPlainsExpedition"})			; Liyue
+	Expeditions.Push({Types: "💰🪙", Id: "TatarasunaExpedition"})			; Inazuma
+	Expeditions.Push({Types: "💰🪙", Id: "JinrenIslandExpedition"})			; Inazuma
+	Expeditions.Push({Types: "💰🪙", Id: "ArdraviValleyExpedition"})		; Sumeru
+	; 🥩 Meat
+	Expeditions.Push({Types: "🥩🍗", Id: "WindriseExpedition"})				; Mondstandt
+	Expeditions.Push({Types: "🥩🥚", Id: "MusoujinGorgeExpedition"})		; Inazuma
+	; 🥕 Vegetables / Fruits
+	Expeditions.Push({Types: "🥕🥕", Id: "WolvendomExpedition"})			; Mondstandt
+	Expeditions.Push({Types: "🥕🥕", Id: "GuyunStoneForestExpedition"})		; Liyue
+	Expeditions.Push({Types: "🥕🥕", Id: "KondaVillageExpedition"})			; Inazuma
+	Expeditions.Push({Types: "🥕🥕", Id: "ChinvatRavineExpedition"})		; Sumeru
+	; 📜 Mixed
+	Expeditions.Push({Types: "🌷🥚", Id: "StormbearerMountainsExpedition"})	; Mondstandt
+	Expeditions.Push({Types: "🌷🌷", Id: "DihuaMarshExpedition"})			; Liyue
+	Expeditions.Push({Types: "🪷🍄", Id: "DunyuRuinsExpedition"})			; Liyue
+	Expeditions.Push({Types: "🍗🌾", Id: "NazuchiBeachExpedition"})			; Inazuma
+	Expeditions.Push({Types: "🌷🍑", Id: "ByakkoPlainExpedition"})			; Inazuma
+	Expeditions.Push({Types: "🥚🍑", Id: "AshavanRealmExpedition"})			; Sumeru
+	Expeditions.Push({Types: "🍄🍄", Id: "ChatrakamCaveExpedition"})		; Sumeru
+	Expeditions.Push({Types: "🍑🌰", Id: "AvidyaForestExpedition"})			; Sumeru
+	Expeditions.Push({Types: "🌷🍎", Id: "MawtiyimaForestExpedition"})		; Sumeru
+
+	Durations := ["4", "8", "12", "20"]
+	DurationsH := ["4h", "8h", "12h", "20h"]
+
+	Loop (5) {
+		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
+		If (Expedition == "")
+			Expedition := ",,"
+		Else
+			Expedition := StrSplit(Expedition, ",")
+
+		CharacterNumberInList := Integer(Expedition[3])
+
+		Duration := Expedition[2]
+		For (Index, Value in Durations) {
+			If (Duration == Value) {
+				Duration := Index
+				Break
+			}
+		}
+
+		Expedition := Expedition[1]
+		ExpeditionNum := 1
+
+		ExpeditionsDisplay := Array()
+		For (Index, Value in Expeditions) {
+			ExpeditionId := Value.Id
+			If (Expedition == ExpeditionId)
+				ExpeditionNum := Index
+			ExpeditionDisplay := Value.Types " " Langed(ExpeditionId)
+			ExpeditionsDisplay.Push(ExpeditionDisplay)
+		}
+
+		Y := 20 + 25 * A_Index
+		Exped := ScriptGui.Add("DropDownList", "vExpedition" A_Index " x16 w180 Choose" ExpeditionNum " y" Y, ExpeditionsDisplay)
+		Exped.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
+
+		Durat := ScriptGui.Add("DropDownList", "vDuration" A_Index " x205 w50 Choose" Duration "h y" Y, DurationsH)
+		Durat.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
+
+		Chars := ScriptGui.Add("Edit", "x265 y45 w50" " y" Y)
+		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
+		Chars := ScriptGui.Add("UpDown", "vCharacters" A_Index " Range1-30", CharacterNumberInList)
+		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
+	}
+
+	; Footer
+	ScriptGuiTabs.UseTab()
+
+	ScriptGui.Add("Text", "x20 y295", Langed("Wish") "       ").SetFont("bold")
+	HideButton := ScriptGui.Add("Button", "x330 y280 w70 h35", Langed("Hide", "Hide to tray"))
+	HideButton.OnEvent("Click", ButtonHide)
+	QuitButton := ScriptGui.Add("Button", "x410 y280 w55 h35", Langed("Quit"))
+	QuitButton.OnEvent("Click", ButtonQuit)
+
+
+	ShowGui()
+}
+
+ButtonHide(*) {
+	ScriptGui.Hide()
+}
+
+ButtonQuit(*) {
+	CloseYAGS()
+}
+
+ShowGui(*) {
+	ScriptGui.Show()
+}
+
+UpdateLanguage(Lang, *) {
+	Global
+	If (Lang == GetSetting("Language", "en"))
+		Return
+	UpdateSetting("Language", Lang)
+	ScriptGui.GetPos(&X, &Y)
+	XN := X
+	YN := Y
+	ScriptGui.Destroy()
+	ScriptGui := Gui()
+	SetupGui()
+	SetupTray()
+	ScriptGui.Move(XN, YN)
+}
+
+UpdateExpeditions(Expeditions, ExpeditionNum, *) {
+	ExpeditionName := Expeditions[ScriptGui["Expedition" ExpeditionNum].Value].Id
+	Duration := SubStr(ScriptGui["Duration" ExpeditionNum].Text, -1)
+	CharacterNumberInList := ScriptGui["Characters" ExpeditionNum].Value
+	IniWrite ExpeditionName "," Duration "," CharacterNumberInList, GetExpeditions(), "Expeditions", "Expedition" ExpeditionNum
+}
+
+ToggleFeature(&Feature, FeatureName, *) {
+	Global
+	Feature := ScriptGui[FeatureName].Value
+	UpdateSetting(FeatureName, Feature)
+}
+
+SwapSideMouseButtons(*) {
+	; ToDo
+	UpdateSetting("SwapSideMouseButtons", ScriptGui["SwapSideMouseButtons"].Value)
+	;UpdateScriptState("QuickShopBuying", 3)
+	;UpdateScriptState("SimpleJump", 3)
+	;UpdateScriptState("QuickPickup", 3)
+}
+
+
 
 
 
@@ -55,389 +317,2446 @@ SetupTray() {
 }
 
 
-; =======================================
-; Configure GUI
-; =======================================
-Global ScriptGui := Gui()
-
-SetupGui()
-SetupGui() {
-	Global
-	ScriptGui.BackColor := "F9F1F0"
-
-	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script")
-	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w469 h277", [Langed("Settings"), Langed("Links"), Langed("Expeditions")])
-
-
-	ScriptGuiTabs.UseTab(1)
-
-	ScriptGui.Add("GroupBox", "x8 y25 w250 h100", Langed("Tasks"))
-	ScriptGui.Add("Checkbox", "vAutoPickup x15 y45 " (AutoPickupEnabled ? "Checked" : ""), Langed("AutoPickup", "Auto pickup items"))
-	ScriptGui["AutoPickup"].OnEvent("Click", ToggleFeature.Bind(&AutoPickupEnabled, &AutoPickupBindingsEnabled, "AutoPickup"))
-	ScriptGui.Add("Checkbox", "vAutoUnfreeze " (AutoUnfreezeEnabled ? "Checked" : ""), Langed("AutoUnfreeze", "Auto unfreeze/unbubble"))
-	ScriptGui["AutoUnfreeze"].OnEvent("Click", ToggleFeature.Bind(&AutoUnfreezeEnabled, &AutoUnfreezeBindingsEnabled, "AutoUnfreeze"))
-	ScriptGui.Add("Checkbox", "vAutoFish " (AutoFishEnabled ? "Checked" : ""), Langed("AutoFish", "Auto fishing"))
-	ScriptGui["AutoFish"].OnEvent("Click", ToggleFeature.Bind(&AutoFishEnabled, &AutoFishBindingsEnabled, "AutoFish"))
-	ScriptGui.Add("Checkbox", "vEasierCombat " (EasierCombatEnabled ? "Checked" : ""), Langed("EasierCombat", "Lazy combat mode"))
-	ScriptGui["EasierCombat"].OnEvent("Click", ToggleFeature.Bind(&EasierCombatEnabled, &EasierCombatBindingsEnabled, "EasierCombat"))
-
-	ScriptGui.Add("GroupBox", "x8 y130 w250 h60", Langed("Options"))
-	ScriptGui.Add("Checkbox", "vSwapSideMouseButtons x15 y150 " (GetSetting("SwapSideMouseButtons", "0") ? "Checked" : ""), Langed("SwapSideMouseButtons", "Swap side mouse buttons"))
-	ScriptGui["SwapSideMouseButtons"].OnEvent("Click", SwapSideMouseButtons)
-
-	ScriptGui.Add("Picture", "x235 y26 w242 h246 +BackgroundTrans", "data\Venti.png")
-
-	ScriptGui.Add("GroupBox", "x8 y230 w65 h43", Langed("Language", "English"))
-	ScriptGui.Add("Picture", "x14 y245 w24 h24 +BackgroundTrans", "data\lang_en.png").OnEvent("Click", UpdateLanguage.Bind("en"))
-	ScriptGui.Add("Picture", "x42 y245 w24 h24 +BackgroundTrans", "data\lang_ru.png").OnEvent("Click", UpdateLanguage.Bind("ru"))
-
-
-	ScriptGuiTabs.UseTab(2)
-
-	Loop 3 {
-		X := 8 + 152 * (A_Index - 1)
-		ScriptGui.Add("GroupBox", "y24 w147 h244 x" X, Langed("LinksTab" A_Index))
-		Links := IniRead("data\links.ini", "LinksTab" A_Index)
-		Links := StrSplit(Links, "`n")
-		X := 16 + X
-		Loop Links.Length {
-			Data := StrSplit(Links[A_Index], "=")
-			LinkName := Data[1]
-			Link := Data[2]
-			Y := 24 + 24 * A_Index
-			Options := "w120 h23 x" X " y" Y
-			ScriptGui.Add("Link", Options, '<a href="' Link '">' LinkName '</a>')
-		}
-	}
-
-	ScriptGuiTabs.UseTab(3)
-
-	ScriptGui.Add("GroupBox", "x8 y24 w315 h150", Langed("ExpeditionsTab", "Expedition, Duration, Character Number In List"))
-
-	Expeditions := Array()
-	Expeditions.Push("DoNotSend")
-	Expeditions.Push("WhisperingWoodsExpedition")
-	Expeditions.Push("DadaupaGorgeExpedition")
-	Expeditions.Push("YaoguangShoalExpedition")
-	Expeditions.Push("StormterrorLairExpedition")
-	Expeditions.Push("DihuaMarshExpedition")
-	Expeditions.Push("JueyunKarstExpedition")
-	Expeditions.Push("JinrenIslandExpedition")
-	Expeditions.Push("TatarasunaExpedition")
-	Expeditions.Push("WindriseExpedition")
-	Expeditions.Push("MusoujinGorgeExpedition")
-	Expeditions.Push("WolvendomExpedition")
-	Expeditions.Push("GuyunStoneForestExpedition")
-	Expeditions.Push("KondaVillageExpedition")
-	Expeditions.Push("StormbearerMountainsExpedition")
-	Expeditions.Push("ByakkoPlainExpedition")
-	Expeditions.Push("GuiliPlainsExpedition")
-	Expeditions.Push("DunyuRuinsExpedition")
-	Expeditions.Push("NazuchiBeachExpedition")
-
-	Durations := ["4H", "8H", "12H", "20H"]
-
-	Loop 5 {
-		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
-		If (Expedition = "")
-			Expedition := ",,"
-		Else
-			Expedition := StrSplit(Expedition, ",")
-
-		CharacterNumberInList := Integer(Expedition[3])
-
-		Duration := Expedition[2]
-		For Index, Value in Durations {
-			If (Duration = Value) {
-				Duration := Index
-				Break
-			}
-		}
-
-		Expedition := Expedition[1]
-		ExpeditionNum := 1
-
-		ExpeditionsDisplay := Array()
-		For Index, Value in Expeditions {
-			If (Expedition = Value)
-				ExpeditionNum := Index
-			If (Index = 1)
-				ExpeditionsDisplay.Push(Langed(Value, Value))
-			Else If (Index < 5)
-				ExpeditionsDisplay.Push("💎 " Langed(Value, Value))
-			Else If (Index < 10)
-				ExpeditionsDisplay.Push("💰 " Langed(Value, Value))
-			Else If (Index < 12)
-				ExpeditionsDisplay.Push("🥩 " Langed(Value, Value))
-			Else If (Index < 15)
-				ExpeditionsDisplay.Push("🥕 " Langed(Value, Value))
-			Else If (Index < 17)
-				ExpeditionsDisplay.Push("🌷 " Langed(Value, Value))
-			Else If (Index < 19)
-				ExpeditionsDisplay.Push("🌸 " Langed(Value, Value))
-			Else
-				ExpeditionsDisplay.Push("📜 " Langed(Value, Value))
-		}
-
-		Y := 20 + 25 * A_Index
-		Exped := ScriptGui.Add("DropDownList", "vExpedition" A_Index " x16 w180 Choose" ExpeditionNum " y" Y, ExpeditionsDisplay)
-		Exped.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-
-		Durat := ScriptGui.Add("DropDownList", "vDuration" A_Index " x205 w50 Choose" Duration " y" Y, Durations)
-		Durat.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-
-		Chars := ScriptGui.Add("Edit", "x265 y45 w50" " y" Y)
-		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-		Chars := ScriptGui.Add("UpDown", "vCharacters" A_Index " Range1-30", CharacterNumberInList)
-		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-	}
-
-
-	ScriptGuiTabs.UseTab()
-
-	ScriptGui.Add("Text", "x20 y295", Langed("Wish") "       ").SetFont("bold")
-	HideButton := ScriptGui.Add("Button", "x330 y280 w70 h35", Langed("Hide", "Hide to tray"))
-	HideButton.OnEvent("Click", ButtonHide)
-	QuitButton := ScriptGui.Add("Button", "x410 y280 w55 h35", Langed("Quit"))
-	QuitButton.OnEvent("Click", ButtonQuit)
-
-
-	ScriptGui.Show()
-}
-
-ToggleFeature(&Feature, &FeatureBinding, FeatureName, *) {
-	Global
-	Feature := ScriptGui[FeatureName].Value
-	UpdateSetting(FeatureName, Feature)
-	If not Feature {
-		FeatureBinding := False
-		UpdateScriptState(FeatureName, 0)
-	}
-}
-
-SwapSideMouseButtons(*) {
-	UpdateSetting("SwapSideMouseButtons", ScriptGui["SwapSideMouseButtons"].Value)
-	UpdateScriptState("QuickShopBuying", 3)
-	UpdateScriptState("SimpleJump", 3)
-	UpdateScriptState("QuickPickup", 3)
-}
-
-UpdateExpeditions(Expeditions, ExpeditionNum, *) {
-	ExpeditionName := Expeditions[ScriptGui["Expedition" ExpeditionNum].Value]
-	Duration := ScriptGui["Duration" ExpeditionNum].Text
-	CharacterNumberInList := ScriptGui["Characters" ExpeditionNum].Value
-	IniWrite ExpeditionName "," Duration "," CharacterNumberInList, GetExpeditions(), "Expeditions", "Expedition" ExpeditionNum
-}
-
-UpdateLanguage(Lang, *) {
-	Global
-	If (Lang = GetSetting("Language", "en"))
-		Return
-	UpdateSetting("Language", Lang)
-	ScriptGui.GetPos(&X, &Y)
-	XN := X
-	YN := Y
-	ScriptGui.Destroy()
-	ScriptGui := Gui()
-	SetupGui()
-	SetupTray()
-	ScriptGui.Move(XN, YN)
-}
 
 
 
 ; =======================================
-; Run tasks
+; Configure Tasks
 ; =======================================
-ScriptsDir := A_ScriptDir "\data\scripts\"
-Run '*RunAs "' ScriptsDir 	'AutoWalk' 				'.ahk"', , , &AutoWalkThread
-Run '*RunAs "' ScriptsDir 	'QuickShopBuying' 		'.ahk"', , , &QuickShopBuyingThread
-Run '*RunAs "' ScriptsDir 	'QuickActions' 			'.ahk"', , , &QuickActionsThread
-Run '*RunAs "' ScriptsDir 	'TimeSkip' 				'.ahk"', , , &TimeSkipThread
-Run '*RunAs "' ScriptsDir 	'BetterMapClick' 		'.ahk"', , , &BetterMapClickThread
-Run '*RunAs "' ScriptsDir 	'BetterCharacterSwitch' '.ahk"', , , &BetterCharacterSwitchThread
-Run '*RunAs "' ScriptsDir 	'QuickPartySwitch' 		'.ahk"', , , &QuickPartySwitchThread
-Run '*RunAs "' ScriptsDir 	'QuickPickup' 			'.ahk"', , , &QuickPickupThread
-Run '*RunAs "' ScriptsDir 	'SimpleJump' 			'.ahk"', , , &SimpleJumpThread
-Run '*RunAs "' ScriptsDir 	'EasierCombat' 			'.ahk"', , , &EasierCombatThread
-Run '*RunAs "' ScriptsDir 	'AutoPickup' 			'.ahk"', , , &AutoPickupThread
-Run '*RunAs "' ScriptsDir 	'AutoUnfreeze' 			'.ahk"', , , &AutoUnfreezeThread
-Run '*RunAs "' ScriptsDir 	'AlternateVision' 		'.ahk"', , , &AlternateVisionThread
-Run '*RunAs "' ScriptsDir 	'AutoFish' 				'.ahk"', , , &AutoFishThread
-Run '*RunAs "' ScriptsDir 	'AutoAttackMode' 		'.ahk"', , , &AutoAttackModeThread
-
-; Lazy workaround for when the user reruns the script multiple times without closing it first
-Sleep 300
-
-If not AutoPickupEnabled
-	UpdateScriptState("AutoPickup", 0)
-If not AutoUnfreezeEnabled
-	UpdateScriptState("AutoUnfreeze", 0)
-If not AutoFishEnabled
-	UpdateScriptState("AutoFish", 0)
-If not EasierCombatEnabled
-	UpdateScriptState("EasierCombat", 0)
-
 SetTimer SuspendOnGameInactive, -1
 
-
-
-ConfigureContextualBindings() {
-	Global
-	FullScreenMenu := IsFullScreenMenuOpen()
-	MapMenu := FullScreenMenu and PixelGetColor(27, 427) = "0xEDE5DA" ; Resin "+" symbol
-	GameScreen := not FullScreenMenu and IsGameScreen()
-	DialogueActive:= not FullScreenMenu and not GameScreen and IsDialogueScreen()
-	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and PixelGetColor(1855, 45) != "0xECE5D8" and PixelGetColor(1292, 778) != "0x4A5366") ; "X" button in menus and "Purchase" dialogue
-	FishingActive := GameScreen and PixelGetColor(1626, 1029) = "0xFFE92C" ; Is 3rd action icon bound to LMB
-	
-	If (MapBindingsEnabled and not MapMenu) {
-		UpdateScriptState("BetterMapClick", 0)
-		MapBindingsEnabled := False
-	} Else If (not MapBindingsEnabled and MapMenu) {
-		UpdateScriptState("BetterMapClick", 1)
-		MapBindingsEnabled := True
-	}
-	
-	If AutoFishEnabled {
-		If (not AutoFisinghBindingsEnabled and FishingActive) {
-			UpdateScriptState("AutoFish", 1)
-			AutoFisinghBindingsEnabled := True
-		} Else If (AutoFisinghBindingsEnabled and not FishingActive) {
-			UpdateScriptState("AutoFish", 0)
-			AutoFisinghBindingsEnabled := False
-		}
-	}
-	
-	If AutoPickupEnabled {
-		If (not AutoPickupBindingsEnabled and GameScreen and not FishingActive) {
-			UpdateScriptState("AutoPickup", 1)
-			AutoPickupBindingsEnabled := True
-		} Else If (AutoPickupBindingsEnabled and (not GameScreen or FishingActive)) {
-			UpdateScriptState("AutoPickup", 0)
-			AutoPickupBindingsEnabled := False
-		}
-	}
-	
-	If AutoUnfreezeEnabled {
-		If (not AutoUnfreezeBindingsEnabled and GameScreen) {
-			UpdateScriptState("AutoUnfreeze", 1)
-			AutoUnfreezeBindingsEnabled := True
-		} Else If (AutoUnfreezeBindingsEnabled and not GameScreen) {
-			UpdateScriptState("AutoUnfreeze", 0)
-			AutoUnfreezeBindingsEnabled := False
-		}
-	}
-	
-	If EasierCombatEnabled {
-		If (not EasierCombatBindingsEnabled and GameScreen and not FishingActive) {
-			UpdateScriptState("EasierCombat", 1)
-			EasierCombatBindingsEnabled := True
-		} Else If (EasierCombatBindingsEnabled and (not GameScreen or FishingActive)) {
-			UpdateScriptState("EasierCombat", 0)
-			EasierCombatBindingsEnabled := False
-		}
-	}
-	
-	If (not GameScreenBindingsEnabled and GameScreen) {
-		UpdateScriptState("AutoWalk", 1)
-		UpdateScriptState("AlternateVision", 1)
-		UpdateScriptState("AutoAttackMode", 1)
-		UpdateScriptState("BetterCharacterSwitch", 1)
-		GameScreenBindingsEnabled := True
-	} Else If (GameScreenBindingsEnabled and not GameScreen) {
-		UpdateScriptState("AutoWalk", 0)
-		UpdateScriptState("AlternateVision", 0)
-		UpdateScriptState("AutoAttackMode", 0)
-		UpdateScriptState("BetterCharacterSwitch", 0)
-		GameScreenBindingsEnabled := False
-	}
-	
-	If (not QuickPickupBindingsEnabled and (GameScreen or DialogueActive)) {
-		UpdateScriptState("QuickPickup", 1)
-		QuickPickupBindingsEnabled := True
-	} Else If (QuickPickupBindingsEnabled and (not GameScreen and not DialogueActive)) {
-		UpdateScriptState("QuickPickup", 0)
-		QuickPickupBindingsEnabled := False
-	}
-	
-	If (not QuickShopBindingsEnabled and (GameScreen or DialogueActiveOrNotShop)) {
-		UpdateScriptState("QuickShopBuying", 0)
-		QuickShopBindingsEnabled := True
-	} Else If (QuickShopBindingsEnabled and (not GameScreen and not DialogueActiveOrNotShop)) {
-		UpdateScriptState("QuickShopBuying", 1)
-		QuickShopBindingsEnabled := False
-	}
-}
-
-
-
 SuspendOnGameInactive() {
-	ResetScripts()
 	Loop {
 		WinWaitActive GameProcessName
+		ScriptEnabled := True
+		EnableGlobalHotkeys()
+		ConfigureContextualBindings()
 		SetTimer ConfigureContextualBindings, 250
 
 		WinWaitNotActive GameProcessName
+		ScriptEnabled := False
+		DisableGlobalHotkeys()
 		SetTimer ConfigureContextualBindings, 0
 		ResetScripts()
 	}
 }
 
 ResetScripts() {
+	DisableFeatureAutoWalk()
+	DisableFeatureSimplifiedJump()
+	DisableFeatureDialogueSkipping()
+	DisableFeatureQuickPickup()
+	DisableFeatureSimplifiedCombat()
+	DisableFeatureBetterCharacterSwitch()
+	DisableFeatureAutoPickup()
+	DisableFeatureAutoUnfreeze()
+	DisableFeatureAlternateVision()
+	DisableFeatureBetterMapClick()
+	DisableFeatureQuickPartySwitch()
+	DisableFeatureQuickShopBuying()
+	DisableFeatureClockManagement()
+	DisableFeatureSendExpeditions()
+	DisableFeatureSereniteaPot()
+	DisableFeatureReceiveBPRewards()
+	DisableFeatureRelogin()
+	DisableFeatureAutoAttack()
+}
+
+; Some keys are bound to multiple actions
+; and due to lag we cannot perfectly switch between them separately
+; via Enable/Disable Feature methods
+EnableGlobalHotkeys() {
+	Hotkey "*MButton", TriggerMButtonBindings, "On"
+
+	Mapping := GetSetting("SwapSideMouseButtons", False)
+	XButtonF := Mapping ? "XButton1" : "XButton2"
+	XButtonS := Mapping ? "XButton2" : "XButton1"
+	Hotkey "*" XButtonF, TriggerXButton1Bindings, "On"
+	Hotkey "*" XButtonF " Up", TriggerXButton1BindingsUp, "On"
+	Hotkey "*" XButtonS, TriggerXButton2Bindings, "On"
+	Hotkey "*" XButtonS " Up", TriggerXButton2BindingsUp, "On"
+}
+
+DisableGlobalHotkeys() {
+	Hotkey "*MButton", TriggerMButtonBindings, "Off"
+
+	Mapping := GetSetting("SwapSideMouseButtons", False)
+	XButtonF := Mapping ? "XButton1" : "XButton2"
+	XButtonS := Mapping ? "XButton2" : "XButton1"
+	Hotkey "*" XButtonF, TriggerXButton1Bindings, "Off"
+	Hotkey "*" XButtonF " Up", TriggerXButton1BindingsUp, "Off"
+	Hotkey "*" XButtonS, TriggerXButton2Bindings, "Off"
+	Hotkey "*" XButtonS " Up", TriggerXButton2BindingsUp, "Off"
+}
+
+TriggerMButtonBindings(*) {
+	If (AutoWalkBindingsEnabled)
+		PressedMButtonToAutoWalk()
+	Else If (BetterMapClickBindingsEnabled)
+		PressedMButtonToTP()
+	Else
+		PerformInventoryActions()
+}
+
+TriggerXButton1Bindings(*) {
+	If (SimplifiedJumpBindingsEnabled)
+		XButtonJump()
+	If (DialogueSkippingBindingsEnabled)
+		XButtonSkipDialogue()
+	If (QuickShopBindingsEnabled)
+		BuyAll()
+}
+
+TriggerXButton1BindingsUp(*) {
+	If (SimplifiedJumpBindingsEnabled)
+		XButtonJumpUp()
+	If (DialogueSkippingBindingsEnabled)
+		XButtonSkipDialogueUp()
+}
+
+TriggerXButton2Bindings(*) {
+	If (QuickPickupBindingsEnabled)
+		XButtonPickup()
+	If (QuickShopBindingsEnabled)
+		BuyOnce()
+}
+
+TriggerXButton2BindingsUp(*) {
+	If (QuickPickupBindingsEnabled)
+		XButtonPickupUp()
+}
+
+ConfigureContextualBindings() {
 	Global
-	UpdateScriptState("AutoPickup", 0)
+	FullScreenMenu := IsFullScreenMenuOpen()
+	MapMenu := FullScreenMenu and PixelGetColor(27, 427) == "0xEDE5DA" ; Resin "+" symbol
+	GameScreen := not FullScreenMenu and IsGameScreen()
+	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
+	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and PixelGetColor(1855, 45) != "0xECE5D8" and PixelGetColor(1292, 778) != "0x4A5366") ; "X" button in menus and "Purchase" dialogue
+	FishingActive := False and GameScreen and PixelGetColor(1626, 1029) == "0xFFE92C" ; 3rd action icon bound to LMB ; needs changing, LMB is also present while flying
+	PlayScreen := GameScreen and not FishingActive
+
+	If (AutoWalkEnabled) {
+		If (not AutoWalkBindingsEnabled and PlayScreen) {
+			EnableFeatureAutoWalk()
+		} Else If (AutoWalkBindingsEnabled and not PlayScreen) {
+			DisableFeatureAutoWalk()
+		}
+	}
+
+	If (SimplifiedJumpEnabled) {
+		If (not SimplifiedJumpBindingsEnabled and PlayScreen) {
+			EnableFeatureSimplifiedJump()
+		} Else If (SimplifiedJumpBindingsEnabled and not PlayScreen) {
+			DisableFeatureSimplifiedJump()
+		}
+	}
+
+	If (DialogueSkippingEnabled) {
+		If (not DialogueSkippingBindingsEnabled) {
+			EnableFeatureDialogueSkipping()
+		}
+	}
+
+	If (QuickPickupEnabled) {
+		If (not QuickPickupBindingsEnabled and (PlayScreen or DialogueActive)) {
+			EnableFeatureQuickPickup()
+		} Else If (QuickPickupBindingsEnabled and (not PlayScreen and not DialogueActive)) {
+			DisableFeatureQuickPickup()
+		}
+	}
+
+	If (SimplifiedCombatEnabled) {
+		If (not SimplifiedCombatBindingsEnabled and PlayScreen) {
+			EnableFeatureSimplifiedCombat()
+		} Else If (SimplifiedCombatBindingsEnabled and not PlayScreen) {
+			DisableFeatureSimplifiedCombat()
+		}
+	}
+
+	If (BetterCharacterSwitchEnabled) {
+		If (not BetterCharacterSwitchBindingsEnabled and PlayScreen) {
+			EnableFeatureBetterCharacterSwitch()
+		} Else If (BetterCharacterSwitchBindingsEnabled and not PlayScreen) {
+			DisableFeatureBetterCharacterSwitch()
+		}
+	}
+
+	If (AutoPickupEnabled) {
+		If (not AutoPickupBindingsEnabled and PlayScreen) {
+			EnableFeatureAutoPickup()
+		} Else If (AutoPickupBindingsEnabled and not PlayScreen) {
+			DisableFeatureAutoPickup()
+		}
+	}
+
+	If (AutoUnfreezeEnabled) {
+		If (not AutoUnfreezeBindingsEnabled and PlayScreen) {
+			EnableFeatureAutoUnfreeze()
+		} Else If (AutoUnfreezeBindingsEnabled and not PlayScreen) {
+			DisableFeatureAutoUnfreeze()
+		}
+	}
+
+	If (AlternateVisionEnabled) {
+		If (not AlternateVisionBindingsEnabled and PlayScreen) {
+			EnableFeatureAlternateVision()
+		} Else If (AlternateVisionBindingsEnabled and not PlayScreen) {
+			DisableFeatureAlternateVision()
+		}
+	}
+
+	If (BetterMapClickEnabled) {
+		If (not BetterMapClickBindingsEnabled and MapMenu) {
+			EnableFeatureBetterMapClick()
+		} Else If (BetterMapClickBindingsEnabled and not MapMenu) {
+			DisableFeatureBetterMapClick()
+		}
+	}
+
+	If (QuickPartySwitchEnabled) {
+		If (not QuickPartySwitchBindingsEnabled and PlayScreen) {
+			EnableFeatureQuickPartySwitch()
+		} Else If (QuickPartySwitchBindingsEnabled and not PlayScreen) {
+			DisableFeatureQuickPartySwitch()
+		}
+	}
+
+	If (QuickShopBuyingEnabled) {
+		If (not QuickShopBindingsEnabled and (not GameScreen and not DialogueActiveOrNotShop)) {
+			EnableFeatureQuickShopBuying()
+		} Else If (QuickShopBindingsEnabled and (GameScreen or DialogueActiveOrNotShop)) {
+			DisableFeatureQuickShopBuying()
+		}
+	}
+
+	If (ClockManagementEnabled) {
+		If (not ClockManagementBindingsEnabled and PlayScreen) {
+			EnableFeatureClockManagement()
+		} Else If (ClockManagementBindingsEnabled and not PlayScreen) {
+			DisableFeatureClockManagement()
+		}
+	}
+
+	If (SendExpeditionsEnabled) {
+		If (not SendExpeditionsBindingsEnabled) {
+			EnableFeatureSendExpeditions()
+		}
+	}
+
+	If (SereniteaPotEnabled) {
+		If (not SereniteaPotBindingsEnabled and PlayScreen) {
+			EnableFeatureSereniteaPot()
+		} Else If (SereniteaPotBindingsEnabled and not PlayScreen) {
+			DisableFeatureSereniteaPot()
+		}
+	}
+
+	If (ReceiveBPRewardsEnabled) {
+		If (not ReceiveBPRewardsBindingsEnabled) {
+			EnableFeatureReceiveBPRewards()
+		}
+	}
+
+	If (ReloginEnabled) {
+		If (not ReloginBindingsEnabled and PlayScreen) {
+			EnableFeatureRelogin()
+		} Else If (ReloginBindingsEnabled and not PlayScreen) {
+			DisableFeatureRelogin()
+		}
+	}
+
+	If (AutoAttackEnabled) {
+		If (not AutoAttackBindingsEnabled and PlayScreen) {
+			EnableFeatureAutoAttack()
+		} Else If (AutoAttackBindingsEnabled and not PlayScreen) {
+			DisableFeatureAutoAttack()
+		}
+	}
+}
+
+
+
+
+
+; =======================================
+; Auto Walk
+; =======================================
+Global AutoWalk := False
+Global AutoSprint := False
+
+Global PressingW := False
+Global PressingLShift := False
+Global PressingRMForSprint := False
+
+
+
+PressedW(*) {
+	Global
+	PressingW := True
+}
+
+UnpressedW(*) {
+	Global
+	PressingW := False
+}
+
+PressedLShift(*) {
+	Global
+	PressingLShift := True
+}
+
+UnpressedLShift(*) {
+	Global
+	PressingLShift := False
+}
+
+PressedMButtonToAutoWalk(*) {
+	ToggleAutoWalk()
+}
+
+PressedRMButton(*) {
+	Global
+	PressingRMForSprint := True
+	DoAutoSprint()
+}
+
+UnpressedRMButton(*) {
+	Global
+	PressingRMForSprint := False
+	ToggleAutoSprint()
+}
+
+
+
+DoAutoWalk() {
+	If (not PressingLShift)
+		Send "{w Down}"
+}
+
+DoAutoSprint() {
+	If (PressingRMForSprint or IsInBoat() or IsExtraRun()) {
+		Send "{LShift Down}"
+		Return
+	}
+	Send "{LShift Down}"
+	Sleep 150
+	Send "{LShift Up}"
+}
+
+ToggleAutoWalk() {
+	Global
+	AutoWalk := !AutoWalk
+	If (AutoWalk) {
+		If (SimplifiedCombatBindingsEnabled)
+			EnableFeatureSimplifiedCombat()
+		Hotkey "*RButton", PressedRMButton, "On"
+		Hotkey "*RButton Up", UnpressedRMButton, "On"
+		SetTimer DoAutoWalk, 100
+	} Else {
+		Hotkey "*RButton", PressedRMButton, "Off"
+		Hotkey "*RButton Up", UnpressedRMButton, "Off"
+		If (SimplifiedCombatBindingsEnabled)
+			DisableFeatureSimplifiedCombat()
+		SetTimer DoAutoWalk, 0
+		If (not PressingW)
+			Send "{w Up}"
+
+		If (AutoSprint) {
+			AutoSprint := False
+			SetTimer DoAutoSprint, 0
+			If not PressingLShift
+				Send "{LShift Up}"
+		}
+	}
+}
+
+ToggleAutoSprint(*) {
+	Global
+	If (not AutoWalk)
+		Return
+
+	AutoSprint := !AutoSprint
+	If (AutoSprint) {
+		DoAutoSprint()
+		SetTimer DoAutoSprint, 850
+	} Else {
+		SetTimer DoAutoSprint, 0
+		If (not PressingLShift)
+			Send "{LShift Up}"
+	}
+}
+
+
+
+EnableFeatureAutoWalk() {
+	Global
+	If (AutoWalkBindingsEnabled)
+		DisableFeatureAutoWalk()
+
+	If (not AutoWalkEnabled)
+		Return
+
+	Hotkey "~*w", PressedW, "On"
+	Hotkey "~*w Up", UnpressedW, "On"
+	Hotkey "~*LShift", PressedLShift, "On"
+	Hotkey "~*LShift Up", UnpressedLShift, "On"
+	;Hotkey "*MButton", PressedMButtonToAutoWalk, "On"
+
+	AutoWalkBindingsEnabled := True
+}
+
+DisableFeatureAutoWalk() {
+	Global
+	Hotkey "~*w", PressedW, "Off"
+	Hotkey "~*w Up", UnpressedW, "Off"
+	Hotkey "~*LShift", PressedLShift, "Off"
+	Hotkey "~*LShift Up", UnpressedLShift, "Off"
+	;Hotkey "*MButton", PressedMButtonToAutoWalk, "Off"
+
+	Send "{w Up}"
+	Send "{LShift Up}"
+	;Send "{RButton Up}"
+
+	If (AutoWalk)
+		ToggleAutoWalk()
+
+	AutoWalk := False
+	AutoSprint := False
+
+	PressingW := False
+	PressingLShift := False
+	PressingRMForSprint := False
+
+	AutoWalkBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Simplified Jump
+; =======================================
+Global PressingXButtonToJump := False
+Global PressingSpace := False
+
+
+
+OnSpace(*) {
+	Global
+	If (not PressingSpace)
+		SetTimer PreBunnyhopS, -200 ; Let the user release the button
+	PressingSpace := True
+}
+
+OnSpaceUp(*) {
+	Global
+	PressingSpace := False
+}
+
+XButtonJump(*) {
+	Global
+	If (not PressingXButtonToJump)
+		SetTimer PreBunnyhopX, -200
+	PressingXButtonToJump := True
+	Jump()
+}
+
+XButtonJumpUp(*) {
+	Global
+	PressingXButtonToJump := False
+	If (SkippingDialogueClicking) {
+		SkippingDialogueClicking := False
+		SetTimer DialogueSkipClicking, 0
+	}
+}
+
+
+
+Jump() {
+	Global
+	; Long jump if in boat
+	If (IsInBoat()) {
+		Send "{Space Down}"
+		Sleep 700
+		Send "{Space Up}"
+		Return
+	}
+
+	; Just jump
+	Send "{Space}"
+}
+
+PreBunnyhopX() {
+	SetTimer BunnyhopX, 50
+}
+
+PreBunnyhopS() {
+	SetTimer BunnyhopS, 50
+}
+
+
+BunnyhopX() {
+	If (not PressingXButtonToJump or not IsGameScreen()) {
+		SetTimer BunnyhopX, 0
+		Return
+	}
+	Send "{Space}"
+}
+
+BunnyhopS() {
+	If (not PressingSpace or not IsGameScreen()) {
+		SetTimer BunnyhopS, 0
+		Return
+	}
+	Send "{Space}"
+}
+
+
+
+EnableFeatureSimplifiedJump() {
+	Global
+	If (SimplifiedJumpBindingsEnabled)
+		DisableFeatureSimplifiedJump()
+
+	If (not SimplifiedJumpEnabled)
+		Return
+
+	Hotkey "~*Space", OnSpace, "On"
+	Hotkey "~*Space Up", OnSpaceUp, "On"
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;Hotkey "*" XButtonF, XButtonJump, "On"
+	;Hotkey "*" XButtonF " Up", XButtonJumpUp, "On"
+
+	SimplifiedJumpBindingsEnabled := True
+}
+
+DisableFeatureSimplifiedJump() {
+	Global
+	Hotkey "~*Space", OnSpace, "Off"
+	Hotkey "~*Space Up", OnSpaceUp, "Off"
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;Hotkey "*" XButtonF, XButtonJump, "Off"
+	;Hotkey "*" XButtonF " Up", XButtonJumpUp, "Off"
+
+	Send "{Space Up}"
+
+	PressingXButtonToJump := False
+	PressingSpace := False
+
+	SimplifiedJumpBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Dialogue skipping
+; =======================================
+Global SkippingDialogueClicking := False
+
+
+
+XButtonSkipDialogue(*) {
+	Global
+	If (not SkippingDialogueClicking)
+		SetTimer DialogueSkipClicking, 25
+	SkippingDialogueClicking := True
+}
+
+XButtonSkipDialogueUp(*) {
+	Global
+	SetTimer DialogueSkipClicking, 0
+	SkippingDialogueClicking := False
+}
+
+
+
+DialogueSkipClicking() {
+	Send "{f}"
+	If (PixelSearch(&FoundX, &FoundY, 1310, 840, 1310, 580, "0x806200")) ; Mission
+		MouseClick "Left", FoundX, FoundY
+	Else If (PixelSearch(&FoundX, &FoundY, 1310, 840, 1310, 580, "0xFFFFFF")) ; Dialoue
+		MouseClick "Left", FoundX, FoundY
+}
+
+
+
+EnableFeatureDialogueSkipping() {
+	Global
+	If (DialogueSkippingBindingsEnabled)
+		DisableFeatureDialogueSkipping()
+
+	If (not DialogueSkippingEnabled)
+		Return
+
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;Hotkey "*" XButtonF, XButtonSkipDialogue, "On"
+	;Hotkey "*" XButtonF " Up", XButtonSkipDialogueUp, "On"
+
+	DialogueSkippingBindingsEnabled := True
+}
+
+DisableFeatureDialogueSkipping() {
+	Global
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;Hotkey "*" XButtonF, XButtonSkipDialogue, "Off"
+	;Hotkey "*" XButtonF " Up", XButtonSkipDialogueUp, "Off"
+
+	SetTimer DialogueSkipClicking, 0
+
+	SkippingDialogueClicking := False
+
+	DialogueSkippingBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Quick Pickup
+; =======================================
+Global PressingF := False
+Global PressingXButtonToPickup := False
+
+
+
+PressedF(*) {
+	Global
+	If (not PressingF)
+		SetTimer PickupOnceF, 40
+	PressingF := True
+}
+
+UnpressedF(*) {
+	Global
+	SetTimer PickupOnceF, 0
+	PressingF := False
+}
+
+XButtonPickup(*) {
+	Global
+	If (not PressingXButtonToPickup)
+		SetTimer PickupOnceX, 40
+	PressingXButtonToPickup := True
+}
+
+XButtonPickupUp(*) {
+	Global
+	SetTimer PickupOnceX, 0
+	PressingXButtonToPickup := False
+}
+
+
+
+PickupOnceF() {
+	PickupOnce()
+}
+
+PickupOnceX() {
+	PickupOnce()
+}
+
+PickupOnce() {
+	Send "{f}"
+}
+
+
+
+EnableFeatureQuickPickup() {
+	Global
+	If (QuickPickupBindingsEnabled)
+		DisableFeatureQuickPickup()
+
+	If (not QuickPickupEnabled)
+		Return
+
+	Hotkey "~*f", PressedF, "On"
+	Hotkey "~*f Up", UnpressedF, "On"
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton2" : "XButton1"
+	;Hotkey "*" XButtonF, XButtonPickup, "On"
+	;Hotkey "*" XButtonF " Up", XButtonPickupUp, "On"
+
+	QuickPickupBindingsEnabled := True
+}
+
+DisableFeatureQuickPickup() {
+	Global
+	Hotkey "~*f", PressedF, "Off"
+	Hotkey "~*f Up", UnpressedF, "Off"
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton2" : "XButton1"
+	;Hotkey "*" XButtonF, XButtonPickup, "Off"
+	;Hotkey "*" XButtonF " Up", XButtonPickupUp, "Off"
+
+	SetTimer PickupOnceF, 0
+	SetTimer PickupOnceX, 0
+
+	PressingF := False
+	PressingXButton := False
+
+	QuickPickupBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Simplified Combat
+; =======================================
+Global PressingLButton := False
+
+
+
+PressedLButton(*) {
+	Global
+	If (not PressingLButton)
+		SetTimer NormalAutoAttack, 150
+	PressingLButton := True
+}
+
+UnpressedLButton(*) {
+	Global
+	SetTimer NormalAutoAttack, 0
+	PressingLButton := False
+}
+
+
+
+NormalAutoAttack() {
+	MouseClick "Left"
+}
+
+StrongAttack(*) {
+    Click "Down"
+    KeyWait "RButton"
+    TimeSinceKeyPressed := A_TimeSinceThisHotkey
+    If (TimeSinceKeyPressed < 350) {
+        ; hold LMB for at least 350ms
+        Sleep 350 - TimeSinceKeyPressed
+    }
+    Click "Up"
+}
+
+
+
+EnableFeatureSimplifiedCombat() {
+	Global
+	If (SimplifiedCombatBindingsEnabled)
+		DisableFeatureSimplifiedCombat()
+
+	If (not SimplifiedCombatEnabled)
+		Return
+
+	If (AutoWalk)
+		Return
+
+	Hotkey "~*LButton", PressedLButton, "On"
+	Hotkey "~*LButton Up", UnpressedLButton, "On"
+	Hotkey "*RButton", StrongAttack, "On"
+
+	SimplifiedCombatBindingsEnabled := True
+}
+
+DisableFeatureSimplifiedCombat() {
+	Global
+	Hotkey "~*LButton", PressedLButton, "Off"
+	Hotkey "~*LButton Up", UnpressedLButton, "Off"
+	Hotkey "*RButton", StrongAttack, "Off"
+
+	PressingLButton := False
+
+	SetTimer NormalAutoAttack, 0
+
+    Click "Up"
+
+	SimplifiedCombatBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Better Character Switch
+; =======================================
+Global Pressing1 := False
+Global Pressing2 := False
+Global Pressing3 := False
+Global Pressing4 := False
+
+
+
+Pressed1(*) {
+	Global
+	If (not Pressing1)
+		SetTimer SwitchToChar1, 100
+	Pressing1 := True
+}
+
+Unpressed1(*) {
+	Global
+	SetTimer SwitchToChar1, 0
+	Pressing1 := False
+}
+
+SwitchToChar1() {
+	Send "{1}"
+}
+
+Pressed2(*) {
+	Global
+	If (not Pressing2)
+		SetTimer SwitchToChar2, 100
+	Pressing2 := True
+}
+
+Unpressed2(*) {
+	Global
+	SetTimer SwitchToChar2, 0
+	Pressing2 := False
+}
+
+SwitchToChar2() {
+	Send "{2}"
+}
+
+Pressed3(*) {
+	Global
+	If (not Pressing3)
+		SetTimer SwitchToChar3, 100
+	Pressing3 := True
+}
+
+Unpressed3(*) {
+	Global
+	SetTimer SwitchToChar3, 0
+	Pressing3 := False
+}
+
+SwitchToChar3() {
+	Send "{3}"
+}
+
+Pressed4(*) {
+	Global
+	If (not Pressing4)
+		SetTimer SwitchToChar4, 100
+	Pressing4 := True
+}
+
+Unpressed4(*) {
+	Global
+	SetTimer SwitchToChar4, 0
+	Pressing4 := False
+}
+
+SwitchToChar4() {
+	Send "{4}"
+}
+
+
+
+EnableFeatureBetterCharacterSwitch() {
+	Global
+	If (BetterCharacterSwitchBindingsEnabled)
+		DisableFeatureBetterCharacterSwitch()
+
+	If (not BetterCharacterSwitchEnabled)
+		Return
+
+	Hotkey "~*1", Pressed1, "On"
+	Hotkey "~*1 Up", Unpressed1, "On"
+	Hotkey "~*2", Pressed2, "On"
+	Hotkey "~*2 Up", Unpressed2, "On"
+	Hotkey "~*3", Pressed3, "On"
+	Hotkey "~*3 Up", Unpressed3, "On"
+	Hotkey "~*4", Pressed4, "On"
+	Hotkey "~*4 Up", Unpressed4, "On"
+
+	BetterCharacterSwitchBindingsEnabled := True
+}
+
+
+DisableFeatureBetterCharacterSwitch() {
+	Global
+	Hotkey "~*1", Pressed1, "Off"
+	Hotkey "~*1 Up", Unpressed1, "Off"
+	Hotkey "~*2", Pressed2, "Off"
+	Hotkey "~*2 Up", Unpressed2, "Off"
+	Hotkey "~*3", Pressed3, "Off"
+	Hotkey "~*3 Up", Unpressed3, "Off"
+	Hotkey "~*4", Pressed4, "Off"
+	Hotkey "~*4 Up", Unpressed4, "Off"
+
+	SetTimer SwitchToChar1, 0
+	SetTimer SwitchToChar2, 0
+	SetTimer SwitchToChar3, 0
+	SetTimer SwitchToChar4, 0
+
+	BetterCharacterSwitchBindingsEnabled := False
+}
+
+
+
+
+; =======================================
+; Auto Pickup
+; =======================================
+Pickup() {
+	If (HasPickup()) {
+		Send "{f}"
+		Sleep 20
+		Send "{WheelDown}"
+	}
+}
+
+HasPickup() {
+	; Search for "F" icon
+	If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484") { ; Icon wasn't found
+		If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x383838")
+			Return False
+	}
+
+	; Small delay to minimize error
+	Sleep 10
+
+	; Check if there's no extra prompts
+	Color := PixelGetColor(1185, FoundY - 1)
+	If (Color == "0xFFFFFF") ; Prompt icon was found
+		Return False
+
+	Color := PixelGetColor(1173, FoundY - 1)
+	If (Color == "0xFFFFFF") ; Prompt icon was found
+		Return False
+
+	Return True
+}
+
+
+
+EnableFeatureAutoPickup() {
+	Global
+	If (AutoPickupBindingsEnabled)
+		DisableFeatureAutoPickup()
+
+	If (not AutoPickupEnabled)
+		Return
+
+	SetTimer Pickup, 40
+
+	AutoPickupBindingsEnabled := True
+}
+
+DisableFeatureAutoPickup() {
+	Global
+	SetTimer Pickup, 0
+
 	AutoPickupBindingsEnabled := False
-	UpdateScriptState("AutoFish", 0)
-	AutoFisinghBindingsEnabled := False
-	UpdateScriptState("AutoUnfreeze", 0)
+}
+
+
+
+
+
+; =======================================
+; Auto Unfreeze/Unbubble
+; =======================================
+Unfreeze() {
+	While (IsFrozen()) {
+		Send "{Space}"
+		Sleep 65
+	}
+}
+
+
+
+EnableFeatureAutoUnfreeze() {
+	Global
+	If (AutoUnfreezeBindingsEnabled)
+		DisableFeatureAutoUnfreeze()
+
+	If (not AutoUnfreezeEnabled)
+		Return
+
+	SetTimer Unfreeze, 250
+
+	AutoUnfreezeBindingsEnabled := True
+}
+
+DisableFeatureAutoUnfreeze() {
+	Global
+	SetTimer Unfreeze, 0
+
 	AutoUnfreezeBindingsEnabled := False
 }
 
 
 
-ExitYAGS() {
-	CloseScript(AutoWalkThread)
-	CloseScript(QuickShopBuyingThread)
-	CloseScript(QuickActionsThread)
-	CloseScript(TimeSkipThread)
-	CloseScript(BetterMapClickThread)
-	CloseScript(BetterCharacterSwitchThread)
-	CloseScript(QuickPartySwitchThread)
-	CloseScript(QuickPickupThread)
-	CloseScript(SimpleJumpThread)
-	CloseScript(EasierCombatThread)
-	CloseScript(AutoPickupThread)
-	CloseScript(AutoUnfreezeThread)
-	CloseScript(AlternateVisionThread)
-	CloseScript(AutoFishThread)
-	CloseScript(AutoAttackModeThread)
-	ExitApp
-}
 
-CloseScript(ScriptName) {
-	ScriptName := "ahk_pid " ScriptName
-	If WinExist(ScriptName)
-		WinClose ScriptName
+
+; =======================================
+; Alternate Vision
+; =======================================
+Global VisionModeTick := 0
+
+
+
+PressedH(*) {
+	ToggleVisionMode()
 }
 
 
 
-ButtonQuit(*) {
-	ExitYAGS()
+IsInVisionMode() {
+	Global
+	Return VisionModeTick > 0
 }
 
-ButtonHide(*) {
-	ScriptGui.Hide()
+ToggleVisionMode() {
+	Global
+	If (IsInVisionMode() or IsFullScreenMenuOpen()) {
+		SetTimer VisionTimer, 0
+		VisionModeTick := 0
+		Send "{MButton Up}"
+	} Else {
+		VisionModeTick := 1
+		Send "{MButton Down}"
+		SetTimer VisionTimer, 300
+	}
 }
 
-ShowGui(*) {
-	ScriptGui.Show()
+VisionTimer() {
+	Global
+	If (IsFullScreenMenuOpen()) {
+		SetTimer VisionTimer, 0
+		VisionModeTick := 0
+		Send "{MButton Up}"
+		Return
+	}
+	VisionModeTick := VisionModeTick + 1
+	If (VisionModeTick == 10) {
+		VisionModeTick := 1
+		Send "{MButton Up}"
+		Sleep 20
+	}
+	Send "{MButton Down}"
 }
+
+
+
+EnableFeatureAlternateVision() {
+	Global
+	If (AlternateVisionBindingsEnabled)
+		DisableFeatureAlternateVision()
+
+	If (not AlternateVisionEnabled)
+		Return
+
+	Hotkey "~*H", PressedH, "On"
+
+	AlternateVisionBindingsEnabled := True
+}
+
+DisableFeatureAlternateVision() {
+	Global
+	Hotkey "~*H", PressedH, "Off"
+
+	SetTimer VisionTimer, 0
+
+	VisionModeTick := 0
+
+	Send "{MButton Up}"
+
+	AlternateVisionBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Better Map Click
+; =======================================
+PressedMButtonToTP(*) {
+	If (IsFullScreenMenuOpen())
+		DoMapClick()
+}
+
+
+
+DoMapClick() {
+	MapClick()
+	Sleep 100
+	Try {
+		; Wait for a little white arrow or teleport button
+		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCC33" } ])
+	} Catch {
+		Return
+	}
+
+	Sleep 100
+
+	TpColor := PixelGetColor(1478, 1012)
+	If (TpColor == "0xFFCC33") {
+		; Selected point has only 1 selectable option, and it's available for the teleport
+		ClickOnBottomRightButton()
+		Sleep 200
+		MoveCursorToCenter()
+	} Else {
+		; Selected point has multiple selectable options or selected point is not available for the teleport
+		TeleportablePointColors := [ "0x2D91D9"	; Teleport Waypoint
+			,"0x99ECF5"							; Statue of The Seven
+			,"0xCCFFFF"							; Domain
+			,"0x00FFFF"							; One-time dungeon
+			,"0x63655F" ]						; Portable Waypoint
+
+		; Find the upper available teleport
+		Y := -1
+		For (Index, TeleportablePointColor in TeleportablePointColors) {
+			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, TeleportablePointColor)) {
+				If (Y == -1 or FoundY < Y)
+					Y := FoundY
+			}
+		}
+		
+		If (Y == -1) {
+			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
+				If (PixelGetColor(FoundX, FoundY - 10) == "0xFFFFFF")
+					Y := FoundY
+			}
+		}
+
+		If (Y != -1)
+			Teleport(Y)
+	}
+}
+
+Teleport(Y) {
+	Sleep 100
+
+	MouseClick "Left", 1298, Y
+	WaitPixelColor("0xFFCB33", 1480, 1011, 3000) ; "Teleport" button
+	Sleep 100
+
+	ClickOnBottomRightButton()
+	Sleep 100
+	MoveCursorToCenter()
+}
+
+
+
+EnableFeatureBetterMapClick() {
+	Global
+	If (BetterMapClickBindingsEnabled)
+		DisableFeatureBetterMapClick()
+
+	If (not BetterMapClickEnabled)
+		Return
+
+	;Hotkey "*MButton", PressedMButtonToTP, "On"
+
+	BetterMapClickBindingsEnabled := True
+}
+
+DisableFeatureBetterMapClick() {
+	Global
+	;Hotkey "*MButton", PressedMButtonToTP, "Off"
+
+	BetterMapClickBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Quick Party Switch
+; =======================================
+Party1(*) {
+	ChangeParty(1)
+}
+
+Party2(*) {
+	ChangeParty(2)
+}
+
+Party3(*) {
+	ChangeParty(3)
+}
+
+Party4(*) {
+	ChangeParty(4)
+}
+
+
+
+ChangeParty(NewPartyNum) {
+	CurrentPartyNum := 1
+
+	Send "{l}"
+	Try {
+		WaitFullScreenMenu(5000)
+	} Catch {
+		Return
+	}
+
+	Loop (4) {
+		Color := PixelGetColor(875 + (A_Index * 35), 48)
+		If (Color != "0xFFFFFF") ; Check for current party
+			Continue
+
+		CurrentPartyNum := A_Index
+		Break
+	}
+
+	Changes := CurrentPartyNum - NewPartyNum
+	If (Changes == 0) {
+		Send "{Esc}"
+		Return
+	} Else If (Changes == 3) {
+		Changes := -1
+	} Else If (Changes == -3) {
+		Changes := 1
+	}
+
+	Loop (Abs(Changes)) {
+		If (Changes > 0) {
+			MouseClick "Left", 75, 539
+		} Else {
+			MouseClick "Left", 1845, 539
+		}
+		Sleep 20
+	}
+
+	WaitDeployButtonActive(1000)
+	MouseClick "Left", 1700, 1000 ; Press Deploy button
+
+	WaitPixelColor("0xFFFFFF", 838, 541, 12000) ; Wait for "Party deployed" notification
+	Send "{Esc}"
+}
+
+
+
+EnableFeatureQuickPartySwitch() {
+	Global
+	If (QuickPartySwitchBindingsEnabled)
+		DisableFeatureQuickPartySwitch()
+
+	If (not QuickPartySwitchEnabled)
+		Return
+
+	Hotkey "~NumpadSub & Numpad1", Party1, "On"
+	Hotkey "~NumpadSub & Numpad2", Party2, "On"
+	Hotkey "~NumpadSub & Numpad3", Party3, "On"
+	Hotkey "~NumpadSub & Numpad4", Party4, "On"
+
+	QuickPartySwitchBindingsEnabled := True
+}
+
+DisableFeatureQuickPartySwitch() {
+	Global
+	Hotkey "~NumpadSub & Numpad1", Party1, "Off"
+	Hotkey "~NumpadSub & Numpad2", Party2, "Off"
+	Hotkey "~NumpadSub & Numpad3", Party3, "Off"
+	Hotkey "~NumpadSub & Numpad4", Party4, "Off"
+
+	QuickPartySwitchBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Quick Shop Buying
+; =======================================
+Global BuyingMode := False
+Global BuyingLastMouseX := 0
+Global BuyingLastMouseY := 0
+
+
+
+BuyAll(*) {
+	Global
+	If (BuyingMode) {
+		StopBuyingAll()
+		Return
+	}
+	
+	MouseGetPos &X, &Y
+	BuyingLastMouseX := X
+	BuyingLastMouseY := Y
+	
+	BuyingMode := True
+	BuyAllAvailable()
+}
+
+BuyAllAvailable() {
+	Global
+	If (IsShopMenu() and IsAvailableForStock()) {
+		If (not BuyingMode) {
+			StopBuyingAll()
+			Return
+		}
+		QuicklyBuyOnce()
+		SetTimer BuyAllAvailable, -400
+		Return
+	}
+	StopBuyingAll()
+}
+
+BuyOnce(*) {
+	Global
+	If (BuyingMode) {
+		StopBuyingAll()
+		Return
+	}
+	BuyAvailable()
+}
+
+BuyAvailable() {
+	If (IsShopMenu()) {
+		MouseGetPos &X, &Y
+		QuicklyBuyOnce()
+		Sleep 50
+		MouseMove X, Y
+	}
+}
+
+QuicklyBuyOnce() {
+	ClickOnBottomRightButton()
+	If (not WaitPixelColor("0x4A5366", 1050, 750, 1000, True)) ; Wait for tab to be active
+		Return
+	Sleep 100
+	MouseClick "Left", 1178, 625 ; Max stacks
+	Sleep 150
+	MouseClick "Left", 1050, 750 ; Click Exchange
+	Sleep 150
+	WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
+	ClickOnBottomRightButton() ; Skip purchased dialogue
+}
+
+StopBuyingAll() {
+	Global
+	BuyingMode := False
+	SetTimer BuyAllAvailable, 0
+	Sleep 30
+	MouseMove BuyingLastMouseX, BuyingLastMouseY
+}
+
+
+
+IsShopMenu() {
+	Return PixelGetColor(80, 50) == "0xD3BC8E" and PixelGetColor(1840, 46) == "0x3B4255" and PixelGetColor(1740, 995) == "0xECE5D8"
+}
+
+IsAvailableForStock() {
+	Return PixelGetColor(1770, 930) != "0xE5967E" ; Sold out
+}
+
+
+
+EnableFeatureQuickShopBuying() {
+	Global
+	If (QuickShopBindingsEnabled)
+		DisableFeatureQuickShopBuying()
+
+	If (not QuickShopBuyingEnabled)
+		Return
+
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;XButtonS := Mapping ? "XButton2" : "XButton1"
+	;Hotkey "*" XButtonF " Up", BuyAll, "On"
+	;Hotkey "*" XButtonS " Up", BuyOnce, "On"
+
+	QuickShopBindingsEnabled := True
+}
+
+DisableFeatureQuickShopBuying() {
+	Global
+	;Mapping := GetSetting("SwapSideMouseButtons", False)
+	;XButtonF := Mapping ? "XButton1" : "XButton2"
+	;XButtonS := Mapping ? "XButton2" : "XButton1"
+	;Hotkey "*" XButtonF " Up", BuyAll, "Off"
+	;Hotkey "*" XButtonS " Up", BuyOnce, "Off"
+
+	; "Bought" screen resets "IsShop" state and disables bindings,
+	; So we have a manual extra checks inside the method that will
+	; Disable these if not in shop
+	;BuyingMode := False
+	;SetTimer BuyAllAvailable, 0
+
+	QuickShopBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Clock management
+; =======================================
+; Global ClockCenterX := 1440
+; Global ClockCenterY := 501
+; Global ClockRadius := 119
+; Global ClickOffset := 30
+;
+; All values are pregenerated by a script
+; to reduce the amount of calculations
+; =======================================
+
+Global Angles := ["0", "4", "8", "12", "16", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "68", "72", "76", "80", "84", "88", "92", "96", "100", "104", "108", "112", "116", "120", "124", "128", "132", "136", "140", "144", "148", "152", "156", "160", "164", "168", "172", "176", "180", "184", "188", "192", "196", "200", "204", "208", "212", "216", "220", "224", "228", "232", "236", "240", "244", "248", "252", "256", "260", "264", "268", "272", "276", "280", "284", "288", "292", "296", "300", "304", "308", "312", "316", "320", "324", "328", "332", "336", "340", "344", "348", "352", "356"]
+Global XCoords := ["1440", "1448", "1457", "1465", "1473", "1481", "1488", "1496", "1503", "1510", "1516", "1523", "1528", "1534", "1539", "1543", "1547", "1550", "1553", "1555", "1557", "1558", "1559", "1559", "1558", "1557", "1555", "1553", "1550", "1547", "1543", "1539", "1534", "1528", "1523", "1516", "1510", "1503", "1496", "1488", "1481", "1473", "1465", "1457", "1448", "1440", "1432", "1423", "1415", "1407", "1399", "1392", "1384", "1377", "1370", "1364", "1357", "1352", "1346", "1341", "1337", "1333", "1330", "1327", "1325", "1323", "1322", "1321", "1321", "1322", "1323", "1325", "1327", "1330", "1333", "1337", "1341", "1346", "1352", "1357", "1364", "1370", "1377", "1384", "1392", "1399", "1407", "1415", "1423", "1432"]
+Global YCoords := ["382", "382", "383", "385", "387", "389", "392", "396", "400", "405", "410", "415", "421", "428", "434", "441", "449", "456", "464", "472", "480", "489", "497", "505", "513", "522", "530", "538", "546", "553", "560", "568", "574", "581", "587", "592", "597", "602", "606", "610", "613", "615", "617", "619", "620", "620", "620", "619", "617", "615", "613", "610", "606", "602", "597", "592", "587", "581", "574", "568", "561", "553", "546", "538", "530", "522", "513", "505", "497", "489", "480", "472", "464", "456", "449", "441", "434", "428", "421", "415", "410", "405", "400", "396", "392", "389", "387", "385", "383", "382"]
+Global XClickCoords := ["1440", "1470", "1440", "1410"]
+Global TotalAngles := Angles.Length
+
+Global HourAngles := ["180", "195", "210", "225", "240", "255", "270", "285", "300", "315", "330", "345", "0", "15", "30", "45", "60", "75", "90", "105", "120", "135", "150", "165"]
+Global HourXCoords := ["1440", "1432", "1424", "1418", "1414", "1411", "1410", "1411", "1414", "1419", "1426", "1433", "1440", "1448", "1455", "1461", "1466", "1469", "1470", "1469", "1466", "1461", "1455", "1448"]
+Global HourYCoords := ["531", "530", "527", "522", "515", "508", "500", "492", "485", "479", "475", "472", "471", "472", "475", "480", "486", "493", "501", "509", "516", "522", "527", "530"]
+
+
+
+SkipToTime0(*) {
+	SkipToTime(0)
+}
+
+SkipToTime3(*) {
+	SkipToTime(3)
+}
+
+SkipToTime6(*) {
+	SkipToTime(6)
+}
+
+SkipToTime9(*) {
+	SkipToTime(9)
+}
+
+SkipToTime12(*) {
+	SkipToTime(12)
+}
+
+SkipToTime15(*) {
+	SkipToTime(15)
+}
+
+SkipToTime18(*) {
+	SkipToTime(18)
+}
+
+SkipToTime21(*) {
+	SkipToTime(21)
+}
+
+OpenClockMenu(*) {
+	If (IsClockMenu())
+		Return
+	OpenMenu()
+	Sleep 100
+	MouseClick "Left", 45, 715 ; Clock icon
+}
+
+
+
+IsClockMenu() {
+	Global
+	Return PixelGetColor(1870, 50) == "0xECE5D8"
+}
+
+SkipToTime(NeededTime) {
+	Global
+	NextDay := GetKeyState("NumpadMult")
+	AddOne := GetKeyState("Numpad0")
+	SubtractOne := GetKeyState("NumpadDot")
+	; Check if already in clock menu
+	ClockMenuAlreadyOpened := IsClockMenu()
+	If (not ClockMenuAlreadyOpened) {
+		OpenMenu()
+
+		MouseClick "Left", 45, 715 ; Clock icon
+		WaitPixelColor("0xECE5D8", 1870, 50, 5000) ; Wait for the clock menu
+	}
+	
+	Angle := GetCurrentAngle()
+	Time := Integer(Round(AngleToTime(Angle)))
+	
+	If (AddOne)
+		NeededTime += 1
+	If (SubtractOne)
+		NeededTime -= 1
+	If (NeededTime < 0)
+		NeededTime += 24
+	Else If (NeededTime > 24)
+		NeededTime -= 24
+	
+	Clicks := NeededTime - Time
+	If (Clicks < 0)
+		Clicks += 24
+	If (NextDay and Time <= NeededTime)
+		Clicks += 24
+	Clicks := Round(Clicks / 6)
+	
+	Loop (Clicks - 1) {
+		Offset := Time + A_Index * 6 + 1
+		If (Offset > 24)
+			Offset -= 24
+		ClickOnClock(HourXCoords[Offset], HourYCoords[Offset])
+	}
+	
+	Offset := NeededTime + 1
+	If (Offset > 24)
+		Offset -= 24
+	ClickOnClock(HourXCoords[Offset], HourYCoords[Offset])
+
+	MouseClick "Left", 1440, 1000 ; "Confirm" button
+	
+	If (ClockMenuAlreadyOpened)
+		Return
+
+	Sleep 100
+	WaitPixelColor("0xECE5D8", 1870, 50, 30000) ; Wait for the clock menu
+
+	Send "{Esc}"
+	WaitMenu()
+
+	Send "{Esc}"
+}
+
+GetCurrentAngle() {
+	Global
+	Loop (TotalAngles) {
+		If (PixelGetColor(XCoords[A_Index], YCoords[A_Index]) == "0xECE5D8")
+			Return Angles[A_Index]
+	}
+	Return 0
+}
+
+AngleToTime(Angle) {
+	Time := Angle * 24 / 360 + 12
+	If (Time > 24)
+		Time -= 24
+	Return Time
+}
+
+ClickOnClock(X, Y) {
+	MouseClick "Left", X, Y, , , "Down"
+	Sleep 50
+	MouseClick "Left", X, Y, , , "Up"
+	Sleep 100
+}
+
+
+
+EnableFeatureClockManagement() {
+	Global
+	If (ClockManagementBindingsEnabled)
+		DisableFeatureClockManagement()
+
+	If (not ClockManagementEnabled)
+		Return
+
+	Hotkey "~NumpadDiv & Numpad5", OpenClockMenu, "On"
+	Hotkey "~NumpadDiv & Numpad2", SkipToTime0, "On"
+	Hotkey "~NumpadDiv & Numpad1", SkipToTime3, "On"
+	Hotkey "~NumpadDiv & Numpad4", SkipToTime6, "On"
+	Hotkey "~NumpadDiv & Numpad7", SkipToTime9, "On"
+	Hotkey "~NumpadDiv & Numpad8", SkipToTime12, "On"
+	Hotkey "~NumpadDiv & Numpad9", SkipToTime15, "On"
+	Hotkey "~NumpadDiv & Numpad6", SkipToTime18, "On"
+	Hotkey "~NumpadDiv & Numpad3", SkipToTime21, "On"
+
+	ClockManagementBindingsEnabled := True
+}
+
+DisableFeatureClockManagement() {
+	Global
+	Hotkey "~NumpadDiv & Numpad5", OpenClockMenu, "Off"
+	Hotkey "~NumpadDiv & Numpad2", SkipToTime0, "Off"
+	Hotkey "~NumpadDiv & Numpad1", SkipToTime3, "Off"
+	Hotkey "~NumpadDiv & Numpad4", SkipToTime6, "Off"
+	Hotkey "~NumpadDiv & Numpad7", SkipToTime9, "Off"
+	Hotkey "~NumpadDiv & Numpad8", SkipToTime12, "Off"
+	Hotkey "~NumpadDiv & Numpad9", SkipToTime15, "Off"
+	Hotkey "~NumpadDiv & Numpad6", SkipToTime18, "Off"
+	Hotkey "~NumpadDiv & Numpad3", SkipToTime21, "Off"
+
+	ClockManagementBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Expeditions
+; =======================================
+; Expedition duration coordinates
+Global Duration4H := { X: 1500, Y: 700 }
+Global Duration8H := { X: 1600, Y: 700 }
+Global Duration12H := { X: 1700, Y: 700 }
+Global Duration20H := { X: 1800, Y: 700 }
+
+; Mondstandt Expeditions
+Global StormterrorLairExpedition := { MapNumber: 0, X: 550, Y: 400 }
+Global WolvendomExpedition := { MapNumber: 0, X: 740, Y: 530 }
+Global StormbearerMountainsExpedition := { MapNumber: 0, X: 810, Y: 240 }
+Global WhisperingWoodsExpedition := { MapNumber: 0, X: 1050, Y: 330 }
+Global WindriseExpedition := { MapNumber: 0, X: 1111, Y: 455 }
+Global DadaupaGorgeExpedition := { MapNumber: 0, X: 1170, Y: 660 }
+; Liyue Expeditions
+Global JueyunKarstExpedition := { MapNumber: 1, X: 559, Y: 561 }
+Global DihuaMarshExpedition := { MapNumber: 1, X: 728, Y: 332 }
+Global DunyuRuinsExpedition := { MapNumber: 1, X: 730, Y: 810 }
+Global GuiliPlainsExpedition := { MapNumber: 1, X: 800, Y: 550 }
+Global YaoguangShoalExpedition := { MapNumber: 1, X: 950, Y: 450 }
+Global GuyunStoneForestExpedition := { MapNumber: 1, X: 1170, Y: 610 }
+; Inazuma Expeditions
+Global MusoujinGorgeExpedition := { MapNumber: 2, X: 580, Y: 800 }
+Global NazuchiBeachExpedition := { MapNumber: 2, X: 725, Y: 695 }
+Global TatarasunaExpedition := { MapNumber: 2, X: 828, Y: 828 }
+Global KondaVillageExpedition := { MapNumber: 2, X: 935, Y: 345 }
+Global JinrenIslandExpedition := { MapNumber: 2, X: 1097, Y: 274 }
+Global ByakkoPlainExpedition := { MapNumber: 2, X: 1145, Y: 435 }
+; Sumeru Expeditions
+Global AshavanRealmExpedition := { MapNumber: 3, X: 675, Y: 635 }
+Global ChatrakamCaveExpedition := { MapNumber: 3, X: 795, Y: 295 }
+Global AvidyaForestExpedition := { MapNumber: 3, X: 900, Y: 560 }
+Global ChinvatRavineExpedition := { MapNumber: 3, X: 960, Y: 375 }
+Global ArdraviValleyExpedition := { MapNumber: 3, X: 1025, Y: 610 }
+Global MawtiyimaForestExpedition := { MapNumber: 3, X: 1055, Y: 245 }
+
+
+
+; Recieve all expedition rewards and resend back
+SendExpeditions(*) {
+	; Check if in expeditions screen
+	ParseExpeditions()
+	Send "{Esc}"
+}
+
+
+
+ParseExpeditions() {
+	Global
+	Loop (5) {
+		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
+		If (Expedition == "")
+			Continue
+		Expedition := StrSplit(Expedition, ",")
+		CharacterNumberInList := Integer(Expedition[3])
+		Duration := Expedition[2]
+		Switch (Duration) {
+			case "4": Duration := Duration4H
+			case "8": Duration := Duration8H
+			case "12": Duration := Duration12H
+			case "20": Duration := Duration20H
+		}
+		Expedition := Expedition[1]
+		Switch (Expedition) {
+			; Mondstandt Expeditions
+			case "StormterrorLairExpedition": Expedition := StormterrorLairExpedition
+			case "WolvendomExpedition": Expedition := WolvendomExpedition
+			case "StormbearerMountainsExpedition": Expedition := StormbearerMountainsExpedition
+			case "WhisperingWoodsExpedition": Expedition := WhisperingWoodsExpedition
+			case "WindriseExpedition": Expedition := WindriseExpedition
+			case "DadaupaGorgeExpedition": Expedition := DadaupaGorgeExpedition
+			; Liyue Expeditions
+			case "JueyunKarstExpedition": Expedition := JueyunKarstExpedition
+			case "DihuaMarshExpedition": Expedition := DihuaMarshExpedition
+			case "DunyuRuinsExpedition": Expedition := DunyuRuinsExpedition
+			case "GuiliPlainsExpedition": Expedition := GuiliPlainsExpedition
+			case "YaoguangShoalExpedition": Expedition := YaoguangShoalExpedition
+			case "GuyunStoneForestExpedition": Expedition := GuyunStoneForestExpedition
+			; Inazuma Expeditions
+			case "MusoujinGorgeExpedition": Expedition := MusoujinGorgeExpedition
+			case "NazuchiBeachExpedition": Expedition := NazuchiBeachExpedition
+			case "TatarasunaExpedition": Expedition := TatarasunaExpedition
+			case "KondaVillageExpedition": Expedition := KondaVillageExpedition
+			case "JinrenIslandExpedition": Expedition := JinrenIslandExpedition
+			case "ByakkoPlainExpedition": Expedition := ByakkoPlainExpedition
+			; Sumeru Expeditions
+			case "AshavanRealmExpedition": Expedition := AshavanRealmExpedition
+			case "ChatrakamCaveExpedition": Expedition := ChatrakamCaveExpedition
+			case "AvidyaForestExpedition": Expedition := AvidyaForestExpedition
+			case "ChinvatRavineExpedition": Expedition := ChinvatRavineExpedition
+			case "ArdraviValleyExpedition": Expedition := ArdraviValleyExpedition
+			case "MawtiyimaForestExpedition": Expedition := MawtiyimaForestExpedition
+		}
+		ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList)
+	}
+}
+
+; CharacterNumberInList - starts from 1.
+ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) {
+	ReceiveReward(Expedition)
+
+	If (PixelGetColor(1600, 1020) == "0xFE5C5C") ; Already Occupied
+		Return
+
+	SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration)
+}
+
+ReceiveReward(Expedition, ReceiveRewardLag := 0) {
+    SelectExpedition(Expedition)
+
+	If (not PixelGetColor(1600, 1020) == "0x99CC33") ; Already Received
+		Return
+    Sleep 200
+
+    ; Receive reward
+    ClickOnBottomRightButton()
+    Sleep 200
+    Sleep ReceiveRewardLag
+
+    ; Skip reward menu
+    ClickOnBottomRightButton()
+    Sleep 200
+}
+
+SelectExpedition(Expedition) {
+    ; Click on the world
+    WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
+    MouseClick "Left", 200, WorldY
+    Sleep 500
+
+    ; Click on the expedition
+    MouseClick "Left", Expedition.X, Expedition.Y
+    Sleep 200
+}
+
+SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
+    SelectDuration(Duration)
+    Sleep 100
+
+    ; Click on "Select Character"
+    ClickOnBottomRightButton()
+    Sleep 800
+
+    ; Find and select the character
+    FindAndSelectCharacter(CharacterNumberInList)
+    Sleep 300
+}
+
+SelectDuration(Duration) {
+    MouseClick "Left", Duration.X, Duration.Y
+    Sleep 100
+}
+
+FindAndSelectCharacter(CharacterNumberInList) {
+    FirstCharacterX := 100
+    FirstCharacterY := 150
+    SpacingBetweenCharacters := 125
+
+    If (CharacterNumberInList <= 7) {
+        MouseClick "Left", FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1))
+    } Else {
+        ScrollDownCharacterList(CharacterNumberInList - 7.5)
+        MouseClick "Left", FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7)
+    }
+}
+
+; Scroll down the passed number of characters
+ScrollDownCharacterList(CharacterAmount) {
+    MouseMove 950, 540
+
+    ScrollAmount := CharacterAmount * 7
+    Loop (ScrollAmount) {
+        Send "{WheelDown}"
+        Sleep 10
+    }
+}
+
+
+
+EnableFeatureSendExpeditions() {
+	Global
+	If (SendExpeditionsBindingsEnabled)
+		DisableFeatureSereniteaPot()
+
+	If (not SendExpeditionsEnabled)
+		Return
+
+	Hotkey "~NumpadSub & Numpad6", SendExpeditions, "On"
+
+	SendExpeditionsBindingsEnabled := True
+}
+
+DisableFeatureSendExpeditions() {
+	Global
+	Hotkey "~NumpadSub & Numpad6", SendExpeditions, "Off"
+
+	SendExpeditionsBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Go to the Serenitea Pot
+; =======================================
+GoToSereniTeaPot(*) {
+	OpenInventory()
+
+	Sleep 100
+
+	MouseClick "Left", 1050, 50 ; Gadgets tab
+	WaitPixelColor("0xD3BC8E", 1055, 92, 1000) ; Wait for tab to be active
+
+	Sleep 100
+
+	MouseClick "Left", 170, 180 ; Select the first gadget
+	ClickOnBottomRightButton
+
+	Sleep 100
+
+	WaitDialogueMenu()
+	Send "{f}"
+}
+
+
+
+EnableFeatureSereniteaPot() {
+	Global
+	If (SereniteaPotBindingsEnabled)
+		DisableFeatureSereniteaPot()
+
+	If (not SereniteaPotEnabled)
+		Return
+
+	Hotkey "~NumpadSub & Numpad5", GoToSereniTeaPot, "On"
+
+	SereniteaPotBindingsEnabled := True
+}
+
+DisableFeatureSereniteaPot() {
+	Global
+	Hotkey "~NumpadSub & Numpad5", GoToSereniTeaPot, "Off"
+
+	SereniteaPotBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Receive all BP exp and rewards
+; =======================================
+Global RedNotificationColor := "0xE6455F"
+
+
+
+ParseBPRewards(*) {
+	Send "{f4}"
+	WaitFullScreenMenu()
+
+	ReceiveBpExp()
+	ReceiveBpRewards()
+
+	Sleep 200
+
+	Send "{Esc}"
+}
+
+ReceiveBpExp() {
+	Global
+	; Check for available BP experience and receive if any
+	If (PixelGetColor(993, 20) != RedNotificationColor) ; No exp
+		Return
+
+	MouseClick "Left", 993, 20 ; To exp tab
+	Sleep 300
+
+	ClickOnBottomRightButton() ; "Claim all"
+	Sleep 400
+
+	If (!IsFullScreenMenuOpen()) {
+		; Level up, need to close popup
+		Send "{Esc}"
+		WaitFullScreenMenu()
+	}
+}
+
+ReceiveBpRewards() {
+	Global
+	; Check for available BP experience and receive if any
+	If (PixelGetColor(899, 20) != RedNotificationColor) ; no rewards
+		Return
+
+	MouseClick "Left", 899, 20 ; To rewards tab
+	Sleep 300
+
+	ClickOnBottomRightButton() ; "Claim all"
+	Sleep 400
+
+	Send "{Esc}" ; Close popup with received rewards
+	WaitFullScreenMenu()
+}
+
+
+
+EnableFeatureReceiveBPRewards() {
+	Global
+	If (ReceiveBPRewardsBindingsEnabled)
+		DisableFeatureReceiveBPRewards()
+
+	If (not ReceiveBPRewardsEnabled)
+		Return
+
+	Hotkey "~NumpadSub & Numpad8", ParseBPRewards, "On"
+
+	ReceiveBPRewardsBindingsEnabled := True
+}
+
+DisableFeatureReceiveBPRewards() {
+	Global
+	Hotkey "~NumpadSub & Numpad8", ParseBPRewards, "Off"
+
+	ReceiveBPRewardsBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Relogin
+; =======================================
+Relogin(*) {
+	OpenMenu()
+
+	Sleep 100
+
+	MouseClick "Left", 49, 1022 ; Logout button
+	Sleep 100
+	WaitPixelColor("0x313131", 1017, 757, 5000) ; Wait logout menu
+
+	MouseClick "Left", 1017, 757 ; Confirm
+	Sleep 100
+	WaitPixelColor("0x222222", 1820, 881, 18000) ; Wait for announcements icon
+
+	MouseClick "Left", 500, 500
+	Sleep 500 ; Time for settings icon to disappear
+	WaitPixelColor("0x222222", 1823, 794, 18000) ; Wait for settings icon
+
+	MouseClick "Left", 500, 500
+}
+
+
+
+EnableFeatureRelogin() {
+	Global
+	If (ReloginBindingsEnabled)
+		DisableFeatureRelogin()
+
+	If (not ReloginEnabled)
+		Return
+
+	Hotkey "~NumpadSub & NumpadDot", Relogin, "On"
+
+	ReloginBindingsEnabled := True
+}
+
+DisableFeatureRelogin() {
+	Global
+	Hotkey "~NumpadSub & NumpadDot", Relogin, "Off"
+
+	ReloginBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Auto Attack
+; =======================================
+Global PressingToAttack := False
+Global AttackMode := GetSetting("AutoAttackMode", "None")
+
+
+
+PressedToAutoAttack(*) {
+	Global
+	If (not PressingToAttack) {
+		PressingToAttack := True
+		Attack()
+	}
+}
+
+UnpressedToAutoAttack(*) {
+	Global
+	PressingToAttack := False
+}
+
+
+AutoAttack1(*) {
+	UpdateAttackMode("KleeSimpleJumpCancel")
+}
+
+AutoAttack2(*) {
+	UpdateAttackMode("KleeChargedAttack")
+}
+
+AutoAttack3(*) {
+	UpdateAttackMode("HuTaoDashCancel")
+}
+
+AutoAttack4(*) {
+	UpdateAttackMode("HuTaoJumpCancel")
+}
+
+UpdateAttackMode(NewAttackMode) {
+	Global
+	AttackMode := NewAttackMode
+	ToolTip Langed("AutoAttackMode", "Current attack mode: ") AttackMode, 160, 1050
+	UpdateSetting("AutoAttackMode", AttackMode)
+	Sleep 2000
+	If (AttackMode == NewAttackMode)
+		ToolTip
+}
+
+
+
+Attack() {
+	Global
+	If (AttackMode == "KleeSimpleJumpCancel")
+		KleeSimpleJumpCancel()
+	Else If (AttackMode == "KleeChargedAttack")
+		KleeChargedAttack()
+	Else If (AttackMode == "HuTaoDashCancel")
+		HuTaoDashCancel()
+	Else If (AttackMode == "HuTaoJumpCancel")
+		HuTaoJumpCancel()
+}
+
+; NJ
+KleeSimpleJumpCancel() {
+	Global
+	If (PressingToAttack) {
+		Send "{LButton}"
+        Sleep 35
+        Send "{Space}"
+        Sleep 550
+		KleeSimpleJumpCancel()
+	}
+}
+
+; CJ
+KleeChargedAttack() {
+	Global
+	If (PressingToAttack) {
+		Send "{LButton Down}"
+		Sleep 460
+		Send "{LButton Up}"
+		Sleep 15
+		Send "{Space}"
+		Sleep 570
+		KleeChargedAttack()
+	}
+}
+
+; 9N2CD
+HuTaoDashCancel() {
+	Global
+	If (PressingToAttack) {
+		Send "{LButton}"
+		Sleep 150
+		Send "{LButton}"
+		Sleep 150
+
+		If (not PressingToAttack)
+			Return
+
+		Send "{LButton Down}"
+		Sleep 350
+		Send "{LShift Down}"
+		Sleep 30
+		Send "{LShift Up}"
+		Send "{LButton Up}"
+
+		If (not PressingToAttack)
+			Return
+
+		Sleep 400
+		HuTaoDashCancel()
+	}
+}
+
+; 9N2CJ
+HuTaoJumpCancel() {
+	Global
+	If (PressingToAttack) {
+		Send "{LButton}"
+		Sleep 190
+		Send "{LButton}"
+
+		If (not PressingToAttack)
+			Return
+
+		Send "{LButton Down}"
+		Sleep 300
+		Send "{Space}"
+		Send "{LButton Up}"
+
+		If (not PressingToAttack)
+			Return
+
+		Sleep 590
+		HuTaoJumpCancel()
+	}
+}
+
+
+
+EnableFeatureAutoAttack() {
+	Global
+	If (AutoAttackBindingsEnabled)
+		DisableFeatureAutoAttack()
+
+	If (not AutoAttackEnabled)
+		Return
+
+	Hotkey "~*V", PressedToAutoAttack, "On"
+	Hotkey "~*V Up", UnpressedToAutoAttack, "On"
+	Hotkey "~NumpadMult & Numpad1", AutoAttack1, "On"
+	Hotkey "~NumpadMult & Numpad2", AutoAttack2, "On"
+	Hotkey "~NumpadMult & Numpad3", AutoAttack3, "On"
+	Hotkey "~NumpadMult & Numpad4", AutoAttack4, "On"
+
+	AutoAttackBindingsEnabled := True
+}
+
+DisableFeatureAutoAttack() {
+	Global
+	Hotkey "~*V", PressedToAutoAttack, "Off"
+	Hotkey "~*V Up", UnpressedToAutoAttack, "Off"
+	Hotkey "~NumpadMult & Numpad1", AutoAttack1, "Off"
+	Hotkey "~NumpadMult & Numpad2", AutoAttack2, "Off"
+	Hotkey "~NumpadMult & Numpad3", AutoAttack3, "Off"
+	Hotkey "~NumpadMult & Numpad4", AutoAttack4, "Off"
+
+	PressingToAttack := False
+	AutoAttackBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Inventory Actions
+; =======================================
+PerformInventoryActions() {
+	; =======================================
+	; Lock Artifacts or Weapons
+	; =======================================
+	MenuArrow := PixelGetColor(1838, 44) == "0x3B4255"
+	; Backpack
+	If (MenuArrow and PixelGetColor(75, 43) == "0xD3BC8E" and PixelGetColor(165, 1010) == "0x3B4255") {
+		If (TryToFindLocker(1746, 444))
+			Return
+	}
+
+	; Artifact details
+	If (MenuArrow and PixelGetColor(75, 70) == "0xD3BC8E") {
+		If (TryToFindLocker(1818, 445))
+			Return
+	}
+
+	; Weapon details
+	If (MenuArrow and PixelGetColor(97, 25) == "0xD3BC8E") {
+		If (TryToFindLocker(1818, 445))
+			Return
+	}
+
+	; Character's Artifacts
+	If (MenuArrow and PixelGetColor(60, 999) == "0x3B4255" and PixelGetColor(557, 1010) == "0xEBE4D7") {
+		If (TryToFindTransparentLocker(1776, 310))
+			Return
+	}
+
+	; Artifacts/Weapons enhancement menu
+	If (MenuArrow and PixelGetColor(1099, 46) == "0x9D9C9D") {
+		If (TryToFindLocker(1612, 505))
+			Return
+	}
+
+	; Mystic Offering
+	If (not MenuArrow and PixelGetColor(1840, 45) == "0x353B4B" and PixelGetColor(907, 45) == "0xA6A4A4") {
+		If (TryToFindLocker(1421, 506))
+			Return
+	}
+
+	; Domain artifacts
+	If (not MenuArrow and PixelGetColor(715, 700) == "0xECE5D8" and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
+		If (TryToFindLocker(1151, 494))
+			Return
+	}
+
+	; =======================================
+	; Select maximum stacks and craft ores
+	; =======================================
+	If (MenuArrow and PixelGetColor(62, 52) == "0xD3BC8E" and PixelGetColor(605, 1015) == "0x3B4255") {
+		MouseGetPos &X, &Y
+		MouseClick "Left", 1467, 669 ; Max stacks
+		Sleep 50
+		ClickOnBottomRightButton()
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+
+	; =======================================
+	; Obtain crafted item
+	; =======================================
+	If (MenuArrow and PixelGetColor(1655, 1015) == "0x99CC33") {
+		MouseGetPos &X, &Y
+		ClickOnBottomRightButton() ; Obtain
+		Sleep 200
+		Send "{Esc}" ; Skip animation
+		Sleep 50
+		MouseMove X, Y
+		Return
+	}
+
+	; =======================================
+	; Toggle Auto Dialogue
+	; =======================================
+	If (not IsFullScreenMenuOpen() and not IsGameScreen() and IsDialogueScreen()) {
+		ClickAndBack(98, 49)
+		Return
+	}
+}
+
+TryToFindLocker(TopX, TopY) {
+	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
+		If (PixelGetColor(FoundX - 6, FoundY) == "0x495366") { ; Locked
+			ClickAndBack(FoundX, FoundY)
+			Return True
+		}
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8")) {
+		If (PixelGetColor(FoundX - 6, FoundY) == "0xF3EFEA") { ; Unlocked
+			ClickAndBack(FoundX, FoundY)
+			Return True
+		}
+	}
+	Return False ; Not found
+}
+
+TryToFindTransparentLocker(TopX, TopY) {
+	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
+		If (PixelGetColor(TopX - 6, FoundY) == "0x495366") { ; Locked
+			ClickAndBack(FoundX, FoundY)
+			Return True
+		}
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8", 50)) {
+		; Unlocked locker might have some transparency and change its color, so "PixelGetColor" can't be relayed on
+		If (PixelSearch(&Px, &Py, FoundX - 6, FoundY, FoundX - 6, FoundY, "0xF3EFEA", 160)) { ; Unlocked
+			ClickAndBack(FoundX, FoundY)
+			Return True
+		}
+	}
+	Return False ; Not found
+}
+;
+
+
+
+
+
+; =======================================
+; Libs
+; =======================================
+OpenMenu() {
+	Send "{Esc}"
+	WaitMenu()
+}
+
+WaitMenu() {
+	WaitPixelColor(LightMenuColor, 729, 63, 2000) ; Wait for menu
+}
+
+OpenInventory() {
+	Send "{b}"
+	WaitFullScreenMenu(2000)
+}
+
+ClickOnBottomRightButton() {
+	MouseClick "Left", 1730, 1000
+}
+
+ClickAndBack(CoordX, CoordY) {
+	MouseGetPos &X, &Y
+	MouseClick "Left", CoordX, CoordY
+	Sleep 50
+	MouseMove X, Y
+}
+
+WaitFullScreenMenu(Timeout := 3000) {
+	WaitPixelColor(LightMenuColor, 1859, 47, Timeout) ; Wait for close button on the top right
+}
+
+IsFullScreenMenuOpen() {
+	Color := PixelGetColor(1859, 47)
+	If (Color == LightMenuColor)
+		Return True
+	Color := PixelGetColor(1875, 35)
+	Return Color == LightMenuColor
+}
+
+; Note: always better to check if not IsFullScreenMenuOpen() before checking the game screen
+IsGameScreen() {
+	Return PixelGetColor(276, 58) == "0xFFFFFF" ; Eye icon next to the map
+}
+
+; Note: always better to check if not IsFullScreenMenuOpen() and not IsGameScreen() before checking the dialogue screen
+IsDialogueScreen() {
+	Return PixelGetColor(109, 56) == "0xECE5D8" ; Play or Pause button
+}
+
+IsInBoat() {
+	Return PixelGetColor(828, 976) == "0xEDE5D9" ; Boat icon color
+}
+
+WaitDeployButtonActive(Timeout) {
+	WaitPixelColor("0x313131", 1557, 1005, Timeout) ; Wait for close button on the top right
+}
+
+WaitDialogueMenu() {
+	WaitPixelColor("0x656D77", 1180, 537, 2000) ; Wait for "..." icon in the center of the screen
+}
+
+; Check if a character is frozen or in the bubble
+IsFrozen() {
+	SpaceTextColor := PixelGetColor(1417, 596)
+
+	If (SpaceTextColor != "0x333333") {
+		Return False
+	}
+
+	SpaceButtonColor := PixelGetColor(1417, 585)
+
+	Return SpaceButtonColor == "0xFFFFFF"
+}
+
+; Check if run should be infinite
+IsExtraRun() {
+	Color := PixelGetColor(1695, 1030)
+	Return Color == "0xFFE92C" ; Ayaka / Mona run mode
+}
+
+; Special click function for the world map menu.
+;
+; For some reason MouseClick (and Click) doesn't work consistently: it doesn't work if a click goes to an empty place,
+; but works fine if a click goes to an interactable point.
+MapClick() {
+	Send "{LButton down}"
+	Sleep 50
+	Send "{LButton up}"
+}
+
+MoveCursorToCenter() {
+	MouseMove A_ScreenWidth / 2, A_ScreenHeight / 2
+}
+
+; Wait for pixel to be the specified color or throw exception after the specified Timeout.
+;
+; Color - hex string in RGB format, for example "0xA0B357".
+; Timeout - timeout in milliseconds.
+; ReturnOnTimeout - whether to return False instead of throwing an exception on timeout
+WaitPixelColor(Color, X, Y, Timeout, ReturnOnTimeout := False) {
+	StartTime := A_TickCount
+	Loop {
+		CurrentColor := PixelGetColor(X, Y)
+		If (CurrentColor == Color)
+			Return True
+		If (A_TickCount - StartTime >= Timeout) {
+			If (ReturnOnTimeout)
+				Return False
+			throw Error("Timeout " . Timeout . " ms")
+		}
+	}
+}
+
+; Wait to at least one pixel of the specified color to appear in the corresponding region.
+;
+; Regions - array of objects that must have the following fields:
+;	 X1, Y1, X2, Y2 - region coordinates;
+;	 Color - pixel color to wait.
+; Returns found region or throws exception
+WaitPixelsRegions(Regions, Timeout := 1000) {
+	StartTime := A_TickCount
+	Loop {
+		For (Index, Region in Regions) {
+			X1 := Region.X1
+			X2 := Region.X2
+			Y1 := Region.Y1
+			Y2 := Region.Y2
+			Color := Integer(Region.Color)
+
+			If (PixelSearch(&FoundX, &FoundY, X1, Y1, X2, Y2, Color))
+				Return Region
+		}
+
+		If (A_TickCount - StartTime >= Timeout)
+			throw Error("Timeout " . Timeout . " ms")
+	}
+}
+
+
+
+
+
+; =======================================
+; Some util methods
+; =======================================
+GetSetting(Setting, Def) {
+	Return IniRead(GetSettingsPath(), "Settings", Setting, Def)
+}
+
+UpdateSetting(Setting, NewValue) {
+	IniWrite NewValue, GetSettingsPath(), "Settings", Setting
+}
+
+GetSettingsPath() {
+	Return A_ScriptDir "\data\settings.ini"
+}
+
+Langed(Key, Def := "", Lang := GetSetting("Language", "en")) {
+	Return IniRead(GetLanguagePath(Lang), "Locales", Key, (Def == "" ? Langed(Key, Key, "en") : Def))
+}
+
+GetLanguagePath(Lang) {
+	Return A_ScriptDir "\data\langs\lang_" Lang ".ini"
+}
+
+GetExpeditions() {
+	Return A_ScriptDir "\data\expeditions.ini"
+}
+
+
 
 
 
 ; Exit script
 $End:: {
-	ExitYAGS()
+	CloseYAGS()
+}
+
+CloseYAGS() {
+	ExitApp
 }

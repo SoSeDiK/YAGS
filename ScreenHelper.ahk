@@ -16,6 +16,18 @@
 
 #SingleInstance Force
 
+
+; Rerun script with the administrator privileges if required
+If (not A_IsAdmin) {
+	Try {
+		Run '*RunAs "' A_ScriptFullPath '"'
+	} Catch {
+		MsgBox "Failed to run the script with administrator privileges"
+	}
+	ExitApp
+}
+
+
 Global Toggle := True
 
 
@@ -50,7 +62,7 @@ SetTimer WatchCursor, 100
 ~*f8:: {
 	MouseGetPos &x, &y
 	color := PixelGetColor(x, y)
-	Coords := 'PixelGetColor(' x ', ' y ') = "' color '"'
+	Coords := 'PixelGetColor(' x ', ' y ') == "' color '"'
 	A_Clipboard := Coords
 	x += 10
 	y -= 30
