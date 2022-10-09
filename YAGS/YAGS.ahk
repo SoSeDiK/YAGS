@@ -1,6 +1,15 @@
 ﻿; =======================================
 ; YetAnotherGenshinScript
 ; 				~SoSeDiK's Edition
+; ToDo:
+; - Port AutoFishing
+; - Fixup toggling MButton & features without reopening the script
+; - Allow toggling all features
+; - Fill "About" page, modernize GUI
+; - Release compiled version & implement update checker
+; - Update ReadMe
+; - Improve precision of auto loot pickup
+; - Automatic generation of assets if they do not exist?
 ; =======================================
 #Requires AutoHotkey v2.0-beta
 
@@ -107,6 +116,7 @@ Global ScriptGui := Gui()
 SetupGui()
 SetupGui() {
 	Global
+	;ScriptGui.Opt("+LastFound +Resize MinSize474x322")
 	ScriptGui.BackColor := "F9F1F0"
 
 	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
@@ -459,10 +469,8 @@ ConfigureContextualBindings() {
 	}
 
 	If (QuickPickupEnabled) {
-		If (not QuickPickupBindingsEnabled and (PlayScreen or DialogueActive)) {
+		If (not QuickPickupBindingsEnabled) {
 			EnableFeatureQuickPickup()
-		} Else If (QuickPickupBindingsEnabled and (not PlayScreen and not DialogueActive)) {
-			DisableFeatureQuickPickup()
 		}
 	}
 
@@ -1387,16 +1395,26 @@ DisableFeatureAlternateVision() {
 ; =======================================
 ; Better Map Click
 ; =======================================
+Global MapTeleporting := False
+
+
+
 PressedMButtonToTP(*) {
-	If (IsFullScreenMenuOpen())
-		DoMapClick()
+	Global
+	If (not IsFullScreenMenuOpen())
+		Return
+	If (MapTeleporting)
+		Return
+	MapTeleporting := True
+	DoMapClick()
+	MapTeleporting := False
 }
 
 
 
 DoMapClick() {
 	MapClick()
-	Sleep 100
+	Sleep 50
 	Try {
 		; Wait for a little white arrow or teleport button
 		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCC33" } ])
@@ -1410,7 +1428,7 @@ DoMapClick() {
 	If (TpColor == "0xFFCC33") {
 		; Selected point has only 1 selectable option, and it's available for the teleport
 		ClickOnBottomRightButton()
-		Sleep 200
+		Sleep 250
 		MoveCursorToCenter()
 	} Else {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
@@ -1445,11 +1463,12 @@ Teleport(Y) {
 	Sleep 100
 
 	MouseClick "Left", 1298, Y
+	Sleep 100
 	WaitPixelColor("0xFFCB33", 1480, 1011, 3000) ; "Teleport" button
 	Sleep 100
 
 	ClickOnBottomRightButton()
-	Sleep 100
+	Sleep 250
 	MoveCursorToCenter()
 }
 
@@ -1471,6 +1490,7 @@ EnableFeatureBetterMapClick() {
 DisableFeatureBetterMapClick() {
 	Global
 	;Hotkey "*MButton", PressedMButtonToTP, "Off"
+	MapTeleporting := False
 
 	BetterMapClickBindingsEnabled := False
 }
@@ -2661,12 +2681,17 @@ IsExtraRun() {
 
 ; Special click function for the world map menu.
 ;
-; For some reason MouseClick (and Click) doesn't work consistently: it doesn't work if a click goes to an empty place,
-; but works fine if a click goes to an interactable point.
+; For some reason MouseClick (and Click) doesn't work consistently:
+; it doesn't work if a click goes to an empty place,
+; but works fine if a click goes to an interactable spot
 MapClick() {
-	Send "{LButton down}"
+	Send "{LButton Down}"
 	Sleep 50
-	Send "{LButton up}"
+	; For whatever reason map sometimes refuces to release the left button
+	Loop (10) {
+		Send "{LButton Up}"
+		Sleep 10
+	}
 }
 
 MoveCursorToCenter() {
