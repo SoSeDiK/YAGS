@@ -1424,11 +1424,12 @@ DoMapClick() {
 
 	Sleep 100
 
-	TpColor := PixelGetColor(1478, 1012)
-	If (TpColor == "0xFFCC33") {
+	If (PixelGetColor(1478, 1012) == "0xFFCC33") {
 		; Selected point has only 1 selectable option, and it's available for the teleport
-		ClickOnBottomRightButton()
-		Sleep 250
+		Loop {
+			ClickOnBottomRightButton()
+			Sleep 250
+		} Until (PixelGetColor(1478, 1012) != "0xFFCC33")
 		MoveCursorToCenter()
 	} Else {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
@@ -1464,11 +1465,13 @@ Teleport(Y) {
 
 	MouseClick "Left", 1298, Y
 	Sleep 100
-	WaitPixelColor("0xFFCB33", 1480, 1011, 3000) ; "Teleport" button
+	WaitPixelColor("0xFFCC33", 1478, 1012, 3000) ; "Teleport" button
 	Sleep 100
 
-	ClickOnBottomRightButton()
-	Sleep 250
+	While (PixelGetColor(1478, 1012) == "0xFFCC33") {
+		ClickOnBottomRightButton()
+		Sleep 250
+	}
 	MoveCursorToCenter()
 }
 
