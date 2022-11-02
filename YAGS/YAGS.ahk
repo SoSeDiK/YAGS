@@ -425,14 +425,14 @@ TriggerXButton1BindingsUp(*) {
 }
 
 TriggerXButton2Bindings(*) {
-	If (QuickPickupBindingsEnabled)
+	If (QuickPickupEnabled)
 		XButtonPickup()
 	If (QuickShopBindingsEnabled)
 		BuyOnce()
 }
 
 TriggerXButton2BindingsUp(*) {
-	If (QuickPickupBindingsEnabled)
+	If (QuickPickupEnabled)
 		XButtonPickupUp()
 }
 
@@ -469,8 +469,10 @@ ConfigureContextualBindings() {
 	}
 
 	If (QuickPickupEnabled) {
-		If (not QuickPickupBindingsEnabled) {
+		If (not QuickPickupBindingsEnabled and (PlayScreen or DialogueActive)) {
 			EnableFeatureQuickPickup()
+		} Else If (QuickPickupBindingsEnabled and (not PlayScreen and not DialogueActive)) {
+			DisableFeatureQuickPickup()
 		}
 	}
 
@@ -871,6 +873,8 @@ Global SkippingDialogueClicking := False
 
 XButtonSkipDialogue(*) {
 	Global
+	If (IsGameScreen())
+		Return
 	If (not SkippingDialogueClicking)
 		SetTimer DialogueSkipClicking, 25
 	SkippingDialogueClicking := True
