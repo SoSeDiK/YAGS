@@ -1101,6 +1101,7 @@ Global Pressing1 := False
 Global Pressing2 := False
 Global Pressing3 := False
 Global Pressing4 := False
+Global Pressing5 := False
 
 
 
@@ -1172,6 +1173,23 @@ SwitchToChar4() {
 	Send "{4}"
 }
 
+Pressed5(*) {
+	Global
+	If (not Pressing5)
+		SetTimer SwitchToChar5, 100
+	Pressing5 := True
+}
+
+Unpressed5(*) {
+	Global
+	SetTimer SwitchToChar5, 0
+	Pressing5 := False
+}
+
+SwitchToChar5() {
+	Send "{5}"
+}
+
 
 
 EnableFeatureBetterCharacterSwitch() {
@@ -1190,6 +1208,8 @@ EnableFeatureBetterCharacterSwitch() {
 	Hotkey "~*3 Up", Unpressed3, "On"
 	Hotkey "~*4", Pressed4, "On"
 	Hotkey "~*4 Up", Unpressed4, "On"
+	Hotkey "~*5", Pressed5, "On"
+	Hotkey "~*5 Up", Unpressed5, "On"
 
 	BetterCharacterSwitchBindingsEnabled := True
 }
@@ -1205,11 +1225,14 @@ DisableFeatureBetterCharacterSwitch() {
 	Hotkey "~*3 Up", Unpressed3, "Off"
 	Hotkey "~*4", Pressed4, "Off"
 	Hotkey "~*4 Up", Unpressed4, "Off"
+	Hotkey "~*5", Pressed5, "Off"
+	Hotkey "~*5 Up", Unpressed5, "Off"
 
 	SetTimer SwitchToChar1, 0
 	SetTimer SwitchToChar2, 0
 	SetTimer SwitchToChar3, 0
 	SetTimer SwitchToChar4, 0
+	SetTimer SwitchToChar5, 0
 
 	BetterCharacterSwitchBindingsEnabled := False
 }
@@ -1521,11 +1544,37 @@ Party4(*) {
 	ChangeParty(4)
 }
 
+Party5(*) {
+	ChangeParty(5)
+}
+
+Party6(*) {
+	ChangeParty(6)
+}
+
+Party7(*) {
+	ChangeParty(7)
+}
+
+Party8(*) {
+	ChangeParty(8)
+}
+
+Party9(*) {
+	ChangeParty(9)
+}
+
+Party10(*) {
+	ChangeParty(10)
+}
+
 
 
 ChangeParty(NewPartyNum) {
-	CurrentPartyNum := 1
+	CurrentPartyNum := -1
+	Even := True
 
+	; Open parties menu
 	Send "{l}"
 	Try {
 		WaitFullScreenMenu(5000)
@@ -1533,37 +1582,90 @@ ChangeParty(NewPartyNum) {
 		Return
 	}
 
-	Loop (4) {
-		Color := PixelGetColor(875 + (A_Index * 35), 48)
-		If (Color != "0xFFFFFF") ; Check for current party
+	; Check for current party (even)
+	Loop (10) {
+		Color := PixelGetColor(790 + ((A_Index - 1) * 36), 48)
+		If (Color != "0xFFFFFF")
 			Continue
 
 		CurrentPartyNum := A_Index
 		Break
 	}
 
+	; Check for current party (uneven)
+	If (CurrentPartyNum == -1) {
+		Even := False
+		Loop (9) {
+			Color := PixelGetColor(808 + ((A_Index - 1) * 36), 48)
+			If (Color != "0xFFFFFF") ; Check for current party
+				Continue
+
+			CurrentPartyNum := A_Index
+			Break
+		}
+	}
+
+	; Current party wasn't found
+	If (CurrentPartyNum == -1)
+		Return
+
+	Before := 0
+	After := 0
+	CheckXCoord := Even ? 805 : 823
+
+	; Figure out how many patries available before current
+	Loop (CurrentPartyNum - 1) {
+		Ind := CurrentPartyNum - A_Index
+		XCoord := CheckXCoord + ((Ind - 1) * 36)
+		If (SubStr(PixelGetColor(XCoord, 48), 1, 3) != "0x4")
+			Break
+		Before++
+	}
+
+	; Figure out how many patries available after current
+	Loop (10 - CurrentPartyNum) {
+		Ind := CurrentPartyNum + A_Index
+		XCoord := CheckXCoord + ((Ind - 1) * 36)
+		If (SubStr(PixelGetColor(XCoord, 48), 1, 3) != "0x4")
+			Break
+		After++
+	}
+
+	; Check if party is not out of bounds
+	TotalParties := Before + 1 + After
+	If (NewPartyNum > TotalParties)
+		Return
+
+	; Scale current party
+	If (Before != CurrentPartyNum - 1)
+		CurrentPartyNum := CurrentPartyNum - (CurrentPartyNum - Before) + 1
+
+	; Find the number of needed clicks
 	Changes := CurrentPartyNum - NewPartyNum
 	If (Changes == 0) {
 		Send "{Esc}"
 		Return
-	} Else If (Changes == 3) {
-		Changes := -1
-	} Else If (Changes == -3) {
-		Changes := 1
 	}
 
+	If (Abs(Changes) > TotalParties / 2)
+		Changes := Changes > 0 ? Changes - TotalParties : Changes + TotalParties
+
+	; Switch party
+	NextPartyX := Changes > 0 ? 75 : 1845
 	Loop (Abs(Changes)) {
-		If (Changes > 0) {
-			MouseClick "Left", 75, 539
-		} Else {
-			MouseClick "Left", 1845, 539
-		}
-		Sleep 20
+		MouseClick "Left", NextPartyX, 539
+		Sleep 50
 	}
 
-	WaitDeployButtonActive(1000)
+	; Apply Party
+	Try {
+		WaitDeployButtonActive(1000)
+	} Catch {
+		Return
+	}
 	MouseClick "Left", 1700, 1000 ; Press Deploy button
 
+	; Done, exit
 	WaitPixelColor("0xFFFFFF", 838, 541, 12000) ; Wait for "Party deployed" notification
 	Send "{Esc}"
 }
@@ -1578,22 +1680,30 @@ EnableFeatureQuickPartySwitch() {
 	If (not QuickPartySwitchEnabled)
 		Return
 
-	Hotkey "~NumpadSub & Numpad1", Party1, "On"
-	Hotkey "~NumpadSub & Numpad2", Party2, "On"
-	Hotkey "~NumpadSub & Numpad3", Party3, "On"
-	Hotkey "~NumpadSub & Numpad4", Party4, "On"
+	SwitchQuickPartyHotkeys("On")
 
 	QuickPartySwitchBindingsEnabled := True
 }
 
 DisableFeatureQuickPartySwitch() {
 	Global
-	Hotkey "~NumpadSub & Numpad1", Party1, "Off"
-	Hotkey "~NumpadSub & Numpad2", Party2, "Off"
-	Hotkey "~NumpadSub & Numpad3", Party3, "Off"
-	Hotkey "~NumpadSub & Numpad4", Party4, "Off"
+	SwitchQuickPartyHotkeys("Off")
 
 	QuickPartySwitchBindingsEnabled := False
+}
+
+SwitchQuickPartyHotkeys(State) {
+	Global
+	Hotkey "~NumpadAdd & Numpad1", Party1, State
+	Hotkey "~NumpadAdd & Numpad2", Party2, State
+	Hotkey "~NumpadAdd & Numpad3", Party3, State
+	Hotkey "~NumpadAdd & Numpad4", Party4, State
+	Hotkey "~NumpadAdd & Numpad5", Party5, State
+	Hotkey "~NumpadAdd & Numpad6", Party6, State
+	Hotkey "~NumpadAdd & Numpad7", Party7, State
+	Hotkey "~NumpadAdd & Numpad8", Party8, State
+	Hotkey "~NumpadAdd & Numpad9", Party9, State
+	Hotkey "~NumpadAdd & Numpad0", Party10, State
 }
 
 

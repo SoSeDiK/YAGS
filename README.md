@@ -40,7 +40,7 @@ There are no plans to adapt it to other resolutions in the near future.
   - Yes, I'm too lazy for `Spacebar` (mouse walking-sprinting-jumping power!). Bunnyhop is possible as well.
   - Works with Waveriders.
   - May be used to skip dialogues too, but in addition also auto picks up the mission option, if available, or the latest dialogue choice.
-- Hold `1-4` keys to switch characters.
+- Hold `1-5` keys to switch characters.
   - I can not be the only one who have chosen the wrong character in the past, and had to rage spam my keyboard to get another character asap, right? RIGHT?!
 - Press `MMB` to toggle AutoWalk!
   - Press `RMB` to toggle sprint while auto walking. Hold `RMB` to continiously run instead of dashing (useful to start Bunnyhopping).
@@ -65,7 +65,7 @@ There are no plans to adapt it to other resolutions in the near future.
   - Toggle «Auto-Play Story» mode in dialogue.
 - Press `XButton1` to quickly purchase items from the shop.
   - Press `XButton2` to purchase items continuously. Press again to stop.
-- `Numpad -` + `Numpad 1-4` to change current party.
+- `Numpad +` + `Numpad 0-9` to change current party (0 is 10).
 - `Numpad -` + `Numpad 5` to go to the Serenitea Pot (via gadget).
 - `Numpad -` + `Numpad 6` to receive and resend expeditions (use GUI to configure),
 - `Numpad -` + `Numpad 8` to obtain all BP experience and rewards.

@@ -1,4 +1,6 @@
 ﻿; Borderless windowed mode - F12
+#Requires AutoHotkey v2.0-beta
+
 #UseHook True
 #SingleInstance Force
 
