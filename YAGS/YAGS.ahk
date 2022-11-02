@@ -439,7 +439,7 @@ TriggerXButton2BindingsUp(*) {
 ConfigureContextualBindings() {
 	Global
 	FullScreenMenu := IsFullScreenMenuOpen()
-	MapMenu := FullScreenMenu and PixelGetColor(27, 427) == "0xEDE5DA" ; Resin "+" symbol
+	MapMenu := FullScreenMenu and PixelGetColor(28, 1029) == "0xEBE4D8" ; "Donains only" switch
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and PixelGetColor(1855, 45) != "0xECE5D8" and PixelGetColor(1292, 778) != "0x4A5366") ; "X" button in menus and "Purchase" dialogue
@@ -1440,19 +1440,19 @@ DoMapClick() {
 	Sleep 50
 	Try {
 		; Wait for a little white arrow or teleport button
-		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCC33" } ])
+		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCD33" } ])
 	} Catch {
 		Return
 	}
 
 	Sleep 100
 
-	If (PixelGetColor(1478, 1012) == "0xFFCC33") {
+	If (PixelGetColor(1478, 1012) == "0xFFCD33") {
 		; Selected point has only 1 selectable option, and it's available for the teleport
 		Loop {
 			ClickOnBottomRightButton()
 			Sleep 250
-		} Until (PixelGetColor(1478, 1012) != "0xFFCC33")
+		} Until (PixelGetColor(1478, 1012) != "0xFFCD33")
 		MoveCursorToCenter()
 	} Else {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
@@ -1470,7 +1470,7 @@ DoMapClick() {
 					Y := FoundY
 			}
 		}
-		
+
 		If (Y == -1) {
 			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
 				If (PixelGetColor(FoundX, FoundY - 10) == "0xFFFFFF")
@@ -1484,14 +1484,14 @@ DoMapClick() {
 }
 
 Teleport(Y) {
-	Sleep 100
+	Sleep 200
 
 	MouseClick "Left", 1298, Y
 	Sleep 100
-	WaitPixelColor("0xFFCC33", 1478, 1012, 3000) ; "Teleport" button
+	WaitPixelColor("0xFFCD33", 1478, 1012, 3000) ; "Teleport" button
 	Sleep 100
 
-	While (PixelGetColor(1478, 1012) == "0xFFCC33") {
+	While (PixelGetColor(1478, 1012) == "0xFFCD33") {
 		ClickOnBottomRightButton()
 		Sleep 250
 	}
@@ -2138,6 +2138,7 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 	If (PixelGetColor(1600, 1020) == "0xFE5C5C") ; Already Occupied
 		Return
 
+    Sleep 200
 	SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration)
 }
 
@@ -2166,12 +2167,12 @@ SelectExpedition(Expedition) {
 
     ; Click on the expedition
     MouseClick "Left", Expedition.X, Expedition.Y
-    Sleep 200
+    Sleep 300
 }
 
 SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
     SelectDuration(Duration)
-    Sleep 100
+    Sleep 200
 
     ; Click on "Select Character"
     ClickOnBottomRightButton()
