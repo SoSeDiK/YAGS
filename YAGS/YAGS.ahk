@@ -439,7 +439,7 @@ TriggerXButton2BindingsUp(*) {
 ConfigureContextualBindings() {
 	Global
 	FullScreenMenu := IsFullScreenMenuOpen()
-	MapMenu := FullScreenMenu and IsColor(28, 1029, "0xEBE4D8") ; "Donains only" switch
+	MapMenu := IsMapMenuOpen()
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
@@ -1427,7 +1427,7 @@ Global MapTeleporting := False
 
 PressedMButtonToTP(*) {
 	Global
-	If (not IsFullScreenMenuOpen())
+	If (not IsMapMenuOpen())
 		Return
 	If (MapTeleporting)
 		Return
@@ -1439,6 +1439,9 @@ PressedMButtonToTP(*) {
 
 
 DoMapClick() {
+	If (SimpleTeleport())
+		Return
+	
 	SimpleLockedClick()
 	Sleep 50
 	Try {
@@ -1450,38 +1453,46 @@ DoMapClick() {
 
 	Sleep 100
 
-	If (IsColor(1478, 1012, "0xFFCD33")) {
-		; Selected point has only 1 selectable option, and it's available for the teleport
-		ClickOnBottomRightButton()
-		Sleep 100
-		MoveCursorToCenter()
-	} Else {
-		; Selected point has multiple selectable options or selected point is not available for the teleport
-		TeleportablePointColors := [ "0x2D91D9"	; Teleport Waypoint
-			,"0x99ECF5"							; Statue of The Seven
-			,"0xCCFFFF"							; Domain
-			,"0x00FFFF"							; One-time dungeon
-			,"0x63655F" ]						; Portable Waypoint
+	If (SimpleTeleport())
+		Return
 
-		; Find the upper available teleport
-		Y := -1
-		For (Index, TeleportablePointColor in TeleportablePointColors) {
-			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, TeleportablePointColor)) {
-				If (Y == -1 or FoundY < Y)
-					Y := FoundY
-			}
+	; Selected point has multiple selectable options or selected point is not available for the teleport
+	TeleportablePointColors := [ "0x2D91D9"	; Teleport Waypoint
+		,"0x99ECF5"							; Statue of The Seven
+		,"0xCCFFFF"							; Domain
+		,"0x00FFFF"							; One-time dungeon
+		,"0x63655F" ]						; Portable Waypoint
+
+	; Find the upper available teleport
+	Y := -1
+	For (Index, TeleportablePointColor in TeleportablePointColors) {
+		If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, TeleportablePointColor)) {
+			If (Y == -1 or FoundY < Y)
+				Y := FoundY
 		}
-
-		If (Y == -1) {
-			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
-				If (IsColor(FoundX, FoundY - 10, "0xFFFFFF"))
-					Y := FoundY
-			}
-		}
-
-		If (Y != -1)
-			Teleport(Y)
 	}
+
+	If (Y == -1) {
+		If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
+			If (IsColor(FoundX, FoundY - 10, "0xFFFFFF"))
+				Y := FoundY
+		}
+	}
+
+	If (Y != -1)
+		Teleport(Y)
+}
+
+SimpleTeleport() {
+	If (not IsColor(1478, 1012, "0xFFCD33"))
+		Return False
+
+	; Selected point has only 1 selectable option, and it's available for the teleport
+	ClickOnBottomRightButton(False)
+	Sleep 100
+	MoveCursorToCenter()
+
+	Return True
 }
 
 Teleport(Y) {
@@ -1492,7 +1503,7 @@ Teleport(Y) {
 	WaitPixelColor("0xFFCD33", 1478, 1012, 3000) ; "Teleport" button
 	Sleep 100
 
-	ClickOnBottomRightButton()
+	ClickOnBottomRightButton(False)
 	Sleep 100
 	MoveCursorToCenter()
 }
@@ -1723,11 +1734,11 @@ BuyAll(*) {
 		StopBuyingAll()
 		Return
 	}
-	
+
 	MouseGetPos &X, &Y
 	BuyingLastMouseX := X
 	BuyingLastMouseY := Y
-	
+
 	BuyingMode := True
 	BuyAllAvailable()
 }
@@ -1740,7 +1751,7 @@ BuyAllAvailable() {
 			Return
 		}
 		QuicklyBuyOnce()
-		SetTimer BuyAllAvailable, -400
+		SetTimer BuyAllAvailable, -200
 		Return
 	}
 	StopBuyingAll()
@@ -1765,16 +1776,17 @@ BuyAvailable() {
 }
 
 QuicklyBuyOnce() {
-	ClickOnBottomRightButton()
+	ClickOnBottomRightButton(False)
 	If (not WaitPixelColor("0x4A5366", 1050, 750, 1000, True)) ; Wait for tab to be active
 		Return
-	Sleep 100
+	Sleep 50
 	LockedClick(1178, 625) ; Max stacks
-	Sleep 150
+	Sleep 50
 	LockedClick(1050, 750) ; Click Exchange
-	Sleep 150
-	WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
-	ClickOnBottomRightButton() ; Skip purchased dialogue
+	Sleep 50
+	If (not WaitPixelColor("0xD3BC8E", 1060, 280, 1000, True))
+		Return
+	ClickOnBottomRightButton(False) ; Skip purchased dialogue
 }
 
 StopBuyingAll() {
@@ -2140,12 +2152,12 @@ ReceiveReward(Expedition, ReceiveRewardLag := 0) {
     Sleep 200
 
     ; Receive reward
-    ClickOnBottomRightButton()
+    ClickOnBottomRightButton(False)
     Sleep 200
     Sleep ReceiveRewardLag
 
     ; Skip reward menu
-    ClickOnBottomRightButton()
+    ClickOnBottomRightButton(False)
     Sleep 200
 }
 
@@ -2165,7 +2177,7 @@ SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
     Sleep 200
 
     ; Click on "Select Character"
-    ClickOnBottomRightButton()
+    ClickOnBottomRightButton(False)
     Sleep 800
 
     ; Find and select the character
@@ -2307,7 +2319,7 @@ ReceiveBpExp() {
 	ClickOnBottomRightButton() ; "Claim all"
 	Sleep 400
 
-	If (!IsFullScreenMenuOpen()) {
+	If (not IsFullScreenMenuOpen()) {
 		; Level up, need to close popup
 		Send "{Esc}"
 		WaitFullScreenMenu()
@@ -2758,8 +2770,11 @@ SimpleLockedClick() {
 	BlockInput "MouseMoveOff"
 }
 
-ClickOnBottomRightButton() {
-	ClickAndBack(1730, 1000)
+ClickOnBottomRightButton(Back := True) {
+	If (Back)
+		ClickAndBack(1730, 1000)
+	Else
+		LockedClick(1730, 1000)
 }
 
 MoveCursorToCenter() {
@@ -2772,6 +2787,11 @@ WaitFullScreenMenu(Timeout := 3000) {
 
 IsFullScreenMenuOpen() {
 	Return IsColor(1859, 47, LightMenuColor) or IsColor(1875, 35, LightMenuColor)
+}
+
+IsMapMenuOpen() {
+	; Map scale
+	Return IsColor(47, 427, "0xEDE5DA")
 }
 
 ; Note: always better to check if not IsFullScreenMenuOpen() before checking the game screen
