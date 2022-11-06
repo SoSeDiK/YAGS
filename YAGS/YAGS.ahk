@@ -645,10 +645,25 @@ DoAutoWalk() {
 }
 
 DoAutoSprint() {
-	If (PressingRMForSprint or IsInBoat() or IsExtraRun()) {
+	; Single long sprint
+	If (PressingRMForSprint or IsInBoat()) {
 		Send "{LShift Down}"
 		Return
 	}
+
+	; Extra run mode
+	If (IsExtraRun()) {
+		SkillColor := SubStr(GetColor(1586, 970), 1, 3)
+		; Super ugly, but works :/
+		If (SkillColor == "0xC" or SkillColor == "0xD" or SkillColor == "0xE" or SkillColor == "0xF") {
+			Send "{LShift Up}"
+			Sleep 30
+		}
+		Send "{LShift Down}"
+		Return
+	}
+
+	; Simple sprint
 	Send "{LShift Down}"
 	Sleep 150
 	Send "{LShift Up}"
@@ -750,6 +765,7 @@ DisableFeatureAutoWalk() {
 ; =======================================
 Global PressingXButtonToJump := False
 Global PressingSpace := False
+Global ResetAutoSprint := False
 
 
 
@@ -794,8 +810,7 @@ Jump() {
 		Return
 	}
 
-	; Just jump
-	Send "{Space}"
+	SimpleJump()
 }
 
 PreBunnyhopX() {
@@ -808,19 +823,49 @@ PreBunnyhopS() {
 
 
 BunnyhopX() {
+	Global
 	If (not PressingXButtonToJump or not IsGameScreen()) {
 		SetTimer BunnyhopX, 0
 		Return
 	}
-	Send "{Space}"
+	SimpleJump()
 }
 
 BunnyhopS() {
+	Global
 	If (not PressingSpace or not IsGameScreen()) {
 		SetTimer BunnyhopS, 0
 		Return
 	}
+	SimpleJump()
+}
+
+SimpleJump() {
+	Global
+	; Allow jumping while in extra run mode
+	If (ResetAutoSprint) {
+		SetTimer ContinueAutoSprint, 0 ; Kill old timer
+		SetTimer ContinueAutoSprint, -1200
+	} Else If (AutoSprint and IsExtraRun()) {
+		InterruptAutoSprint()
+	}
+
+	; Just jump
 	Send "{Space}"
+}
+
+InterruptAutoSprint() {
+	Global
+	ResetAutoSprint := True
+	ToggleAutoSprint()
+	SetTimer ContinueAutoSprint, -1200
+}
+
+ContinueAutoSprint() {
+	Global
+	ResetAutoSprint := False
+	If (not AutoSprint)
+		ToggleAutoSprint()
 }
 
 
