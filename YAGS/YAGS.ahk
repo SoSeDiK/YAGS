@@ -2674,10 +2674,16 @@ PerformInventoryActions() {
 	}
 
 	; =======================================
-	; Confirm button
+	; Confirm buttons
 	; =======================================
+	; Enhancing
 	If (IsColor(1834, 44, "0x16171D") and IsColor(831, 828, "0xFFCB32")) {
 		ClickAndBack(888, 825)
+		Return
+	}
+	; Crafting
+	If (IsColor(5, 502, "0x4A5062") and IsColor(831, 902, "0xFFCB32")) {
+		ClickAndBack(888, 900)
 		Return
 	}
 
@@ -2747,7 +2753,7 @@ ClickAndBack(X, Y) {
 	BlockInput "MouseMove"
 	MouseGetPos &CoordX, &CoordY
 	Click X, Y, "Down"
-	Sleep 15
+	Sleep 20
 	Click "Up"
 	Sleep 50
 	MouseMove CoordX, CoordY
@@ -2757,7 +2763,7 @@ ClickAndBack(X, Y) {
 LockedClick(X, Y) {
 	BlockInput "MouseMove"
 	Click X, Y, "Down"
-	Sleep 15
+	Sleep 20
 	Click "Up"
 	BlockInput "MouseMoveOff"
 }
@@ -2765,7 +2771,7 @@ LockedClick(X, Y) {
 SimpleLockedClick() {
 	BlockInput "MouseMove"
 	Click "Down"
-	Sleep 15
+	Sleep 20
 	Click "Up"
 	BlockInput "MouseMoveOff"
 }
