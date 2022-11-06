@@ -439,11 +439,11 @@ TriggerXButton2BindingsUp(*) {
 ConfigureContextualBindings() {
 	Global
 	FullScreenMenu := IsFullScreenMenuOpen()
-	MapMenu := FullScreenMenu and PixelGetColor(28, 1029) == "0xEBE4D8" ; "Donains only" switch
+	MapMenu := FullScreenMenu and IsColor(28, 1029, "0xEBE4D8") ; "Donains only" switch
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
-	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and PixelGetColor(1855, 45) != "0xECE5D8" and PixelGetColor(1292, 778) != "0x4A5366") ; "X" button in menus and "Purchase" dialogue
-	FishingActive := False and GameScreen and PixelGetColor(1626, 1029) == "0xFFE92C" ; 3rd action icon bound to LMB ; needs changing, LMB is also present while flying
+	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
+	FishingActive := False and GameScreen and IsColor(1626, 1029, "0xFFE92C") ; 3rd action icon bound to LMB ; needs changing, LMB is also present while flying
 	PlayScreen := GameScreen and not FishingActive
 
 	If (AutoWalkEnabled) {
@@ -891,9 +891,9 @@ XButtonSkipDialogueUp(*) {
 DialogueSkipClicking() {
 	Send "{f}"
 	If (PixelSearch(&FoundX, &FoundY, 1310, 840, 1310, 580, "0x806200")) ; Mission
-		MouseClick "Left", FoundX, FoundY
+		LockedClick(FoundX, FoundY)
 	Else If (PixelSearch(&FoundX, &FoundY, 1310, 840, 1310, 580, "0xFFFFFF")) ; Dialoue
-		MouseClick "Left", FoundX, FoundY
+		LockedClick(FoundX, FoundY)
 }
 
 
@@ -1045,7 +1045,7 @@ UnpressedLButton(*) {
 
 
 NormalAutoAttack() {
-	MouseClick "Left"
+	Click
 }
 
 StrongAttack(*) {
@@ -1053,7 +1053,7 @@ StrongAttack(*) {
     KeyWait "RButton"
     TimeSinceKeyPressed := A_TimeSinceThisHotkey
     If (TimeSinceKeyPressed < 350) {
-        ; hold LMB for at least 350ms
+        ; Hold LMB for at least 350ms
         Sleep 350 - TimeSinceKeyPressed
     }
     Click "Up"
@@ -1257,8 +1257,8 @@ Pickup() {
 
 HasPickup() {
 	; Search for "F" icon
-	If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484") { ; Icon wasn't found
-		If not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x383838")
+	If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484")) { ; Icon wasn't found
+		If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x383838"))
 			Return False
 	}
 
@@ -1266,12 +1266,10 @@ HasPickup() {
 	Sleep 10
 
 	; Check if there's no extra prompts
-	Color := PixelGetColor(1185, FoundY - 1)
-	If (Color == "0xFFFFFF") ; Prompt icon was found
+	If (IsColor(1185, FoundY - 1, "0xFFFFFF")) ; Prompt icon was found
 		Return False
 
-	Color := PixelGetColor(1173, FoundY - 1)
-	If (Color == "0xFFFFFF") ; Prompt icon was found
+	If (IsColor(1173, FoundY - 1, "0xFFFFFF")) ; Prompt icon was found
 		Return False
 
 	Return True
@@ -1307,10 +1305,11 @@ DisableFeatureAutoPickup() {
 ; Auto Unfreeze/Unbubble
 ; =======================================
 Unfreeze() {
-	While (IsFrozen()) {
-		Send "{Space}"
-		Sleep 65
+	If (not IsFrozen()) {
+		SetTimer Unfreeze, 0
+		Return
 	}
+	Send "{Space}"
 }
 
 
@@ -1323,7 +1322,7 @@ EnableFeatureAutoUnfreeze() {
 	If (not AutoUnfreezeEnabled)
 		Return
 
-	SetTimer Unfreeze, 250
+	SetTimer Unfreeze, 65
 
 	AutoUnfreezeBindingsEnabled := True
 }
@@ -1440,7 +1439,7 @@ PressedMButtonToTP(*) {
 
 
 DoMapClick() {
-	MapClick()
+	SimpleLockedClick()
 	Sleep 50
 	Try {
 		; Wait for a little white arrow or teleport button
@@ -1451,12 +1450,10 @@ DoMapClick() {
 
 	Sleep 100
 
-	If (PixelGetColor(1478, 1012) == "0xFFCD33") {
+	If (IsColor(1478, 1012, "0xFFCD33")) {
 		; Selected point has only 1 selectable option, and it's available for the teleport
-		Loop {
-			ClickOnBottomRightButton()
-			Sleep 250
-		} Until (PixelGetColor(1478, 1012) != "0xFFCD33")
+		ClickOnBottomRightButton()
+		Sleep 100
 		MoveCursorToCenter()
 	} Else {
 		; Selected point has multiple selectable options or selected point is not available for the teleport
@@ -1477,7 +1474,7 @@ DoMapClick() {
 
 		If (Y == -1) {
 			If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
-				If (PixelGetColor(FoundX, FoundY - 10) == "0xFFFFFF")
+				If (IsColor(FoundX, FoundY - 10, "0xFFFFFF"))
 					Y := FoundY
 			}
 		}
@@ -1490,15 +1487,13 @@ DoMapClick() {
 Teleport(Y) {
 	Sleep 200
 
-	MouseClick "Left", 1298, Y
-	Sleep 100
+	LockedClick(1298, Y)
+
 	WaitPixelColor("0xFFCD33", 1478, 1012, 3000) ; "Teleport" button
 	Sleep 100
 
-	While (PixelGetColor(1478, 1012) == "0xFFCD33") {
-		ClickOnBottomRightButton()
-		Sleep 250
-	}
+	ClickOnBottomRightButton()
+	Sleep 100
 	MoveCursorToCenter()
 }
 
@@ -1585,11 +1580,11 @@ ChangeParty(NewPartyNum) {
 	} Catch {
 		Return
 	}
+	Sleep 100
 
 	; Check for current party (even)
 	Loop (10) {
-		Color := PixelGetColor(790 + ((A_Index - 1) * 36), 48)
-		If (Color != "0xFFFFFF")
+		If (not IsColor(790 + ((A_Index - 1) * 36), 48, "0xFFFFFF"))
 			Continue
 
 		CurrentPartyNum := A_Index
@@ -1600,8 +1595,7 @@ ChangeParty(NewPartyNum) {
 	If (CurrentPartyNum == -1) {
 		Even := False
 		Loop (9) {
-			Color := PixelGetColor(808 + ((A_Index - 1) * 36), 48)
-			If (Color != "0xFFFFFF") ; Check for current party
+			If (not IsColor(808 + ((A_Index - 1) * 36), 48, "0xFFFFFF")) ; Check for current party
 				Continue
 
 			CurrentPartyNum := A_Index
@@ -1621,7 +1615,7 @@ ChangeParty(NewPartyNum) {
 	Loop (CurrentPartyNum - 1) {
 		Ind := CurrentPartyNum - A_Index
 		XCoord := CheckXCoord + ((Ind - 1) * 36)
-		If (SubStr(PixelGetColor(XCoord, 48), 1, 3) != "0x4")
+		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x4")
 			Break
 		Before++
 	}
@@ -1630,7 +1624,7 @@ ChangeParty(NewPartyNum) {
 	Loop (10 - CurrentPartyNum) {
 		Ind := CurrentPartyNum + A_Index
 		XCoord := CheckXCoord + ((Ind - 1) * 36)
-		If (SubStr(PixelGetColor(XCoord, 48), 1, 3) != "0x4")
+		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x4")
 			Break
 		After++
 	}
@@ -1657,7 +1651,7 @@ ChangeParty(NewPartyNum) {
 	; Switch party
 	NextPartyX := Changes > 0 ? 75 : 1845
 	Loop (Abs(Changes)) {
-		MouseClick "Left", NextPartyX, 539
+		LockedClick(NextPartyX, 539)
 		Sleep 50
 	}
 
@@ -1667,7 +1661,7 @@ ChangeParty(NewPartyNum) {
 	} Catch {
 		Return
 	}
-	MouseClick "Left", 1700, 1000 ; Press Deploy button
+	LockedClick(1700, 1000) ; Press Deploy button
 
 	; Done, exit
 	WaitPixelColor("0xFFFFFF", 838, 541, 12000) ; Wait for "Party deployed" notification
@@ -1775,9 +1769,9 @@ QuicklyBuyOnce() {
 	If (not WaitPixelColor("0x4A5366", 1050, 750, 1000, True)) ; Wait for tab to be active
 		Return
 	Sleep 100
-	MouseClick "Left", 1178, 625 ; Max stacks
+	LockedClick(1178, 625) ; Max stacks
 	Sleep 150
-	MouseClick "Left", 1050, 750 ; Click Exchange
+	LockedClick(1050, 750) ; Click Exchange
 	Sleep 150
 	WaitPixelColor("0xD3BC8E", 1060, 280, 1000)
 	ClickOnBottomRightButton() ; Skip purchased dialogue
@@ -1794,11 +1788,11 @@ StopBuyingAll() {
 
 
 IsShopMenu() {
-	Return PixelGetColor(80, 50) == "0xD3BC8E" and PixelGetColor(1840, 46) == "0x3B4255" and PixelGetColor(1740, 995) == "0xECE5D8"
+	Return IsColor(80, 50, "0xD3BC8E") and IsColor(1840, 46, "0x3B4255") and IsColor(1740, 995, "0xECE5D8")
 }
 
 IsAvailableForStock() {
-	Return PixelGetColor(1770, 930) != "0xE5967E" ; Sold out
+	Return not IsColor(1770, 930, "0xE5967E") ; Sold out
 }
 
 
@@ -1902,14 +1896,13 @@ OpenClockMenu(*) {
 		Return
 	OpenMenu()
 	Sleep 100
-	MouseClick "Left", 45, 715 ; Clock icon
+	LockedClick(45, 715) ; Clock icon
 }
 
 
 
 IsClockMenu() {
-	Global
-	Return PixelGetColor(1870, 50) == "0xECE5D8"
+	Return IsColor(1870, 50, "0xECE5D8")
 }
 
 SkipToTime(NeededTime) {
@@ -1922,7 +1915,7 @@ SkipToTime(NeededTime) {
 	If (not ClockMenuAlreadyOpened) {
 		OpenMenu()
 
-		MouseClick "Left", 45, 715 ; Clock icon
+		LockedClick(45, 715) ; Clock icon
 		WaitPixelColor("0xECE5D8", 1870, 50, 5000) ; Wait for the clock menu
 	}
 	
@@ -1949,15 +1942,15 @@ SkipToTime(NeededTime) {
 		Offset := Time + A_Index * 6 + 1
 		If (Offset > 24)
 			Offset -= 24
-		ClickOnClock(HourXCoords[Offset], HourYCoords[Offset])
+		LockedClick(HourXCoords[Offset], HourYCoords[Offset])
 	}
 	
 	Offset := NeededTime + 1
 	If (Offset > 24)
 		Offset -= 24
-	ClickOnClock(HourXCoords[Offset], HourYCoords[Offset])
+	LockedClick(HourXCoords[Offset], HourYCoords[Offset])
 
-	MouseClick "Left", 1440, 1000 ; "Confirm" button
+	LockedClick(1440, 1000) ; "Confirm" button
 	
 	If (ClockMenuAlreadyOpened)
 		Return
@@ -1974,7 +1967,7 @@ SkipToTime(NeededTime) {
 GetCurrentAngle() {
 	Global
 	Loop (TotalAngles) {
-		If (PixelGetColor(XCoords[A_Index], YCoords[A_Index]) == "0xECE5D8")
+		If (IsColor(XCoords[A_Index], YCoords[A_Index], "0xECE5D8"))
 			Return Angles[A_Index]
 	}
 	Return 0
@@ -1985,13 +1978,6 @@ AngleToTime(Angle) {
 	If (Time > 24)
 		Time -= 24
 	Return Time
-}
-
-ClickOnClock(X, Y) {
-	MouseClick "Left", X, Y, , , "Down"
-	Sleep 50
-	MouseClick "Left", X, Y, , , "Up"
-	Sleep 100
 }
 
 
@@ -2139,7 +2125,7 @@ ParseExpeditions() {
 ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) {
 	ReceiveReward(Expedition)
 
-	If (PixelGetColor(1600, 1020) == "0xFE5C5C") ; Already Occupied
+	If (IsColor(1600, 1020, "0xFE5C5C")) ; Already Occupied
 		Return
 
     Sleep 200
@@ -2149,7 +2135,7 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 ReceiveReward(Expedition, ReceiveRewardLag := 0) {
     SelectExpedition(Expedition)
 
-	If (not PixelGetColor(1600, 1020) == "0x99CC33") ; Already Received
+	If (not IsColor(1600, 1020, "0x99CC33")) ; Already Received
 		Return
     Sleep 200
 
@@ -2166,11 +2152,11 @@ ReceiveReward(Expedition, ReceiveRewardLag := 0) {
 SelectExpedition(Expedition) {
     ; Click on the world
     WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
-    MouseClick "Left", 200, WorldY
+    LockedClick(200, WorldY)
     Sleep 500
 
     ; Click on the expedition
-    MouseClick "Left", Expedition.X, Expedition.Y
+    LockedClick(Expedition.X, Expedition.Y)
     Sleep 300
 }
 
@@ -2188,7 +2174,7 @@ SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
 }
 
 SelectDuration(Duration) {
-    MouseClick "Left", Duration.X, Duration.Y
+    LockedClick(Duration.X, Duration.Y)
     Sleep 100
 }
 
@@ -2198,10 +2184,10 @@ FindAndSelectCharacter(CharacterNumberInList) {
     SpacingBetweenCharacters := 125
 
     If (CharacterNumberInList <= 7) {
-        MouseClick "Left", FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1))
+        LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1)))
     } Else {
         ScrollDownCharacterList(CharacterNumberInList - 7.5)
-        MouseClick "Left", FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7)
+        LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7))
     }
 }
 
@@ -2250,13 +2236,13 @@ GoToSereniTeaPot(*) {
 
 	Sleep 100
 
-	MouseClick "Left", 1050, 50 ; Gadgets tab
+	LockedClick(1050, 50) ; Gadgets tab
 	WaitPixelColor("0xD3BC8E", 1055, 92, 1000) ; Wait for tab to be active
 
 	Sleep 100
 
-	MouseClick "Left", 170, 180 ; Select the first gadget
-	ClickOnBottomRightButton
+	LockedClick(170, 180) ; Select the first gadget
+	ClickOnBottomRightButton()
 
 	Sleep 100
 
@@ -2312,10 +2298,10 @@ ParseBPRewards(*) {
 ReceiveBpExp() {
 	Global
 	; Check for available BP experience and receive if any
-	If (PixelGetColor(993, 20) != RedNotificationColor) ; No exp
+	If (not IsColor(993, 20, RedNotificationColor)) ; No exp
 		Return
 
-	MouseClick "Left", 993, 20 ; To exp tab
+	LockedClick(993, 20) ; To exp tab
 	Sleep 300
 
 	ClickOnBottomRightButton() ; "Claim all"
@@ -2331,10 +2317,10 @@ ReceiveBpExp() {
 ReceiveBpRewards() {
 	Global
 	; Check for available BP experience and receive if any
-	If (PixelGetColor(899, 20) != RedNotificationColor) ; no rewards
+	If (not IsColor(899, 20, RedNotificationColor)) ; No rewards
 		Return
 
-	MouseClick "Left", 899, 20 ; To rewards tab
+	LockedClick(899, 20) ; To rewards tab
 	Sleep 300
 
 	ClickOnBottomRightButton() ; "Claim all"
@@ -2378,19 +2364,19 @@ Relogin(*) {
 
 	Sleep 100
 
-	MouseClick "Left", 49, 1022 ; Logout button
+	LockedClick(49, 1022) ; Logout button
 	Sleep 100
 	WaitPixelColor("0x313131", 1017, 757, 5000) ; Wait logout menu
 
-	MouseClick "Left", 1017, 757 ; Confirm
+	LockedClick(1017, 757) ; Confirm
 	Sleep 100
 	WaitPixelColor("0x222222", 1820, 881, 18000) ; Wait for announcements icon
 
-	MouseClick "Left", 500, 500
+	LockedClick(500, 500)
 	Sleep 500 ; Time for settings icon to disappear
 	WaitPixelColor("0x222222", 1823, 794, 18000) ; Wait for settings icon
 
-	MouseClick "Left", 500, 500
+	LockedClick(500, 500)
 }
 
 
@@ -2602,45 +2588,45 @@ PerformInventoryActions() {
 	; =======================================
 	; Lock Artifacts or Weapons
 	; =======================================
-	MenuArrow := PixelGetColor(1838, 44) == "0x3B4255"
+	MenuArrow := IsColor(1838, 44, "0x3B4255")
 	; Backpack
-	If (MenuArrow and PixelGetColor(75, 43) == "0xD3BC8E" and PixelGetColor(165, 1010) == "0x3B4255") {
+	If (MenuArrow and IsColor(75, 43, "0xD3BC8E") and IsColor(165, 1010, "0x3B4255")) {
 		If (TryToFindLocker(1746, 444))
 			Return
 	}
 
 	; Artifact details
-	If (MenuArrow and PixelGetColor(75, 70) == "0xD3BC8E") {
+	If (MenuArrow and IsColor(75, 70, "0xD3BC8E")) {
 		If (TryToFindLocker(1818, 445))
 			Return
 	}
 
 	; Weapon details
-	If (MenuArrow and PixelGetColor(97, 25) == "0xD3BC8E") {
+	If (MenuArrow and IsColor(97, 25, "0xD3BC8E")) {
 		If (TryToFindLocker(1818, 445))
 			Return
 	}
 
 	; Character's Artifacts
-	If (MenuArrow and PixelGetColor(60, 999) == "0x3B4255" and PixelGetColor(557, 1010) == "0xEBE4D7") {
+	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(557, 1010, "0xEBE4D7")) {
 		If (TryToFindTransparentLocker(1776, 310))
 			Return
 	}
 
 	; Artifacts/Weapons enhancement menu
-	If (MenuArrow and PixelGetColor(1099, 46) == "0x9D9C9D") {
+	If (MenuArrow and IsColor(1099, 46, "0x9D9C9D")) {
 		If (TryToFindLocker(1612, 505))
 			Return
 	}
 
 	; Mystic Offering
-	If (not MenuArrow and PixelGetColor(1840, 45) == "0x353B4B" and PixelGetColor(907, 45) == "0xA6A4A4") {
+	If (not MenuArrow and IsColor(1840, 45, "0x353B4B") and IsColor(907, 45, "0xA6A4A4")) {
 		If (TryToFindLocker(1421, 506))
 			Return
 	}
 
 	; Domain artifacts
-	If (not MenuArrow and PixelGetColor(715, 700) == "0xECE5D8" and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
+	If (not MenuArrow and IsColor(715, 700, "0xECE5D8") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
 		If (TryToFindLocker(1151, 494))
 			Return
 	}
@@ -2648,26 +2634,38 @@ PerformInventoryActions() {
 	; =======================================
 	; Select maximum stacks and craft ores
 	; =======================================
-	If (MenuArrow and PixelGetColor(62, 52) == "0xD3BC8E" and PixelGetColor(605, 1015) == "0x3B4255") {
-		MouseGetPos &X, &Y
-		MouseClick "Left", 1467, 669 ; Max stacks
+	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(605, 1015, "0x3B4255")) {
+		ClickAndBack(1467, 669) ; Max stacks
 		Sleep 50
 		ClickOnBottomRightButton()
 		Sleep 50
-		MouseMove X, Y
 		Return
 	}
 
 	; =======================================
 	; Obtain crafted item
 	; =======================================
-	If (MenuArrow and PixelGetColor(1655, 1015) == "0x99CC33") {
-		MouseGetPos &X, &Y
+	If (MenuArrow and IsColor(1655, 1015, "0x99CC33")) {
 		ClickOnBottomRightButton() ; Obtain
 		Sleep 200
 		Send "{Esc}" ; Skip animation
 		Sleep 50
-		MouseMove X, Y
+		Return
+	}
+
+	; =======================================
+	; Enhance button
+	; =======================================
+	If (MenuArrow and not IsColor(1245, 862, "0xC5C3C0") and IsColor(1200, 930, "0xE9E5DC") and IsColor(1587, 1018, "0xFFCB32")) {
+		ClickOnBottomRightButton() ; Enhance
+		Return
+	}
+
+	; =======================================
+	; Confirm button
+	; =======================================
+	If (IsColor(1834, 44, "0x16171D") and IsColor(831, 828, "0xFFCB32")) {
+		ClickAndBack(888, 825)
 		Return
 	}
 
@@ -2682,12 +2680,12 @@ PerformInventoryActions() {
 
 TryToFindLocker(TopX, TopY) {
 	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
-		If (PixelGetColor(FoundX - 6, FoundY) == "0x495366") { ; Locked
+		If (IsColor(FoundX - 6, FoundY, "0x495366")) { ; Locked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
 	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8")) {
-		If (PixelGetColor(FoundX - 6, FoundY) == "0xF3EFEA") { ; Unlocked
+		If (IsColor(FoundX - 6, FoundY, "0xF3EFEA")) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
@@ -2697,12 +2695,13 @@ TryToFindLocker(TopX, TopY) {
 
 TryToFindTransparentLocker(TopX, TopY) {
 	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
-		If (PixelGetColor(TopX - 6, FoundY) == "0x495366") { ; Locked
+		If (IsColor(TopX - 6, FoundY, "0x495366")) { ; Locked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
 	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8", 50)) {
-		; Unlocked locker might have some transparency and change its color, so "PixelGetColor" can't be relayed on
+		; Unlocked locker might have some transparency and change its color,
+		; so "IsColor" can't be relayed on
 		If (PixelSearch(&Px, &Py, FoundX - 6, FoundY, FoundX - 6, FoundY, "0xF3EFEA", 160)) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
@@ -2710,7 +2709,6 @@ TryToFindTransparentLocker(TopX, TopY) {
 	}
 	Return False ; Not found
 }
-;
 
 
 
@@ -2733,15 +2731,39 @@ OpenInventory() {
 	WaitFullScreenMenu(2000)
 }
 
-ClickOnBottomRightButton() {
-	MouseClick "Left", 1730, 1000
+ClickAndBack(X, Y) {
+	BlockInput "MouseMove"
+	MouseGetPos &CoordX, &CoordY
+	Click X, Y, "Down"
+	Sleep 15
+	Click "Up"
+	Sleep 50
+	MouseMove CoordX, CoordY
+	BlockInput "MouseMoveOff"
 }
 
-ClickAndBack(CoordX, CoordY) {
-	MouseGetPos &X, &Y
-	MouseClick "Left", CoordX, CoordY
-	Sleep 50
-	MouseMove X, Y
+LockedClick(X, Y) {
+	BlockInput "MouseMove"
+	Click X, Y, "Down"
+	Sleep 15
+	Click "Up"
+	BlockInput "MouseMoveOff"
+}
+
+SimpleLockedClick() {
+	BlockInput "MouseMove"
+	Click "Down"
+	Sleep 15
+	Click "Up"
+	BlockInput "MouseMoveOff"
+}
+
+ClickOnBottomRightButton() {
+	ClickAndBack(1730, 1000)
+}
+
+MoveCursorToCenter() {
+	MouseMove A_ScreenWidth / 2, A_ScreenHeight / 2
 }
 
 WaitFullScreenMenu(Timeout := 3000) {
@@ -2749,25 +2771,22 @@ WaitFullScreenMenu(Timeout := 3000) {
 }
 
 IsFullScreenMenuOpen() {
-	Color := PixelGetColor(1859, 47)
-	If (Color == LightMenuColor)
-		Return True
-	Color := PixelGetColor(1875, 35)
-	Return Color == LightMenuColor
+	Return IsColor(1859, 47, LightMenuColor) or IsColor(1875, 35, LightMenuColor)
 }
 
 ; Note: always better to check if not IsFullScreenMenuOpen() before checking the game screen
 IsGameScreen() {
-	Return PixelGetColor(276, 58) == "0xFFFFFF" ; Eye icon next to the map
+	Return IsColor(276, 58, "0xFFFFFF") ; Eye icon next to the map
 }
 
-; Note: always better to check if not IsFullScreenMenuOpen() and not IsGameScreen() before checking the dialogue screen
+; Note: always better to check if not IsFullScreenMenuOpen()
+; and not IsGameScreen() before checking the dialogue screen
 IsDialogueScreen() {
-	Return PixelGetColor(109, 56) == "0xECE5D8" ; Play or Pause button
+	Return IsColor(109, 56, "0xECE5D8") ; Play or Pause button
 }
 
 IsInBoat() {
-	Return PixelGetColor(828, 976) == "0xEDE5D9" ; Boat icon color
+	Return IsColor(828, 976, "0xEDE5D9") ; Boat icon color
 }
 
 WaitDeployButtonActive(Timeout) {
@@ -2780,40 +2799,13 @@ WaitDialogueMenu() {
 
 ; Check if a character is frozen or in the bubble
 IsFrozen() {
-	SpaceTextColor := PixelGetColor(1417, 596)
-
-	If (SpaceTextColor != "0x333333") {
-		Return False
-	}
-
-	SpaceButtonColor := PixelGetColor(1417, 585)
-
-	Return SpaceButtonColor == "0xFFFFFF"
+	; Space Text and Button Colors
+	Return IsColor(1417, 596, "0x333333") and IsColor(1417, 585, "0xFFFFFF")
 }
 
 ; Check if run should be infinite
 IsExtraRun() {
-	Color := PixelGetColor(1695, 1030)
-	Return Color == "0xFFE92C" ; Ayaka / Mona run mode
-}
-
-; Special click function for the world map menu.
-;
-; For some reason MouseClick (and Click) doesn't work consistently:
-; it doesn't work if a click goes to an empty place,
-; but works fine if a click goes to an interactable spot
-MapClick() {
-	Send "{LButton Down}"
-	Sleep 50
-	; For whatever reason map sometimes refuces to release the left button
-	Loop (10) {
-		Send "{LButton Up}"
-		Sleep 10
-	}
-}
-
-MoveCursorToCenter() {
-	MouseMove A_ScreenWidth / 2, A_ScreenHeight / 2
+	Return IsColor(1695, 1030, "0xFFE92C") ; Ayaka / Mona run mode
 }
 
 ; Wait for pixel to be the specified color or throw exception after the specified Timeout.
@@ -2824,8 +2816,7 @@ MoveCursorToCenter() {
 WaitPixelColor(Color, X, Y, Timeout, ReturnOnTimeout := False) {
 	StartTime := A_TickCount
 	Loop {
-		CurrentColor := PixelGetColor(X, Y)
-		If (CurrentColor == Color)
+		If (IsColor(X, Y, Color))
 			Return True
 		If (A_TickCount - StartTime >= Timeout) {
 			If (ReturnOnTimeout)
@@ -2858,6 +2849,14 @@ WaitPixelsRegions(Regions, Timeout := 1000) {
 		If (A_TickCount - StartTime >= Timeout)
 			throw Error("Timeout " . Timeout . " ms")
 	}
+}
+
+IsColor(X, Y, Color) {
+	Return GetColor(X, Y) == Color
+}
+
+GetColor(X, Y) {
+	Return PixelGetColor(X, Y)
 }
 
 
