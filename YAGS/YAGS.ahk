@@ -1302,19 +1302,20 @@ Pickup() {
 
 HasPickup() {
 	; Search for "F" icon
-	If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x848484")) { ; Icon wasn't found
-		If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, "0x383838"))
+	Color := "0x848484"
+	If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, Color)) { ; Icon wasn't found
+		Color := "0x383838"
+		If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, Color))
 			Return False
 	}
 
-	; Small delay to minimize error
+	; Do not pickup if position of "F" has changed
 	Sleep 10
-
-	; Check if there's no extra prompts
-	If (IsColor(1185, FoundY - 1, "0xFFFFFF")) ; Prompt icon was found
+	If (not IsColor(FoundX, FoundY, Color))
 		Return False
 
-	If (IsColor(1173, FoundY - 1, "0xFFFFFF")) ; Prompt icon was found
+	; Check if there are no extra prompts
+	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 15) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 15))
 		Return False
 
 	Return True
@@ -2427,11 +2428,11 @@ Relogin(*) {
 
 	LockedClick(1017, 757) ; Confirm
 	Sleep 100
-	WaitPixelColor("0x222222", 1820, 881, 18000) ; Wait for announcements icon
+	WaitPixelColor("0x222222", 1820, 881, 30000) ; Wait for announcements icon
 
 	LockedClick(500, 500)
 	Sleep 500 ; Time for settings icon to disappear
-	WaitPixelColor("0x222222", 1823, 794, 18000) ; Wait for settings icon
+	WaitPixelColor("0x222222", 1823, 794, 30000) ; Wait for settings icon
 
 	LockedClick(500, 500)
 }
@@ -2714,21 +2715,48 @@ PerformInventoryActions() {
 	; Enhance button
 	; =======================================
 	If (MenuArrow and not IsColor(1245, 862, "0xC5C3C0") and IsColor(1200, 930, "0xE9E5DC") and IsColor(1587, 1018, "0xFFCB32")) {
-		ClickOnBottomRightButton() ; Enhance
+		ClickOnBottomRightButton()
+		Return
+	}
+
+	; =======================================
+	; Craft/Convert button
+	; =======================================
+	If (MenuArrow and IsColor(1664, 1017, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")) {
+		ClickOnBottomRightButton()
 		Return
 	}
 
 	; =======================================
 	; Confirm buttons
 	; =======================================
-	; Enhancing
-	If (IsColor(1834, 44, "0x16171D") and IsColor(831, 828, "0xFFCB32")) {
-		ClickAndBack(888, 825)
+	If (not MenuArrow and PixelSearch(&Px, &Py, 805, 828, 831, 902, "0xFFCB32")) {
+		ClickAndBack(888, Py)
 		Return
 	}
-	; Crafting
-	If (IsColor(5, 502, "0x4A5062") and IsColor(831, 902, "0xFFCB32")) {
-		ClickAndBack(888, 900)
+
+	; =======================================
+	; Tea Pot Coins & Companion Exp
+	; =======================================
+	If (IsColor(1862, 47, "0x3B4255") and IsColor(1367, 1020, "0xFECA32") and IsColor(1775, 38, "0x3B4255")) {
+		MouseGetPos &CoordX, &CoordY
+		LockedClick(1077, 946) ; Coins
+		Sleep 30
+		LockedClick(1285, 35) ; Close popup in case there are no coins
+		Sleep 30
+		LockedClick(1808, 712) ; Exp
+		Sleep 30
+		LockedClick(1285, 35) ; Close popup in case there's no exp
+		Sleep 30
+		MouseMove CoordX, CoordY
+		Return
+	}
+
+	; =======================================
+	; Continue Challenge (Domain)
+	; =======================================
+	If (not MenuArrow and SubStr(GetColor(597, 998), 1, 3) == "0x3" and SubStr(GetColor(1033, 998), 1, 3) == "0xF" and IsColor(1018, 582, "0xECEAEB")) {
+		ClickAndBack(1100, 995)
 		Return
 	}
 
@@ -2738,6 +2766,17 @@ PerformInventoryActions() {
 	If (not IsFullScreenMenuOpen() and not IsGameScreen() and IsDialogueScreen()) {
 		ClickAndBack(98, 49)
 		Return
+	}
+
+	; =======================================
+	; Skip in Domain
+	; =======================================
+	If (not PixelSearch(&_, &_, 0, 0, 1920, 1080, "0xECE5D8")) {
+		Click
+		If (WaitPixelColor("0xFFFFFF", 1817, 52, 500, True) and IsColor(1825, 52, "0xFFFFFF")) {
+			ClickAndBack(1817, 52)
+			Return
+		}
 	}
 }
 
@@ -2780,6 +2819,13 @@ TryToFindTransparentLocker(TopX, TopY) {
 ; =======================================
 ; Libs
 ; =======================================
+; Note: Sometimes clicks do not go through with the small delay,
+; but due to the higher delay "Click Lock" might be triggered which
+; makes click to not release
+Global ClickDelay := 25
+
+
+
 OpenMenu() {
 	Send "{Esc}"
 	WaitMenu()
@@ -2795,10 +2841,11 @@ OpenInventory() {
 }
 
 ClickAndBack(X, Y) {
+	Global
 	BlockInput "MouseMove"
 	MouseGetPos &CoordX, &CoordY
 	Click X, Y, "Down"
-	Sleep 20
+	Sleep ClickDelay
 	Click "Up"
 	Sleep 50
 	MouseMove CoordX, CoordY
@@ -2806,17 +2853,19 @@ ClickAndBack(X, Y) {
 }
 
 LockedClick(X, Y) {
+	Global
 	BlockInput "MouseMove"
 	Click X, Y, "Down"
-	Sleep 20
+	Sleep ClickDelay
 	Click "Up"
 	BlockInput "MouseMoveOff"
 }
 
 SimpleLockedClick() {
+	Global
 	BlockInput "MouseMove"
 	Click "Down"
-	Sleep 20
+	Sleep ClickDelay
 	Click "Up"
 	BlockInput "MouseMoveOff"
 }
@@ -2865,7 +2914,7 @@ WaitDeployButtonActive(Timeout) {
 }
 
 WaitDialogueMenu() {
-	WaitPixelColor("0x656D77", 1180, 537, 2000) ; Wait for "..." icon in the center of the screen
+	WaitPixelColor("0x656D77", 1180, 537, 3000) ; Wait for "..." icon in the center of the screen
 }
 
 ; Check if a character is frozen or in the bubble

@@ -62,6 +62,12 @@ There are no plans to adapt it to other resolutions in the near future.
   - Select and craft max ores (or other things in Blacksmith's menu).
   - Obtain crafted item.
   - Lock/Unlock an artifact or a weapon.
+  - Enhance artifact/weapon.
+  - Click «Craft»/«Convert» button in Crafting Bench.
+  - Click «Confirm» button in some popups.
+  - Collect Coins and Companion Exp in Tea Pot.
+  - Click «Continue Challenge» in Domain.
+  - Click «Skip» in Domain/Wish/Cutscenes.
   - Toggle «Auto-Play Story» mode in dialogue.
 - Press `XButton1` to quickly purchase items from the shop.
   - Press `XButton2` to purchase items continuously. Press again to stop.
