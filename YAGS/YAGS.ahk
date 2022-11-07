@@ -1315,8 +1315,11 @@ HasPickup() {
 		Return False
 
 	; Check if there are no extra prompts
-	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 15) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 15))
+	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 15) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 15)) {
+		If (IsColor(1177, FoundY - 3, "0xFEFEFE") and IsColor(1200, FoundY + 15, "0xF7F7F7")) ; Hand
+			Return True
 		Return False
+	}
 
 	Return True
 }
