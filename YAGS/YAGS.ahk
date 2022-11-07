@@ -2348,10 +2348,18 @@ ParseBPRewards(*) {
 	Send "{f4}"
 	WaitFullScreenMenu()
 
+	Sleep 200
+
 	ReceiveBpExp()
+	Sleep 200
 	ReceiveBpRewards()
 
 	Sleep 200
+
+	If (IsColor(640, 887, "0x38A2E4")) { ; Picking rewards
+		MoveCursorToCenter()
+		Return
+	}
 
 	Send "{Esc}"
 }
@@ -2386,6 +2394,9 @@ ReceiveBpRewards() {
 
 	ClickOnBottomRightButton() ; "Claim all"
 	Sleep 400
+
+	If (IsColor(640, 887, "0x38A2E4")) ; Picking rewards
+		Return
 
 	Send "{Esc}" ; Close popup with received rewards
 	WaitFullScreenMenu()
@@ -2881,7 +2892,9 @@ ClickOnBottomRightButton(Back := True) {
 }
 
 MoveCursorToCenter() {
+	BlockInput "MouseMove"
 	MouseMove A_ScreenWidth / 2, A_ScreenHeight / 2
+	BlockInput "MouseMoveOff"
 }
 
 WaitFullScreenMenu(Timeout := 3000) {
