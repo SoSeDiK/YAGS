@@ -100,10 +100,10 @@ There are no plans to adapt it to other resolutions in the near future.
 - Auto fishing.
   - You only have to throw the rod. Pulling and catching are done automatically.
   - Now you should just click `LMB` to toggle rod casting mode instead of holding.
-- Easier combat.
-  - Hold `LMB` to spam attack.
-  - Press `RMB` to charge attack.
-    - Some characters have different charge attacks depending on the duration. You can hold `RMB` a bit more if needed.
+- Easier/Lazy combat.
+  - Hold `LMB` to spam normal attack.
+  - Press `RMB` to porform charged attack.
+    - Some characters have different charge attacks depending on the holding duration. You can hold `RMB` a bit more if needed.
 
 ### ⚙ Additional info
 All links are stored inside the [data/links.ini](YAGS/data/links.ini) file. You may remove/add your own stuff to your liking.

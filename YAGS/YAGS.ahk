@@ -2,9 +2,8 @@
 ; YetAnotherGenshinScript
 ; 				~SoSeDiK's Edition
 ; ToDo:
-; - Fixup toggling features without reopening the script
-; - Allow toggling all features
-; - Fill "About" page, modernize GUI
+; - Fill "About" page
+; - Add hovers explaining features
 ; - Release compiled version & implement update checker
 ; - Update ReadMe
 ; - Automatic generation of assets if they do not exist?
@@ -45,6 +44,20 @@ Global LightMenuColor := "0xECE5D8"
 Global ScriptEnabled := False
 
 
+; Tasks
+Global AutoPickupEnabled := GetSetting("AutoPickup", True)
+Global AutoPickupBindingsEnabled := False
+
+Global AutoUnfreezeEnabled := GetSetting("AutoUnfreeze", True)
+Global AutoUnfreezeBindingsEnabled := False
+
+Global AutoFishingEnabled := GetSetting("AutoFishing", True)
+Global AutoFishingBindingsEnabled := False
+
+
+; Features
+Global ImprovedFishingEnabled := GetSetting("ImprovedFishing", True)
+Global ImprovedFishingBindingsEnabled := False
 
 Global AutoWalkEnabled := GetSetting("AutoWalk", True)
 Global AutoWalkBindingsEnabled := False
@@ -64,17 +77,19 @@ Global DialogueSkippingBindingsEnabled := False
 Global BetterCharacterSwitchEnabled := GetSetting("BetterCharacterSwitch", True)
 Global BetterCharacterSwitchBindingsEnabled := False
 
-Global AutoPickupEnabled := GetSetting("AutoPickup", True)
-Global AutoPickupBindingsEnabled := False
-
-Global AutoUnfreezeEnabled := GetSetting("AutoUnfreeze", True)
-Global AutoUnfreezeBindingsEnabled := False
-
 Global AlternateVisionEnabled := GetSetting("AlternateVision", True)
 Global AlternateVisionBindingsEnabled := False
 
 Global BetterMapClickEnabled := GetSetting("BetterMapClick", True)
 Global BetterMapClickBindingsEnabled := False
+
+Global AutoAttackEnabled := GetSetting("AutoAttack", True)
+Global AutoAttackBindingsEnabled := False
+
+
+; Quick Actions
+Global MenuActionsEnabled := GetSetting("MenuActions", True)
+Global MenuActionsBindingsEnabled := False
 
 Global QuickPartySwitchEnabled := GetSetting("QuickPartySwitch", True)
 Global QuickPartySwitchBindingsEnabled := False
@@ -97,15 +112,6 @@ Global ReceiveBPRewardsBindingsEnabled := False
 Global ReloginEnabled := GetSetting("Relogin", True)
 Global ReloginBindingsEnabled := False
 
-Global AutoAttackEnabled := GetSetting("AutoAttack", True)
-Global AutoAttackBindingsEnabled := False
-
-Global AutoFishingEnabled := GetSetting("AutoFishing", True)
-Global AutoFishingBindingsEnabled := False
-
-Global ImprovedFishingEnabled := GetSetting("ImprovedFishing", True)
-Global ImprovedFishingBindingsEnabled := False
-
 
 
 
@@ -117,43 +123,76 @@ Global ScriptGui := Gui()
 SetupGui()
 SetupGui() {
 	Global
-	;ScriptGui.Opt("+LastFound +Resize MinSize474x322")
+	;ScriptGui.Opt("+LastFound +Resize MinSize530x470")
 	ScriptGui.BackColor := "F9F1F0"
 
 	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
-	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w469 h277", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("About")])
+	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("About")])
 
+	ScriptGui.OnEvent("Close", ButtonQuit)
 
 	ScriptGuiTabs.UseTab(1)
 
-	ScriptGui.Add("GroupBox", "x8 y25 w250 h100", Langed("Tasks"))
-	ScriptGui.Add("Checkbox", "vAutoPickup x15 y45 " (AutoPickupEnabled ? "Checked" : ""), Langed("AutoPickup", "Auto pickup items"))
-	ScriptGui["AutoPickup"].OnEvent("Click", ToggleFeature.Bind(&AutoPickupEnabled, "AutoPickup"))
-	ScriptGui.Add("Checkbox", "vAutoUnfreeze " (AutoUnfreezeEnabled ? "Checked" : ""), Langed("AutoUnfreeze", "Auto unfreeze/unbubble"))
-	ScriptGui["AutoUnfreeze"].OnEvent("Click", ToggleFeature.Bind(&AutoUnfreezeEnabled, "AutoUnfreeze"))
-	ScriptGui.Add("Checkbox", "vAutoFishing " (AutoFishingEnabled ? "Checked" : ""), Langed("AutoFishing", "Auto fishing"))
-	ScriptGui["AutoFishing"].OnEvent("Click", ToggleFeature.Bind(&AutoFishingEnabled, "AutoFishing"))
-	ScriptGui.Add("Checkbox", "vSimplifiedCombat " (SimplifiedCombatEnabled ? "Checked" : ""), Langed("SimplifiedCombat", "Lazy combat mode"))
-	ScriptGui["SimplifiedCombat"].OnEvent("Click", ToggleFeature.Bind(&SimplifiedCombatEnabled, "SimplifiedCombat"))
+	; Features
+	ScriptGui.Add("GroupBox", "x8 y25 w250 h220", "")
+	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Features") " ")
 
-	ScriptGui.Add("GroupBox", "x8 y130 w250 h60", Langed("Options"))
-	ScriptGui.Add("Checkbox", "vSwapSideMouseButtons x15 y150 " (GetSetting("SwapSideMouseButtons", False) ? "Checked" : ""), Langed("SwapSideMouseButtons", "Swap side mouse buttons"))
-	ScriptGui["SwapSideMouseButtons"].OnEvent("Click", SwapSideMouseButtons)
+	AddTask("AutoWalk", &AutoWalkEnabled, DisableFeatureAutoWalk)
+	AddTask("SimplifiedJump", &SimplifiedJumpEnabled, DisableFeatureSimplifiedJump)
+	AddTask("QuickPickup", &QuickPickupEnabled, DisableFeatureQuickPickup)
+	AddTask("SimplifiedCombat", &SimplifiedCombatEnabled, DisableFeatureSimplifiedCombat)
+	AddTask("DialogueSkipping", &DialogueSkippingEnabled, DisableFeatureDialogueSkipping)
+	AddTask("BetterCharacterSwitch", &BetterCharacterSwitchEnabled, DisableFeatureBetterCharacterSwitch)
+	AddTask("ImprovedFishing", &ImprovedFishingEnabled, DisableFeatureImprovedFishing)
+	AddTask("AlternateVision", &AlternateVisionEnabled, DisableFeatureAlternateVision)
+	AddTask("BetterMapClick", &BetterMapClickEnabled, DisableFeatureBetterMapClick)
+	AddTask("AutoAttack", &AutoAttackEnabled, DisableFeatureAutoAttack)
+
+	; Quick Actions
+	ScriptGui.Add("GroupBox", "x8 y250 w250 h180", "")
+	ScriptGui.Add("Text", "xp+7 yp", " " Langed("QuickActions") " ")
+
+	AddTask("MenuActions", &MenuActionsEnabled, DisableFeatureMenuActions)
+	AddTask("QuickPartySwitch", &QuickPartySwitchEnabled, DisableFeatureQuickPartySwitch)
+	AddTask("QuickShopBuying", &QuickShopBuyingEnabled, DisableFeatureQuickShopBuying)
+	AddTask("ClockManagement", &ClockManagementEnabled, DisableFeatureClockManagement)
+	AddTask("SendExpeditions", &SendExpeditionsEnabled, DisableFeatureSendExpeditions)
+	AddTask("SereniteaPot", &SereniteaPotEnabled, DisableFeatureSereniteaPot)
+	AddTask("ReceiveBPRewards", &ReceiveBPRewardsEnabled, DisableFeatureReceiveBPRewards)
+	AddTask("Relogin", &ReloginEnabled, DisableFeatureRelogin)
+
+	; Tasks
+	ScriptGui.Add("GroupBox", "x270 y25 w250 h80", "")
+	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Tasks") " ")
+
+	AddTask("AutoPickup", &AutoPickupEnabled, DisableFeatureAutoPickup)
+	AddTask("AutoUnfreeze", &AutoUnfreezeEnabled, DisableFeatureAutoUnfreeze)
+	AddTask("AutoFishing", &AutoFishingEnabled, DisableFeatureAutoFishing)
+
+	; Options
+	ScriptGui.Add("GroupBox", "x270 y110 w250 h100", "")
+	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Options") " ")
+
+	AddOption("SwapSideMouseButtons", SwapSideMouseButtons)
+
 
 	; Venti picture
-	ScriptGui.Add("Picture", "x250 y23 w223 h270 +BackgroundTrans", "data\graphics\Venti.png")
+	ScriptGui.Add("Picture", "x280 y216 w223 h270 +BackgroundTrans", "data\graphics\Venti.png")
+
 
 	; Language settings
-	ScriptGui.Add("GroupBox", "x8 y230 w65 h43", Langed("Language", "English"))
-	ScriptGui.Add("Picture", "x14 y245 w24 h24 +BackgroundTrans", "data\graphics\lang_en.png").OnEvent("Click", UpdateLanguage.Bind("en"))
-	ScriptGui.Add("Picture", "x42 y245 w24 h24 +BackgroundTrans", "data\graphics\lang_ru.png").OnEvent("Click", UpdateLanguage.Bind("ru"))
+	ScriptGui.Add("GroupBox", "x280 y155 w65 h43", "")
+	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Language", "English") " ")
+	AddLang("en", 1)
+	AddLang("ru", 2)
+
 
 	; Links
 	ScriptGuiTabs.UseTab(2)
 
 	Loop (3) {
-		X := 8 + 152 * (A_Index - 1)
-		ScriptGui.Add("GroupBox", "y24 w147 h244 x" X, Langed("LinksTab" A_Index))
+		X := 8 + 174 * (A_Index - 1)
+		ScriptGui.Add("GroupBox", "y24 w165 h435 x" X, Langed("LinksTab" A_Index))
 		Links := IniRead("data\links.ini", "LinksTab" A_Index)
 		Links := StrSplit(Links, "`n")
 		X := 16 + X
@@ -167,10 +206,14 @@ SetupGui() {
 		}
 	}
 
+
 	; Expeditions
 	ScriptGuiTabs.UseTab(3)
 
-	ScriptGui.Add("GroupBox", "x8 y24 w315 h150", Langed("ExpeditionsTab", "Expedition, Duration, Character Number In List"))
+	ScriptGui.Add("GroupBox", "x8 y24 w515 h150", "")
+	ScriptGui.Add("Text", "x15 y24", " " Langed("Expedition") " ")
+	ScriptGui.Add("Text", "x248 y24", " " Langed("Duration") " ")
+	ScriptGui.Add("Text", "x348 y24", " " Langed("CharNum") " ")
 
 	Expeditions := Array()
 	Expeditions.Push({Types: "", Id: "DoNotSend"})
@@ -237,29 +280,45 @@ SetupGui() {
 		}
 
 		Y := 20 + 25 * A_Index
-		Exped := ScriptGui.Add("DropDownList", "vExpedition" A_Index " x16 w180 Choose" ExpeditionNum " y" Y, ExpeditionsDisplay)
+		Exped := ScriptGui.Add("DropDownList", "vExpedition" A_Index " x17 w180 Choose" ExpeditionNum " y" Y, ExpeditionsDisplay)
 		Exped.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
 
-		Durat := ScriptGui.Add("DropDownList", "vDuration" A_Index " x205 w50 Choose" Duration "h y" Y, DurationsH)
+		Durat := ScriptGui.Add("DropDownList", "vDuration" A_Index " x250 w50 Choose" Duration "h y" Y, DurationsH)
 		Durat.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
 
-		Chars := ScriptGui.Add("Edit", "x265 y45 w50" " y" Y)
+		Chars := ScriptGui.Add("Edit", "x350 y45 w50" " y" Y)
 		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
 		Chars := ScriptGui.Add("UpDown", "vCharacters" A_Index " Range1-30", CharacterNumberInList)
 		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
 	}
 
+
 	; Footer
 	ScriptGuiTabs.UseTab()
 
-	ScriptGui.Add("Text", "x20 y295", Langed("Wish") "       ").SetFont("bold")
-	HideButton := ScriptGui.Add("Button", "x330 y280 w70 h35", Langed("Hide", "Hide to tray"))
+	ScriptGui.Add("Text", "x20 y488", Langed("Wish") "       ").SetFont("bold")
+	HideButton := ScriptGui.Add("Button", "x370 y473 w70 h35", Langed("Hide", "Hide to tray"))
 	HideButton.OnEvent("Click", ButtonHide)
-	QuitButton := ScriptGui.Add("Button", "x410 y280 w55 h35", Langed("Quit"))
+	QuitButton := ScriptGui.Add("Button", "x460 y473 w70 h35", Langed("Quit"))
 	QuitButton.OnEvent("Click", ButtonQuit)
 
 
 	ShowGui()
+}
+
+AddTask(FeatureName, &FeatureVarState, FeatureDisablingFunction) {
+	ScriptGui.Add("Checkbox", "yp+20 v" FeatureName " " (FeatureVarState ? "Checked" : ""), Langed(FeatureName, "Missing locale for " FeatureName))
+	ScriptGui[FeatureName].OnEvent("Click", ToggleFeature.Bind(&FeatureVarState, FeatureDisablingFunction, FeatureName))
+}
+
+AddOption(OptionName, OptionTask) {
+	ScriptGui.Add("Checkbox", "x277 yp+20 v" OptionName " " (GetSetting(OptionName, False) ? "Checked" : ""), Langed(OptionName, "Missing locale for " OptionName))
+	ScriptGui[OptionName].OnEvent("Click", OptionTask)
+}
+
+AddLang(LangId, Num) {
+	Num := 286 + ((Num - 1) * 28)
+	ScriptGui.Add("Picture", "x" Num " y170 w24 h24 +BackgroundTrans", "data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
 }
 
 ButtonHide(*) {
@@ -296,10 +355,13 @@ UpdateExpeditions(Expeditions, ExpeditionNum, *) {
 	IniWrite ExpeditionName "," Duration "," CharacterNumberInList, GetExpeditions(), "Expeditions", "Expedition" ExpeditionNum
 }
 
-ToggleFeature(&Feature, FeatureName, *) {
+ToggleFeature(&FeatureVarState, FeatureDisablingFunction, FeatureName, *) {
 	Global
-	Feature := ScriptGui[FeatureName].Value
-	UpdateSetting(FeatureName, Feature)
+	NewFeatureState := ScriptGui[FeatureName].Value
+	UpdateSetting(FeatureName, NewFeatureState)
+	If (FeatureVarState)
+		FeatureDisablingFunction()
+	FeatureVarState := NewFeatureState
 }
 
 SwapSideMouseButtons(*) {
@@ -354,16 +416,25 @@ SuspendOnGameInactive() {
 }
 
 ResetScripts() {
-	DisableFeatureAutoWalk()
-	DisableFeatureSimplifiedJump()
-	DisableFeatureDialogueSkipping()
-	DisableFeatureQuickPickup()
-	DisableFeatureSimplifiedCombat()
-	DisableFeatureBetterCharacterSwitch()
+	; Tasks
 	DisableFeatureAutoPickup()
 	DisableFeatureAutoUnfreeze()
+	DisableFeatureAutoFishing()
+
+	; Features
+	DisableFeatureAutoWalk()
+	DisableFeatureSimplifiedJump()
+	DisableFeatureQuickPickup()
+	DisableFeatureSimplifiedCombat()
+	DisableFeatureDialogueSkipping()
+	DisableFeatureBetterCharacterSwitch()
+	DisableFeatureImprovedFishing()
 	DisableFeatureAlternateVision()
 	DisableFeatureBetterMapClick()
+	DisableFeatureAutoAttack()
+
+	; Quick Actions
+	DisableFeatureMenuActions()
 	DisableFeatureQuickPartySwitch()
 	DisableFeatureQuickShopBuying()
 	DisableFeatureClockManagement()
@@ -371,7 +442,6 @@ ResetScripts() {
 	DisableFeatureSereniteaPot()
 	DisableFeatureReceiveBPRewards()
 	DisableFeatureRelogin()
-	DisableFeatureAutoAttack()
 }
 
 ; Some keys are bound to multiple actions
@@ -402,12 +472,17 @@ DisableGlobalHotkeys() {
 }
 
 TriggerMButtonBindings(*) {
-	If (AutoWalkBindingsEnabled)
+	If (AutoWalkBindingsEnabled) {
 		PressedMButtonToAutoWalk()
-	Else If (BetterMapClickBindingsEnabled)
+	} Else If (BetterMapClickBindingsEnabled)
 		PressedMButtonToTP()
-	Else
-		PerformInventoryActions()
+	Else If (MenuActionsBindingsEnabled) {
+		PerformMenuActions()
+	} Else {
+		Send "{MButton Down}"
+		KeyWait "MButton"
+		Send "{MButton Up}"
+	}
 }
 
 TriggerXButton1Bindings(*) {
@@ -447,6 +522,14 @@ ConfigureContextualBindings() {
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
 	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and IsColor(62, 42, "0xFFFFFF") ; 3rd action icon bound to LMB & leave icon present
 	PlayScreen := GameScreen and not FishingActive
+	
+	If (MenuActionsEnabled) {
+		If (not MenuActionsBindingsEnabled and not PlayScreen) {
+			EnableFeatureMenuActions()
+		} Else If (MenuActionsBindingsEnabled and PlayScreen) {
+			DisableFeatureMenuActions()
+		}
+	}
 
 	If (AutoWalkEnabled) {
 		If (not AutoWalkBindingsEnabled and PlayScreen) {
@@ -755,11 +838,9 @@ DisableFeatureAutoWalk() {
 	Hotkey "~*w Up", UnpressedW, "Off"
 	Hotkey "~*LShift", PressedLShift, "Off"
 	Hotkey "~*LShift Up", UnpressedLShift, "Off"
-	;Hotkey "*MButton", PressedMButtonToAutoWalk, "Off"
 
 	Send "{w Up}"
 	Send "{LShift Up}"
-	;Send "{RButton Up}"
 
 	If (AutoWalk)
 		ToggleAutoWalk()
@@ -1047,10 +1128,12 @@ DisableFeatureQuickPickup() {
 	Hotkey "~*f Up", UnpressedF, "Off"
 
 	SetTimer PickupOnceF, 0
-	SetTimer PickupOnceX, 0
+	If (not ScriptEnabled) {
+		SetTimer PickupOnceX, 0
+		PressingXButtonToPickup := False
+	}
 
 	PressingF := False
-	PressingXButton := False
 
 	QuickPickupBindingsEnabled := False
 }
@@ -1060,7 +1143,7 @@ DisableFeatureQuickPickup() {
 
 
 ; =======================================
-; Simplified Combat
+; Simplified Combat (Lazy Combat Mode)
 ; =======================================
 Global PressingLButton := False
 
@@ -2778,9 +2861,9 @@ DisableFeatureAutoFishing() {
 
 
 ; =======================================
-; Inventory Actions
+; Menu Actions
 ; =======================================
-PerformInventoryActions() {
+PerformMenuActions() {
 	; =======================================
 	; Lock Artifacts or Weapons
 	; =======================================
@@ -2948,6 +3031,16 @@ TryToFindTransparentLocker(TopX, TopY) {
 		}
 	}
 	Return False ; Not found
+}
+
+
+
+EnableFeatureMenuActions() {
+	MenuActionsBindingsEnabled := True
+}
+
+DisableFeatureMenuActions() {
+	MenuActionsBindingsEnabled := False
 }
 
 
