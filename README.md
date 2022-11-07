@@ -1,9 +1,11 @@
+<img src="./ScriptPreview.png" alt="Happy Moople" align="right" width="450">
+
 ## 🎈 [WIP] Yet Another Genshin Script
 
 <table>
   <tr>
-    <td valign="center"><img src="YAGS/data/lang_en.png" width="16"/> English</td>
-    <td valign="center"><a href="README_RU.md"><img src="YAGS/data/lang_ru.png" width="16"/> Русский</a></td>
+    <td valign="center"><img src="YAGS/data/graphics/lang_en.png" width="16"/> English</td>
+    <td valign="center"><a href="README_RU.md"><img src="YAGS/data/graphics/lang_ru.png" width="16"/> Русский</a></td>
   </tr>
 </table>
 
@@ -18,10 +20,10 @@ There are no plans to adapt it to other resolutions in the near future.
 ---
 
 ### ❓ How to
-1. Download and install [AutoHotkey](https://www.autohotkey.com/) (only version 2).
+1. Download and install [AutoHotkey](https://www.autohotkey.com/) (❕version 2 is required❕).
 2. Download this repository, extract `YAGS` folder.
 3. Run `YAGS.ahk`.
-4. Configure settings in the GUI if needed.
+4. Configure the settings in the GUI if needed.
 5. Run the game and enjoy.
 6. Press `End` in case of an emergency to stop the script.
 
