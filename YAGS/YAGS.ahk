@@ -102,8 +102,11 @@ Global ReloginBindingsEnabled := False
 Global AutoAttackEnabled := GetSetting("AutoAttack", True)
 Global AutoAttackBindingsEnabled := False
 
-Global AutoFishEnabled := GetSetting("AutoFish", True)
-Global AutoFishBindingsEnabled := False
+Global AutoFishingEnabled := GetSetting("AutoFishing", True)
+Global AutoFishingBindingsEnabled := False
+
+Global ImprovedFishingEnabled := GetSetting("ImprovedFishing", True)
+Global ImprovedFishingBindingsEnabled := False
 
 
 
@@ -130,8 +133,8 @@ SetupGui() {
 	ScriptGui["AutoPickup"].OnEvent("Click", ToggleFeature.Bind(&AutoPickupEnabled, "AutoPickup"))
 	ScriptGui.Add("Checkbox", "vAutoUnfreeze " (AutoUnfreezeEnabled ? "Checked" : ""), Langed("AutoUnfreeze", "Auto unfreeze/unbubble"))
 	ScriptGui["AutoUnfreeze"].OnEvent("Click", ToggleFeature.Bind(&AutoUnfreezeEnabled, "AutoUnfreeze"))
-	ScriptGui.Add("Checkbox", "vAutoFish " (AutoFishEnabled ? "Checked" : ""), Langed("AutoFish", "Auto fishing"))
-	ScriptGui["AutoFish"].OnEvent("Click", ToggleFeature.Bind(&AutoFishEnabled, "AutoFish"))
+	ScriptGui.Add("Checkbox", "vAutoFishing " (AutoFishingEnabled ? "Checked" : ""), Langed("AutoFishing", "Auto fishing"))
+	ScriptGui["AutoFishing"].OnEvent("Click", ToggleFeature.Bind(&AutoFishingEnabled, "AutoFishing"))
 	ScriptGui.Add("Checkbox", "vSimplifiedCombat " (SimplifiedCombatEnabled ? "Checked" : ""), Langed("SimplifiedCombat", "Lazy combat mode"))
 	ScriptGui["SimplifiedCombat"].OnEvent("Click", ToggleFeature.Bind(&SimplifiedCombatEnabled, "SimplifiedCombat"))
 
@@ -443,7 +446,7 @@ ConfigureContextualBindings() {
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
-	FishingActive := False and GameScreen and IsColor(1626, 1029, "0xFFE92C") ; 3rd action icon bound to LMB ; needs changing, LMB is also present while flying
+	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and IsColor(62, 42, "0xFFFFFF") ; 3rd action icon bound to LMB & leave icon present
 	PlayScreen := GameScreen and not FishingActive
 
 	If (AutoWalkEnabled) {
@@ -581,6 +584,22 @@ ConfigureContextualBindings() {
 			EnableFeatureAutoAttack()
 		} Else If (AutoAttackBindingsEnabled and not PlayScreen) {
 			DisableFeatureAutoAttack()
+		}
+	}
+
+	If (ImprovedFishingEnabled) {
+		If (not ImprovedFishingBindingsEnabled and FishingActive) {
+			EnableFeatureImprovedFishing()
+		} Else If (ImprovedFishingBindingsEnabled and not FishingActive) {
+			DisableFeatureImprovedFishing()
+		}
+	}
+
+	If (AutoFishingEnabled) {
+		If (not AutoFishingBindingsEnabled and FishingActive) {
+			EnableFeatureAutoFishing()
+		} Else If (AutoFishingBindingsEnabled and not FishingActive) {
+			DisableFeatureAutoFishing()
 		}
 	}
 }
@@ -2020,7 +2039,7 @@ SkipToTime(NeededTime) {
 	WaitPixelColor("0xECE5D8", 1870, 50, 30000) ; Wait for the clock menu
 
 	Send "{Esc}"
-	WaitMenu()
+	WaitMenu(True)
 
 	Send "{Esc}"
 }
@@ -2654,6 +2673,149 @@ DisableFeatureAutoAttack() {
 
 
 ; =======================================
+; Improved Fishing
+; =======================================
+Global TargetMode := False
+
+
+
+ToggleTargetMode(*) {
+	Global
+	TargetMode := !TargetMode
+	If (TargetMode) {
+		Send "{LButton Down}"
+	} Else {
+		Send "{LButton Up}"
+	}
+}
+
+
+
+EnableFeatureImprovedFishing() {
+	Global
+	If (ImprovedFishingBindingsEnabled)
+		DisableFeatureImprovedFishing()
+
+	If (not ImprovedFishingEnabled)
+		Return
+
+	Hotkey "*LButton", ToggleTargetMode, "On"
+
+	ImprovedFishingBindingsEnabled := True
+}
+
+DisableFeatureImprovedFishing() {
+	Global
+	Hotkey "*LButton", ToggleTargetMode, "Off"
+
+	TargetMode := False
+	ImprovedFishingBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Auto Fishing
+; =======================================
+Global AutoFishing := False
+Global IsPulling := False
+
+
+
+ToggleAutoFishing() {
+	Global
+	AutoFishing := !AutoFishing
+	If (AutoFishing) {
+		SetTimer CheckFishing, 100
+	} Else {
+		IsPulling := False
+		SetTimer CheckFishing, 0
+	}
+}
+
+CheckFishing() {
+	Global
+	If (not IsHooked())
+		Return
+
+	Shape := CheckShape()
+
+	If (Shape == 0) {
+		If (IsPulling) {
+			IsPulling := False
+			Return
+		}
+	} Else If (Shape == 2) {
+		IsPulling := True
+		Send "{LButton Down}"
+		Sleep 100
+		Send "{LButton Up}"
+	}
+}
+
+IsHooked() {
+	; Fish baited, start pulling
+	If (PixelSearch(&FoundX, &FoundY, 1613, 980, 1615, 983, "0xFFFFFF")) {
+		MouseClick "Left"
+		Return True
+	}
+
+	; Option to cast the rod is present
+	If (IsColor(1740, 1030, "0xFFE92C"))
+		Return False
+
+	Return True
+}
+
+CheckShape() {
+    ; 0 -> return
+    ; 1 -> return
+    ; 2 -> pull
+
+	StartX := 718
+
+	If (!PixelSearch(&FoundX1, &FoundY1, StartX, 100, 1200, 100, "0xFFFFC0")) ; Current position
+		Return 0
+
+	If (!PixelSearch(&FoundX2, &FoundY2, 1210, 112, FoundX1 + 9, 112, "0xFFFFC0")) ; Border
+		Return 0
+
+	Result := FoundX1 - FoundX2
+	If (Result > -45) ; Distance from the current position to the right border
+		Return 1
+
+	Return 2
+}
+
+
+
+EnableFeatureAutoFishing() {
+	Global
+	If (AutoFishingBindingsEnabled)
+		DisableFeatureAutoFishing()
+
+	If (not AutoFishingEnabled)
+		Return
+
+	ToggleAutoFishing()
+
+	AutoFishingBindingsEnabled := True
+}
+
+DisableFeatureAutoFishing() {
+	Global
+	AutoFishing := False
+	IsPulling := False
+	AutoFishingBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
 ; Inventory Actions
 ; =======================================
 PerformInventoryActions() {
@@ -2845,8 +3007,8 @@ OpenMenu() {
 	WaitMenu()
 }
 
-WaitMenu() {
-	WaitPixelColor(LightMenuColor, 729, 63, 2000) ; Wait for menu
+WaitMenu(ReturnOnTimeout := False) {
+	WaitPixelColor(LightMenuColor, 729, 63, 2000, ReturnOnTimeout) ; Wait for menu
 }
 
 OpenInventory() {
