@@ -63,7 +63,7 @@ SetTimer WatchCursor, 100
 ~*f8:: {
 	MouseGetPos &x, &y
 	color := PixelGetColor(x, y)
-	Coords := 'PixelGetColor(' x ', ' y ') == "' color '"'
+	Coords := 'IsColor(' x ', ' y ', "' color '")'
 	A_Clipboard := Coords
 	x += 10
 	y -= 30
