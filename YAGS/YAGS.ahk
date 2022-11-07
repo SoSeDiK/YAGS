@@ -2,13 +2,11 @@
 ; YetAnotherGenshinScript
 ; 				~SoSeDiK's Edition
 ; ToDo:
-; - Port AutoFishing
-; - Fixup toggling MButton & features without reopening the script
+; - Fixup toggling features without reopening the script
 ; - Allow toggling all features
 ; - Fill "About" page, modernize GUI
 ; - Release compiled version & implement update checker
 ; - Update ReadMe
-; - Improve precision of auto loot pickup
 ; - Automatic generation of assets if they do not exist?
 ; =======================================
 #Requires AutoHotkey v2.0-beta
@@ -305,11 +303,12 @@ ToggleFeature(&Feature, FeatureName, *) {
 }
 
 SwapSideMouseButtons(*) {
-	; ToDo
+	Global
 	UpdateSetting("SwapSideMouseButtons", ScriptGui["SwapSideMouseButtons"].Value)
-	;UpdateScriptState("QuickShopBuying", 3)
-	;UpdateScriptState("SimpleJump", 3)
-	;UpdateScriptState("QuickPickup", 3)
+	If (ScriptEnabled) {
+		DisableGlobalHotkeys()
+		EnableGlobalHotkeys()
+	}
 }
 
 
@@ -899,10 +898,6 @@ EnableFeatureSimplifiedJump() {
 
 	Hotkey "~*Space", OnSpace, "On"
 	Hotkey "~*Space Up", OnSpaceUp, "On"
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;Hotkey "*" XButtonF, XButtonJump, "On"
-	;Hotkey "*" XButtonF " Up", XButtonJumpUp, "On"
 
 	SimplifiedJumpBindingsEnabled := True
 }
@@ -911,10 +906,6 @@ DisableFeatureSimplifiedJump() {
 	Global
 	Hotkey "~*Space", OnSpace, "Off"
 	Hotkey "~*Space Up", OnSpaceUp, "Off"
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;Hotkey "*" XButtonF, XButtonJump, "Off"
-	;Hotkey "*" XButtonF " Up", XButtonJumpUp, "Off"
 
 	Send "{Space Up}"
 
@@ -970,21 +961,11 @@ EnableFeatureDialogueSkipping() {
 	If (not DialogueSkippingEnabled)
 		Return
 
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;Hotkey "*" XButtonF, XButtonSkipDialogue, "On"
-	;Hotkey "*" XButtonF " Up", XButtonSkipDialogueUp, "On"
-
 	DialogueSkippingBindingsEnabled := True
 }
 
 DisableFeatureDialogueSkipping() {
 	Global
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;Hotkey "*" XButtonF, XButtonSkipDialogue, "Off"
-	;Hotkey "*" XButtonF " Up", XButtonSkipDialogueUp, "Off"
-
 	SetTimer DialogueSkipClicking, 0
 
 	SkippingDialogueClicking := False
@@ -1056,10 +1037,6 @@ EnableFeatureQuickPickup() {
 
 	Hotkey "~*f", PressedF, "On"
 	Hotkey "~*f Up", UnpressedF, "On"
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton2" : "XButton1"
-	;Hotkey "*" XButtonF, XButtonPickup, "On"
-	;Hotkey "*" XButtonF " Up", XButtonPickupUp, "On"
 
 	QuickPickupBindingsEnabled := True
 }
@@ -1068,10 +1045,6 @@ DisableFeatureQuickPickup() {
 	Global
 	Hotkey "~*f", PressedF, "Off"
 	Hotkey "~*f Up", UnpressedF, "Off"
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton2" : "XButton1"
-	;Hotkey "*" XButtonF, XButtonPickup, "Off"
-	;Hotkey "*" XButtonF " Up", XButtonPickupUp, "Off"
 
 	SetTimer PickupOnceF, 0
 	SetTimer PickupOnceX, 0
@@ -1885,26 +1858,15 @@ EnableFeatureQuickShopBuying() {
 	If (not QuickShopBuyingEnabled)
 		Return
 
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;XButtonS := Mapping ? "XButton2" : "XButton1"
-	;Hotkey "*" XButtonF " Up", BuyAll, "On"
-	;Hotkey "*" XButtonS " Up", BuyOnce, "On"
-
 	QuickShopBindingsEnabled := True
 }
 
 DisableFeatureQuickShopBuying() {
 	Global
-	;Mapping := GetSetting("SwapSideMouseButtons", False)
-	;XButtonF := Mapping ? "XButton1" : "XButton2"
-	;XButtonS := Mapping ? "XButton2" : "XButton1"
-	;Hotkey "*" XButtonF " Up", BuyAll, "Off"
-	;Hotkey "*" XButtonS " Up", BuyOnce, "Off"
 
 	; "Bought" screen resets "IsShop" state and disables bindings,
-	; So we have a manual extra checks inside the method that will
-	; Disable these if not in shop
+	; so we have manual extra checks inside the method that will
+	; disable these if not in shop
 	;BuyingMode := False
 	;SetTimer BuyAllAvailable, 0
 
