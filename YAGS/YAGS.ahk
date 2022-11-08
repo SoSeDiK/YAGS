@@ -4,7 +4,6 @@
 ; ToDo:
 ; - Fill "Controls" page (possibly even changing hotkeys?)
 ; - Add hovers explaining features
-; - Release compiled version & implement update checker
 ; =======================================
 #Requires AutoHotkey v2.0-beta
 
@@ -16,7 +15,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-ScriptVersion := "1.0.0-Beta"
+Global ScriptVersion := "1.0.0"
 
 
 
@@ -29,6 +28,13 @@ If (not A_IsAdmin) {
 	}
 	ExitApp
 }
+
+
+
+Global AutoUpdatesCheck := GetSetting("AutoUpdatesCheck", True)
+Global VersionState := "Unchecked"
+If (AutoUpdatesCheck)
+	CheckForUpdates()
 
 
 
@@ -127,6 +133,8 @@ SetupGui() {
 	ScriptGui.BackColor := "F9F1F0"
 
 	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
+	If (VersionState == "Indev" or VersionState == "Outdated")
+		ScriptGui.Title .= " [" VersionState "]"
 	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("Controls")])
 
 	ScriptGui.OnEvent("Close", ButtonQuit)
@@ -171,9 +179,10 @@ SetupGui() {
 	AddTask("AutoFishing", &AutoFishingEnabled, DisableFeatureAutoFishing)
 
 	; Options
-	ScriptGui.Add("GroupBox", "x270 y110 w250 h100", "")
+	ScriptGui.Add("GroupBox", "x270 y110 w250 h105", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Options") " ")
 
+	AddOption("AutoUpdatesCheck", AutoUpdatesCheckToggle)
 	AddOption("SwapSideMouseButtons", SwapSideMouseButtons)
 
 
@@ -182,7 +191,7 @@ SetupGui() {
 
 
 	; Language settings
-	ScriptGui.Add("GroupBox", "x280 y155 w65 h43", "")
+	ScriptGui.Add("GroupBox", "x280 y168 w65 h43", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Language", "English") " ")
 	AddLang("en", 1)
 	AddLang("ru", 2)
@@ -329,7 +338,7 @@ AddOption(OptionName, OptionTask) {
 
 AddLang(LangId, Num) {
 	Num := 286 + ((Num - 1) * 28)
-	ScriptGui.Add("Picture", "x" Num " y170 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
+	ScriptGui.Add("Picture", "x" Num " y183 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
 }
 
 ButtonHide(*) {
@@ -348,6 +357,7 @@ UpdateLanguage(Lang, *) {
 	Global
 	If (Lang == GetSetting("Language", "en"))
 		Return
+
 	UpdateSetting("Language", Lang)
 	ScriptGui.GetPos(&X, &Y)
 	XN := X
@@ -382,6 +392,11 @@ SwapSideMouseButtons(*) {
 		DisableGlobalHotkeys()
 		EnableGlobalHotkeys()
 	}
+}
+
+AutoUpdatesCheckToggle(*) {
+	Global
+	UpdateSetting("AutoUpdatesCheck", ScriptGui["AutoUpdatesCheck"].Value)
 }
 
 
@@ -3243,7 +3258,9 @@ GetSettingsPath() {
 }
 
 Langed(Key, Def := "", Lang := GetSetting("Language", "en")) {
-	Return IniRead(GetLanguagePath(Lang), "Locales", Key, (Def == "" ? Langed(Key, Key, "en") : Def))
+	Data := IniRead(GetLanguagePath(Lang), "Locales", Key, (Def == "" ? Langed(Key, Key, "en") : Def))
+	Data := StrReplace(Data, "\n", "`n")
+	Return Data
 }
 
 GetLanguagePath(Lang) {
@@ -3252,6 +3269,49 @@ GetLanguagePath(Lang) {
 
 GetExpeditions() {
 	Return A_ScriptDir "\yags_data\expeditions.ini"
+}
+
+CheckForUpdates() {
+	Global
+	SplitPath A_ScriptFullPath, , , &Ext
+	If (Ext != "exe") {
+		VersionState := "Indev"
+		Return
+	}
+
+	If ("v" ScriptVersion == FetchLatestYAGSVersion()) {
+		VersionState := "UpToDate"
+		Return
+	}
+
+	Result := MsgBox(Langed("UpdateFound", "A new version of YAGS was found!`n`nDo you want to update the script automagically?"),, "YesNo")
+	
+	If (Result == "Yes") {
+		Url := "https://github.com/SoSeDiK/YAGS/releases/download/compiled/YAGS.exe"
+		Download Url, ".\YAGS_updated.exe"
+
+		FileDelete ".\yags_data\graphics\*.*"
+		FileDelete ".\yags_data\langs\*.*"
+
+		WaitAction := 'ping -n 2 127.0.0.1>nul'
+		DelAction := 'del "' A_ScriptFullPath '"'
+		RenameAction := 'ren "' A_ScriptDir '\YAGS_updated.exe" "YAGS.exe"'
+		RunAction := 'start "" "' A_ScriptDir '\YAGS.exe"'
+		Run 'cmd /c ' WaitAction ' & ' DelAction ' & ' WaitAction ' & ' RenameAction ' & ' WaitAction ' & ' RunAction, , "Hide"
+
+		ExitApp
+	} Else {
+		VersionState := "Outdated"
+		MsgBox Langed("UpdateNo", "You can always update the script manually from GitHub! :)")
+	}
+}
+
+FetchLatestYAGSVersion() {
+	Url := "https://api.github.com/repos/SoSeDiK/YAGS/releases/latest"
+	Whr := ComObject("WinHttp.WinHttpRequest.5.1")
+	Whr.Open("GET", Url, False), Whr.Send()
+	RegExMatch(Whr.ResponseText, "`"name\W+\K[^`"]+", &SubPat)
+	Return SubPat[0]
 }
 
 

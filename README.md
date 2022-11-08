@@ -24,10 +24,11 @@ There are no plans to adapt it to other resolutions in the near future.
 	- Using release build (preferred):
 		- [Download](https://github.com/SoSeDiK/YAGS/releases/download/compiled/YAGS.exe) the latest version of the script and put it in some folder.
 		- Run `YAGS.exe`.
-	- Using AHK:
+	- Using development build:
 		- Download and install [AutoHotkey](https://www.autohotkey.com/) (❕version 2 is required❕).
 		- Download this repository, extract `YAGS` folder.
 		- Run `YAGS.ahk`.
+		- (!) Keep in mind that development builds do not support auto updating.
 2. Configure the settings in the GUI if needed.
 3. Run the game and enjoy.
 4. Press `End` in case of an emergency to force stop the script.
@@ -137,6 +138,8 @@ This script was inspired by other available Genshin Impact AHK scripts. Go check
 - [BGC script](https://github.com/onoderis/bgc-script)
 - [Genshi AHK Flex](https://github.com/Kramar1337/GenshinImpact-AHK-flex)
 - [genshin-impact-script](https://github.com/phonowell/genshin-impact-script)
+
+Graphics assets generation thanks to [ImagePut](https://github.com/iseahound/ImagePut).
 
 Venti drawing made by [@ACenturyMage](https://twitter.com/ACenturyMage/status/1325869153618718720).
 

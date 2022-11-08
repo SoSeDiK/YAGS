@@ -55,6 +55,9 @@ LangIniEn := "
 	ReceiveBPRewards=BP Rewards
 	Relogin=Relogin
 
+	AutoUpdatesCheck=Check for updates upon start
+	UpdateFound=A new version of YAGS was found!\n\nDo you want to update the script automagically?
+	UpdateNo=You can always update the script manually from GitHub! :)
 	SwapSideMouseButtons=Swap side mouse buttons
 
 	Show=Show
@@ -143,6 +146,9 @@ LangIniRu := "
 	ReceiveBPRewards=Награды БП
 	Relogin=Перезаход
 
+	AutoUpdatesCheck=Проверка обновлений при запуске
+	UpdateFound=Найдена новая версия YAGS!\n\nЖелаете обновить скрипт автомагически?
+	UpdateNo=Вы всегда можете обновить скрипт самостоятельно, посетив GitHub! :)
 	SwapSideMouseButtons=Поменять местами боковые кнопки мыши
 
 	Show=Настройки
@@ -251,6 +257,7 @@ SettingsIniFile := "
 	ReceiveBPRewards=1
 	Relogin=1
 
+	AutoUpdatesCheck=1
 	SwapSideMouseButtons=0
 
 	AutoAttackMode=HuTaoDashCancel
