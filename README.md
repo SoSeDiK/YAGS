@@ -22,7 +22,7 @@ There are no plans to adapt it to other resolutions in the near future.
 ### ❓ How to
 1. Extract and run the script. Pick one of the options:
 	- Using release build (preferred):
-		- [Download](https://github.com/SoSeDiK/YAGS/releases/download/compiled/YAGS.exe) the latest version of the script and put it in some folder.
+		- [Download](https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe) the latest version of the script and put it in some folder.
 		- Run `YAGS.exe`.
 	- Using development build:
 		- Download and install [AutoHotkey](https://www.autohotkey.com/) (❕version 2 is required❕).

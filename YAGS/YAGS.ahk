@@ -3287,7 +3287,7 @@ CheckForUpdates() {
 	Result := MsgBox(Langed("UpdateFound", "A new version of YAGS was found!`n`nDo you want to update the script automagically?"),, "YesNo")
 	
 	If (Result == "Yes") {
-		Url := "https://github.com/SoSeDiK/YAGS/releases/download/compiled/YAGS.exe"
+		Url := "https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe"
 		Download Url, ".\YAGS_updated.exe"
 
 		FileDelete ".\yags_data\graphics\*.*"
@@ -3310,7 +3310,7 @@ FetchLatestYAGSVersion() {
 	Url := "https://api.github.com/repos/SoSeDiK/YAGS/releases/latest"
 	Whr := ComObject("WinHttp.WinHttpRequest.5.1")
 	Whr.Open("GET", Url, False), Whr.Send()
-	RegExMatch(Whr.ResponseText, "`"name\W+\K[^`"]+", &SubPat)
+	RegExMatch(Whr.ResponseText, "_name\W+\K[^`"]+", &SubPat)
 	Return SubPat[0]
 }
 
