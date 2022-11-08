@@ -6,13 +6,14 @@
 ; - Add hovers explaining features
 ; - Release compiled version & implement update checker
 ; - Update ReadMe
-; - Automatic generation of assets if they do not exist?
 ; =======================================
 #Requires AutoHotkey v2.0-beta
 
 #SingleInstance Force
 
-TraySetIcon "data\graphics\genicon.ico", , 1
+#Include "Doomsday.ahk" ; Assets generator
+
+TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
@@ -177,7 +178,7 @@ SetupGui() {
 
 
 	; Venti picture
-	ScriptGui.Add("Picture", "x280 y216 w223 h270 +BackgroundTrans", "data\graphics\Venti.png")
+	ScriptGui.Add("Picture", "x280 y216 w223 h270 +BackgroundTrans", ".\yags_data\graphics\Venti.png")
 
 
 	; Language settings
@@ -193,7 +194,7 @@ SetupGui() {
 	Loop (3) {
 		X := 8 + 174 * (A_Index - 1)
 		ScriptGui.Add("GroupBox", "y24 w165 h435 x" X, Langed("LinksTab" A_Index))
-		Links := IniRead("data\links.ini", "LinksTab" A_Index)
+		Links := IniRead(".\yags_data\links.ini", "LinksTab" A_Index)
 		Links := StrSplit(Links, "`n")
 		X := 16 + X
 		Loop (Links.Length) {
@@ -318,7 +319,7 @@ AddOption(OptionName, OptionTask) {
 
 AddLang(LangId, Num) {
 	Num := 286 + ((Num - 1) * 28)
-	ScriptGui.Add("Picture", "x" Num " y170 w24 h24 +BackgroundTrans", "data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
+	ScriptGui.Add("Picture", "x" Num " y170 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
 }
 
 ButtonHide(*) {
@@ -3228,7 +3229,7 @@ UpdateSetting(Setting, NewValue) {
 }
 
 GetSettingsPath() {
-	Return A_ScriptDir "\data\settings.ini"
+	Return A_ScriptDir "\yags_data\settings.ini"
 }
 
 Langed(Key, Def := "", Lang := GetSetting("Language", "en")) {
@@ -3236,11 +3237,11 @@ Langed(Key, Def := "", Lang := GetSetting("Language", "en")) {
 }
 
 GetLanguagePath(Lang) {
-	Return A_ScriptDir "\data\langs\lang_" Lang ".ini"
+	Return A_ScriptDir "\yags_data\langs\lang_" Lang ".ini"
 }
 
 GetExpeditions() {
-	Return A_ScriptDir "\data\expeditions.ini"
+	Return A_ScriptDir "\yags_data\expeditions.ini"
 }
 
 

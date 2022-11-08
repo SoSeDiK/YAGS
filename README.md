@@ -4,8 +4,8 @@
 
 <table>
   <tr>
-    <td valign="center"><img src="YAGS/data/graphics/lang_en.png" width="16"/> English</td>
-    <td valign="center"><a href="README_RU.md"><img src="YAGS/data/graphics/lang_ru.png" width="16"/> Русский</a></td>
+    <td valign="center"><img src="https://github.com/twitter/twemoji/blob/master/assets/svg/1f1fa-1f1f8.svg" width="16"/> English</td>
+    <td valign="center"><a href="README_RU.md"><img src="https://github.com/twitter/twemoji/blob/master/assets/svg/1f1f7-1f1fa.svg" width="16"/> Русский</a></td>
   </tr>
 </table>
 
@@ -108,7 +108,7 @@ There are no plans to adapt it to other resolutions in the near future.
     - Some characters have different charge attacks depending on the holding duration. You can hold `RMB` a bit more if needed.
 
 ### ⚙ Additional info
-All links are stored inside the [data/links.ini](YAGS/data/links.ini) file. You may remove/add your own stuff to your liking.
+All links are stored inside the `yags_data/links.ini` file. You may remove/add your own stuff to your liking.
 
 Just in case:
 - `LMB`: Left Mouse Button
