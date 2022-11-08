@@ -12,13 +12,15 @@ LangIniEn := "
 	Language=English
 	Title=Yet Another Genshin Script
 	Wish=Have a nice game! ♥
+	Thanks=Thank you for using my script!
+	MadeBy=Made with Love by
 
-	AutoAttackMode="Current attack mode:"
+	AutoAttackMode=Current attack mode:
 
 	Settings=Settings
 	Links=Links
 	Expeditions=Expeditions
-	About=About
+	Controls=Controls
 
 	LinksTab1=Utils
 	LinksTab2=Maps
@@ -98,13 +100,15 @@ LangIniRu := "
 	Language=Русский
 	Title=Очередной Геншин Скрипт
 	Wish=Приятной игры! ♥
+	Thanks=Спасибо за использование моего скрипта!
+	MadeBy=С любовью от
 
-	AutoAttackMode="Текущий режим атаки:"
+	AutoAttackMode=Текущий режим атаки:
 
 	Settings=Настройки
 	Links=Ссылки
 	Expeditions=Экспедиции
-	About=О скрипте
+	Controls=Управление
 
 	LinksTab1=Утилиты
 	LinksTab2=Карты

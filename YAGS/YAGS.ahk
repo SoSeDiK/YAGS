@@ -2,7 +2,7 @@
 ; YetAnotherGenshinScript
 ; 				~SoSeDiK's Edition
 ; ToDo:
-; - Fill "About" page
+; - Fill "Controls" page (possibly even changing hotkeys?)
 ; - Add hovers explaining features
 ; - Release compiled version & implement update checker
 ; - Update ReadMe
@@ -128,10 +128,11 @@ SetupGui() {
 	ScriptGui.BackColor := "F9F1F0"
 
 	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
-	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("About")])
+	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("Controls")])
 
 	ScriptGui.OnEvent("Close", ButtonQuit)
 
+	; Main page
 	ScriptGuiTabs.UseTab(1)
 
 	; Features
@@ -193,7 +194,7 @@ SetupGui() {
 
 	Loop (3) {
 		X := 8 + 174 * (A_Index - 1)
-		ScriptGui.Add("GroupBox", "y24 w165 h435 x" X, Langed("LinksTab" A_Index))
+		ScriptGui.Add("GroupBox", "y24 w165 h355 x" X, Langed("LinksTab" A_Index))
 		Links := IniRead(".\yags_data\links.ini", "LinksTab" A_Index)
 		Links := StrSplit(Links, "`n")
 		X := 16 + X
@@ -206,6 +207,12 @@ SetupGui() {
 			ScriptGui.Add("Link", Options, '<a href="' Link '">' LinkName '</a>')
 		}
 	}
+
+	; Script note
+	ScriptGui.Add("GroupBox", "x8 y379 w513 h80", "")
+	ScriptGui.Add("Text", "x15 y395 w499 +Center", Langed("Thanks") " o((>ω< ))o")
+	ScriptGui.Add("Link", "x230 yp+20", 'GitHub: ' '<a href="https://github.com/SoSeDiK/YAGS">YAGS</a>')
+	ScriptGui.Add("Text", "x15 yp+20 w499 +Center", Langed("MadeBy") " SoSeDiK").SetFont("bold")
 
 
 	; Expeditions
@@ -292,6 +299,10 @@ SetupGui() {
 		Chars := ScriptGui.Add("UpDown", "vCharacters" A_Index " Range1-30", CharacterNumberInList)
 		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
 	}
+
+	; Controls
+	ScriptGuiTabs.UseTab(4)
+	ScriptGui.Add("Text", "x20 y40", "// ToDo :)")
 
 
 	; Footer
