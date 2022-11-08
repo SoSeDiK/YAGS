@@ -20,12 +20,17 @@ There are no plans to adapt it to other resolutions in the near future.
 ---
 
 ### ❓ How to
-1. Download and install [AutoHotkey](https://www.autohotkey.com/) (❕version 2 is required❕).
-2. Download this repository, extract `YAGS` folder.
-3. Run `YAGS.ahk`.
-4. Configure the settings in the GUI if needed.
-5. Run the game and enjoy.
-6. Press `End` in case of an emergency to stop the script.
+1. Extract and run the script. Pick one of the options:
+	- Using release build (preferred):
+		- [Download](https://github.com/SoSeDiK/YAGS/releases/download/compiled/YAGS.exe) the latest version of the script and put it in some folder.
+		- Run `YAGS.exe`.
+	- Using AHK:
+		- Download and install [AutoHotkey](https://www.autohotkey.com/) (❕version 2 is required❕).
+		- Download this repository, extract `YAGS` folder.
+		- Run `YAGS.ahk`.
+2. Configure the settings in the GUI if needed.
+3. Run the game and enjoy.
+4. Press `End` in case of an emergency to force stop the script.
 
 **Note:** in order to work properly, the script must be able to run with administrator privileges. This is due to the game not handling AHK's keyboard and mouse inputs properly otherwise.
 

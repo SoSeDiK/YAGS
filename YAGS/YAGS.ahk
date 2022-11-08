@@ -5,7 +5,6 @@
 ; - Fill "Controls" page (possibly even changing hotkeys?)
 ; - Add hovers explaining features
 ; - Release compiled version & implement update checker
-; - Update ReadMe
 ; =======================================
 #Requires AutoHotkey v2.0-beta
 
