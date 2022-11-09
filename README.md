@@ -31,7 +31,8 @@ There are no plans to adapt it to other resolutions in the near future.
 		- (!) Keep in mind that development builds do not support auto updating.
 2. Configure the settings in the GUI if needed.
 3. Run the game and enjoy.
-4. Press `End` in case of an emergency to force stop the script.
+4. Press `Alt + B` to bring the script on top if needed.
+5. Press `End` in case of an emergency to force stop the script.
 
 **Note:** in order to work properly, the script must be able to run with administrator privileges. This is due to the game not handling AHK's keyboard and mouse inputs properly otherwise.
 

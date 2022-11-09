@@ -15,7 +15,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.0"
+Global ScriptVersion := "1.0.1"
 
 
 
@@ -31,9 +31,8 @@ If (not A_IsAdmin) {
 
 
 
-Global AutoUpdatesCheck := GetSetting("AutoUpdatesCheck", True)
 Global VersionState := "Unchecked"
-If (AutoUpdatesCheck)
+If (GetSetting("AutoUpdatesCheck", True))
 	CheckForUpdates()
 
 
@@ -127,14 +126,18 @@ Global ReloginBindingsEnabled := False
 ; =======================================
 Global ScriptGui := Gui()
 SetupGui()
+ToggleBringOnTopHotkey() ; Alt + B to bring Gui on top
 SetupGui() {
 	Global
 	;ScriptGui.Opt("+LastFound +Resize MinSize530x470")
 	ScriptGui.BackColor := "F9F1F0"
 
-	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" ScriptVersion
-	If (VersionState == "Indev" or VersionState == "Outdated")
-		ScriptGui.Title .= " [" VersionState "]"
+	Switch (VersionState) {
+		Case "Indev": TitleVer := "0.0.1 [Indev]"
+		Case "Outdated": TitleVer := ScriptVersion " [Outdated]"
+		Default: TitleVer := ScriptVersion
+	}
+	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" TitleVer
 	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("Controls")])
 
 	ScriptGui.OnEvent("Close", ButtonQuit)
@@ -179,19 +182,20 @@ SetupGui() {
 	AddTask("AutoFishing", &AutoFishingEnabled, DisableFeatureAutoFishing)
 
 	; Options
-	ScriptGui.Add("GroupBox", "x270 y110 w250 h105", "")
+	ScriptGui.Add("GroupBox", "x270 y110 w250 h80", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Options") " ")
 
 	AddOption("AutoUpdatesCheck", AutoUpdatesCheckToggle)
+	AddOption("BringOnTopHotkey", ToggleBringOnTopHotkey)
 	AddOption("SwapSideMouseButtons", SwapSideMouseButtons)
 
 
 	; Venti picture
-	ScriptGui.Add("Picture", "x280 y216 w223 h270 +BackgroundTrans", ".\yags_data\graphics\Venti.png")
+	ScriptGui.Add("Picture", "x310 y216 w223 h270 +BackgroundTrans", ".\yags_data\graphics\Venti.png")
 
 
 	; Language settings
-	ScriptGui.Add("GroupBox", "x280 y168 w65 h43", "")
+	ScriptGui.Add("GroupBox", "x280 y195 w65 h43", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Language", "English") " ")
 	AddLang("en", 1)
 	AddLang("ru", 2)
@@ -318,7 +322,7 @@ SetupGui() {
 
 	ScriptGui.Add("Text", "x20 y488", Langed("Wish") "       ").SetFont("bold")
 	HideButton := ScriptGui.Add("Button", "x370 y473 w70 h35", Langed("Hide", "Hide to tray"))
-	HideButton.OnEvent("Click", ButtonHide)
+	HideButton.OnEvent("Click", HideGui)
 	QuitButton := ScriptGui.Add("Button", "x460 y473 w70 h35", Langed("Quit"))
 	QuitButton.OnEvent("Click", ButtonQuit)
 
@@ -338,10 +342,10 @@ AddOption(OptionName, OptionTask) {
 
 AddLang(LangId, Num) {
 	Num := 286 + ((Num - 1) * 28)
-	ScriptGui.Add("Picture", "x" Num " y183 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
+	ScriptGui.Add("Picture", "x" Num " y210 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
 }
 
-ButtonHide(*) {
+HideGui(*) {
 	ScriptGui.Hide()
 }
 
@@ -548,12 +552,10 @@ ConfigureContextualBindings() {
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
 	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and IsColor(62, 42, "0xFFFFFF") ; 3rd action icon bound to LMB & leave icon present
 	PlayScreen := GameScreen and not FishingActive
-	
+
 	If (MenuActionsEnabled) {
-		If (not MenuActionsBindingsEnabled and not PlayScreen) {
+		If (not MenuActionsBindingsEnabled) {
 			EnableFeatureMenuActions()
-		} Else If (MenuActionsBindingsEnabled and PlayScreen) {
-			DisableFeatureMenuActions()
 		}
 	}
 
@@ -853,7 +855,6 @@ EnableFeatureAutoWalk() {
 	Hotkey "~*w Up", UnpressedW, "On"
 	Hotkey "~*LShift", PressedLShift, "On"
 	Hotkey "~*LShift Up", UnpressedLShift, "On"
-	;Hotkey "*MButton", PressedMButtonToAutoWalk, "On"
 
 	AutoWalkBindingsEnabled := True
 }
@@ -1668,14 +1669,11 @@ EnableFeatureBetterMapClick() {
 	If (not BetterMapClickEnabled)
 		Return
 
-	;Hotkey "*MButton", PressedMButtonToTP, "On"
-
 	BetterMapClickBindingsEnabled := True
 }
 
 DisableFeatureBetterMapClick() {
 	Global
-	;Hotkey "*MButton", PressedMButtonToTP, "Off"
 	MapTeleporting := False
 
 	BetterMapClickBindingsEnabled := False
@@ -3062,10 +3060,12 @@ TryToFindTransparentLocker(TopX, TopY) {
 
 
 EnableFeatureMenuActions() {
+	Global
 	MenuActionsBindingsEnabled := True
 }
 
 DisableFeatureMenuActions() {
+	Global
 	MenuActionsBindingsEnabled := False
 }
 
@@ -3312,6 +3312,30 @@ FetchLatestYAGSVersion() {
 	Whr.Open("GET", Url, False), Whr.Send()
 	RegExMatch(Whr.ResponseText, "_name\W+\K[^`"]+", &SubPat)
 	Return SubPat[0]
+}
+
+
+
+
+
+; Bring Script On Top
+BringOnTop(*) {
+	Global
+	If (WinActive(ScriptGui)) {
+		ScriptGui.Show() ; For some reason Windows does not allow "Win" calls if the Gui is inactive
+		WinMoveBottom ScriptGui
+		MouseGetPos &_, &_, &winId
+		WinActivate winId
+	} Else {
+		ScriptGui.Show()
+	}
+}
+
+ToggleBringOnTopHotkey(*) {
+	Global
+	State := ScriptGui["BringOnTopHotkey"].Value
+	UpdateSetting("BringOnTopHotkey", State)
+	Hotkey "!b", BringOnTop, State ? "On" : "Off" ; Alt + B
 }
 
 

@@ -58,6 +58,7 @@ LangIniEn := "
 	AutoUpdatesCheck=Check for updates upon start
 	UpdateFound=A new version of YAGS was found!\n\nDo you want to update the script automagically?
 	UpdateNo=You can always update the script manually from GitHub! :)
+	BringOnTopHotkey=Show script on Alt + B hotkey
 	SwapSideMouseButtons=Swap side mouse buttons
 
 	Show=Show
@@ -149,6 +150,7 @@ LangIniRu := "
 	AutoUpdatesCheck=Проверка обновлений при запуске
 	UpdateFound=Найдена новая версия YAGS!\n\nЖелаете обновить скрипт автомагически?
 	UpdateNo=Вы всегда можете обновить скрипт самостоятельно, посетив GitHub! :)
+	BringOnTopHotkey=Выводить скрипт при нажатии Alt + B
 	SwapSideMouseButtons=Поменять местами боковые кнопки мыши
 
 	Show=Настройки
@@ -258,6 +260,7 @@ SettingsIniFile := "
 	Relogin=1
 
 	AutoUpdatesCheck=1
+	BringOnTopHotkey=1
 	SwapSideMouseButtons=0
 
 	AutoAttackMode=HuTaoDashCancel
