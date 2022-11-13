@@ -56,7 +56,7 @@ LangIniEn := "
 	Relogin=Relogin
 
 	AutoUpdatesCheck=Check for updates upon start
-	UpdateFound=A new version of YAGS was found!\n\nDo you want to update the script automagically?
+	UpdateFound=A new version of YAGS was found!\nCurrent: %current_ver% | New: %new_ver%\n\nChanges since last release:\n%changes%\n\nDo you want to update the script automagically?
 	UpdateNo=You can always update the script manually from GitHub! :)
 	BringOnTopHotkey=Show script on Alt + B hotkey
 	SwapSideMouseButtons=Swap side mouse buttons
@@ -148,7 +148,7 @@ LangIniRu := "
 	Relogin=Перезаход
 
 	AutoUpdatesCheck=Проверка обновлений при запуске
-	UpdateFound=Найдена новая версия YAGS!\n\nЖелаете обновить скрипт автомагически?
+	UpdateFound=Найдена новая версия YAGS!\nТекущая: %current_ver% | Новая: %new_ver%\n\nИзменения с последнего релиза:\n%changes%\n\nЖелаете обновить скрипт автомагически?
 	UpdateNo=Вы всегда можете обновить скрипт самостоятельно, посетив GitHub! :)
 	BringOnTopHotkey=Выводить скрипт при нажатии Alt + B
 	SwapSideMouseButtons=Поменять местами боковые кнопки мыши

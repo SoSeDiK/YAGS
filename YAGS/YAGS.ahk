@@ -4,6 +4,7 @@
 ; ToDo:
 ; - Fill "Controls" page (possibly even changing hotkeys?)
 ; - Add hovers explaining features
+; - Rework Auto Attack module (customizable sequences?)
 ; =======================================
 #Requires AutoHotkey v2.0-beta
 
@@ -15,7 +16,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.1"
+Global ScriptVersion := "1.0.2"
 
 
 
@@ -550,7 +551,7 @@ ConfigureContextualBindings() {
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
-	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and IsColor(62, 42, "0xFFFFFF") ; 3rd action icon bound to LMB & leave icon present
+	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and (IsColor(62, 42, "0xFFFFFF") and not IsColor(65, 29, "0xE2BD89")) ; 3rd action icon bound to LMB & (leave icon present & not Paimon's head)
 	PlayScreen := GameScreen and not FishingActive
 
 	If (MenuActionsEnabled) {
@@ -3279,12 +3280,22 @@ CheckForUpdates() {
 		Return
 	}
 
-	If ("v" ScriptVersion == FetchLatestYAGSVersion()) {
+	UpdateCheckResponse := FetchLatestYAGS()
+	CurrentVer := "v" ScriptVersion
+	NewVer := GetLatestYAGSVersion(UpdateCheckResponse)
+	If (CurrentVer == NewVer) {
 		VersionState := "UpToDate"
 		Return
 	}
 
-	Result := MsgBox(Langed("UpdateFound", "A new version of YAGS was found!`n`nDo you want to update the script automagically?"),, "YesNo")
+	Changes := GetLatestYAGSChanges(UpdateCheckResponse)
+	Changes := StrReplace(Changes, "\r", "")
+	Changes := StrReplace(Changes, "\n", "`n")
+	Result := Langed("UpdateFound", "A new version of YAGS was found!\nCurrent: %current_ver% | New: %new_ver%\n\nChanges since last release:\n%changes%\n\nDo you want to update the script automagically?")
+	Result := StrReplace(Result, "%current_ver%", CurrentVer)
+	Result := StrReplace(Result, "%new_ver%", NewVer)
+	Result := StrReplace(Result, "%changes%", Changes)
+	Result := MsgBox(Result, , "YesNo")
 	
 	If (Result == "Yes") {
 		Url := "https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe"
@@ -3306,11 +3317,20 @@ CheckForUpdates() {
 	}
 }
 
-FetchLatestYAGSVersion() {
+FetchLatestYAGS() {
 	Url := "https://api.github.com/repos/SoSeDiK/YAGS/releases/latest"
 	Whr := ComObject("WinHttp.WinHttpRequest.5.1")
 	Whr.Open("GET", Url, False), Whr.Send()
-	RegExMatch(Whr.ResponseText, "_name\W+\K[^`"]+", &SubPat)
+	Return Whr.ResponseText
+}
+
+GetLatestYAGSVersion(Response) {
+	RegExMatch(Response, "_name\W+\K[^`"]+", &SubPat)
+	Return SubPat[0]
+}
+
+GetLatestYAGSChanges(Response) {
+	RegExMatch(Response, "body\W+\K[^`"]+", &SubPat)
 	Return SubPat[0]
 }
 
