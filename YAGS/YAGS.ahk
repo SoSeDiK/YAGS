@@ -16,7 +16,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.2"
+Global ScriptVersion := "1.0.3"
 
 
 
@@ -447,6 +447,8 @@ SuspendOnGameInactive() {
 }
 
 ResetScripts() {
+	BlockInput "MouseMoveOff" ; Just in case
+
 	; Tasks
 	DisableFeatureAutoPickup()
 	DisableFeatureAutoUnfreeze()
@@ -655,10 +657,8 @@ ConfigureContextualBindings() {
 	}
 
 	If (ClockManagementEnabled) {
-		If (not ClockManagementBindingsEnabled and PlayScreen) {
+		If (not ClockManagementBindingsEnabled) {
 			EnableFeatureClockManagement()
-		} Else If (ClockManagementBindingsEnabled and not PlayScreen) {
-			DisableFeatureClockManagement()
 		}
 	}
 
@@ -1456,9 +1456,23 @@ DisableFeatureAutoPickup() {
 ; =======================================
 ; Auto Unfreeze/Unbubble
 ; =======================================
+Global Unfreezing := False
+
+
+
+CheckUnfreeze() {
+	Global
+	If (not Unfreezing and IsFrozen()) {
+		Unfreezing := True
+		SetTimer Unfreeze, 65
+	}
+}
+
 Unfreeze() {
+	Global
 	If (not IsFrozen()) {
 		SetTimer Unfreeze, 0
+		Unfreezing := False
 		Return
 	}
 	Send "{Space}"
@@ -1474,14 +1488,17 @@ EnableFeatureAutoUnfreeze() {
 	If (not AutoUnfreezeEnabled)
 		Return
 
-	SetTimer Unfreeze, 65
+	SetTimer CheckUnfreeze, 250
 
 	AutoUnfreezeBindingsEnabled := True
 }
 
 DisableFeatureAutoUnfreeze() {
 	Global
+	SetTimer CheckUnfreeze, 0
 	SetTimer Unfreeze, 0
+
+	Unfreezing := False
 
 	AutoUnfreezeBindingsEnabled := False
 }
@@ -1900,7 +1917,7 @@ BuyAllAvailable() {
 			Return
 		}
 		QuicklyBuyOnce()
-		SetTimer BuyAllAvailable, -200
+		SetTimer BuyAllAvailable, -300
 		Return
 	}
 	StopBuyingAll()
@@ -2060,6 +2077,7 @@ SkipToTime(NeededTime) {
 	NextDay := GetKeyState("NumpadMult")
 	AddOne := GetKeyState("Numpad0")
 	SubtractOne := GetKeyState("NumpadDot")
+
 	; Check if already in clock menu
 	ClockMenuAlreadyOpened := IsClockMenu()
 	If (not ClockMenuAlreadyOpened) {
@@ -2068,10 +2086,10 @@ SkipToTime(NeededTime) {
 		LockedClick(45, 715) ; Clock icon
 		WaitPixelColor("0xECE5D8", 1870, 50, 5000) ; Wait for the clock menu
 	}
-	
+
 	Angle := GetCurrentAngle()
 	Time := Integer(Round(AngleToTime(Angle)))
-	
+
 	If (AddOne)
 		NeededTime += 1
 	If (SubtractOne)
@@ -2080,28 +2098,30 @@ SkipToTime(NeededTime) {
 		NeededTime += 24
 	Else If (NeededTime > 24)
 		NeededTime -= 24
-	
+
 	Clicks := NeededTime - Time
 	If (Clicks < 0)
 		Clicks += 24
 	If (NextDay and Time <= NeededTime)
 		Clicks += 24
 	Clicks := Round(Clicks / 6)
-	
+
 	Loop (Clicks - 1) {
 		Offset := Time + A_Index * 6 + 1
 		If (Offset > 24)
 			Offset -= 24
 		LockedClick(HourXCoords[Offset], HourYCoords[Offset])
+		Sleep 250
 	}
-	
+
 	Offset := NeededTime + 1
 	If (Offset > 24)
 		Offset -= 24
 	LockedClick(HourXCoords[Offset], HourYCoords[Offset])
+	Sleep 250
 
 	LockedClick(1440, 1000) ; "Confirm" button
-	
+
 	If (ClockMenuAlreadyOpened)
 		Return
 
