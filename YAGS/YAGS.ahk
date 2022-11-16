@@ -1414,12 +1414,16 @@ HasPickup() {
 
 	; Do not pickup if position of "F" has changed
 	Sleep 10
-	If (not IsColor(FoundX, FoundY, Color))
+	If (not IsColor(FoundX - 1, FoundY, Color))
 		Return False
 
 	; Check if there are no extra prompts
-	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 15) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 15)) {
+	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 25) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 25)) {
 		If (IsColor(1177, FoundY - 3, "0xFEFEFE") and IsColor(1200, FoundY + 15, "0xF7F7F7")) ; Hand
+			Return True
+		If (PixelSearch(&_, &_, 1173, FoundY - 12, 1200, FoundY + 12, "0x000000", 30)) ; Icon has dark color
+			Return True
+		If (PixelSearch(&_, &_, 1220, FoundY - 12, 1240, FoundY + 12, "0xACFF45")) ; Rare green item
 			Return True
 		Return False
 	}
@@ -1669,7 +1673,8 @@ Teleport(Y) {
 
 	LockedClick(1298, Y)
 
-	WaitPixelColor("0xFFCD33", 1478, 1012, 3000) ; "Teleport" button
+	If (not WaitPixelColor("0xFFCD33", 1478, 1012, 3000, True)) ; "Teleport" button
+		Return
 	Sleep 100
 
 	ClickOnBottomRightButton(False)
