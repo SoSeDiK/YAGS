@@ -72,27 +72,27 @@ SetTimer WatchCursor, 100
 	ToolTip , , , 2
 }
 
-~Up:: {
+*Up:: {
 	MouseGetPos &x, &y
 	MouseMove x, y - 1
 }
 
-~Down:: {
+*Down:: {
 	MouseGetPos &x, &y
 	MouseMove x, y + 1
 }
 
-~Left:: {
+*Left:: {
 	MouseGetPos &x, &y
 	MouseMove x - 1, y
 }
 
-~Right:: {
+*Right:: {
 	MouseGetPos &x, &y
 	MouseMove x + 1, y
 }
 
-F12:: {
+*F12:: {
 	Toggle := !Toggle
 	If not Toggle
 		ToolTip , , , 2
