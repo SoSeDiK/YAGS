@@ -2799,6 +2799,7 @@ DisableFeatureImprovedFishing() {
 	Hotkey "*LButton", ToggleTargetMode, "Off"
 
 	TargetMode := False
+
 	ImprovedFishingBindingsEnabled := False
 }
 
@@ -2809,21 +2810,9 @@ DisableFeatureImprovedFishing() {
 ; =======================================
 ; Auto Fishing
 ; =======================================
-Global AutoFishing := False
 Global IsPulling := False
 
 
-
-ToggleAutoFishing() {
-	Global
-	AutoFishing := !AutoFishing
-	If (AutoFishing) {
-		SetTimer CheckFishing, 100
-	} Else {
-		IsPulling := False
-		SetTimer CheckFishing, 0
-	}
-}
 
 CheckFishing() {
 	Global
@@ -2847,7 +2836,7 @@ CheckFishing() {
 
 IsHooked() {
 	; Fish baited, start pulling
-	If (PixelSearch(&FoundX, &FoundY, 1613, 980, 1615, 983, "0xFFFFFF")) {
+	If (PixelSearch(&FoundX, &FoundY, 1613, 980, 1615, 983, "0xFFFFFF", 25)) {
 		MouseClick "Left"
 		Return True
 	}
@@ -2864,9 +2853,7 @@ CheckShape() {
     ; 1 -> return
     ; 2 -> pull
 
-	StartX := 718
-
-	If (!PixelSearch(&FoundX1, &FoundY1, StartX, 100, 1200, 100, "0xFFFFC0")) ; Current position
+	If (!PixelSearch(&FoundX1, &FoundY1, 718, 100, 1200, 100, "0xFFFFC0")) ; Current position
 		Return 0
 
 	If (!PixelSearch(&FoundX2, &FoundY2, 1210, 112, FoundX1 + 9, 112, "0xFFFFC0")) ; Border
@@ -2889,15 +2876,17 @@ EnableFeatureAutoFishing() {
 	If (not AutoFishingEnabled)
 		Return
 
-	ToggleAutoFishing()
+	SetTimer CheckFishing, 100
 
 	AutoFishingBindingsEnabled := True
 }
 
 DisableFeatureAutoFishing() {
 	Global
-	AutoFishing := False
+	SetTimer CheckFishing, 0
+
 	IsPulling := False
+
 	AutoFishingBindingsEnabled := False
 }
 
