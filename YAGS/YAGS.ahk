@@ -16,7 +16,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.4"
+Global ScriptVersion := "1.0.5"
 
 
 
@@ -1197,14 +1197,14 @@ NormalAutoAttack() {
 }
 
 StrongAttack(*) {
-    Click "Down"
-    KeyWait "RButton"
-    TimeSinceKeyPressed := A_TimeSinceThisHotkey
-    If (TimeSinceKeyPressed < 350) {
-        ; Hold LMB for at least 350ms
-        Sleep 350 - TimeSinceKeyPressed
-    }
-    Click "Up"
+	Click "Down"
+	KeyWait "RButton"
+	TimeSinceKeyPressed := A_TimeSinceThisHotkey
+	If (TimeSinceKeyPressed < 350) {
+		; Hold LMB for at least 350ms
+		Sleep 350 - TimeSinceKeyPressed
+	}
+	Click "Up"
 }
 
 
@@ -1237,7 +1237,7 @@ DisableFeatureSimplifiedCombat() {
 
 	SetTimer NormalAutoAttack, 0
 
-    Click "Up"
+	Click "Up"
 
 	SimplifiedCombatBindingsEnabled := False
 }
@@ -1424,6 +1424,14 @@ HasPickup() {
 		If (PixelSearch(&_, &_, 1173, FoundY - 12, 1200, FoundY + 12, "0x000000", 30)) ; Icon has dark color
 			Return True
 		If (PixelSearch(&_, &_, 1220, FoundY - 12, 1240, FoundY + 12, "0xACFF45")) ; Rare green item
+			Return True
+		If (PixelSearch(&_, &_, 1220, FoundY - 12, 1240, FoundY + 12, "0x4FF4FF")) ; Rare blue item
+			Return True
+		If (PixelSearch(&_, &_, 1220, FoundY - 12, 1240, FoundY + 12, "0xF998FF")) ; Rare pink item
+			Return True
+		If (IsColor(1190, FoundY - 4, "0xACB6CC")) ; Starconch
+			Return True
+		If (IsColor(1183, FoundY + 2, "0x3B58BF")) ; Glaze Lily
 			Return True
 		Return False
 	}
@@ -2127,11 +2135,13 @@ SkipToTime(NeededTime) {
 
 	LockedClick(1440, 1000) ; "Confirm" button
 
-	If (ClockMenuAlreadyOpened)
-		Return
-
 	Sleep 100
 	WaitPixelColor("0xECE5D8", 1870, 50, 30000) ; Wait for the clock menu
+
+	If (ClockMenuAlreadyOpened or GetKeyState("NumpadDiv")) {
+		MouseMove 1439, 501
+		Return
+	}
 
 	Send "{Esc}"
 	WaitMenu(True)
@@ -2303,78 +2313,79 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 	If (IsColor(1600, 1020, "0xFE5C5C")) ; Already Occupied
 		Return
 
-    Sleep 200
+	Sleep 200
 	SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration)
+	Sleep 200
 }
 
 ReceiveReward(Expedition, ReceiveRewardLag := 0) {
-    SelectExpedition(Expedition)
+	SelectExpedition(Expedition)
 
 	If (not IsColor(1600, 1020, "0x99CC33")) ; Already Received
 		Return
-    Sleep 200
+	Sleep 200
 
-    ; Receive reward
-    ClickOnBottomRightButton(False)
-    Sleep 200
-    Sleep ReceiveRewardLag
+	; Receive reward
+	ClickOnBottomRightButton(False)
+	Sleep 200
+	Sleep ReceiveRewardLag
 
-    ; Skip reward menu
-    ClickOnBottomRightButton(False)
-    Sleep 200
+	; Skip reward menu
+	ClickOnBottomRightButton(False)
+	Sleep 200
 }
 
 SelectExpedition(Expedition) {
-    ; Click on the world
-    WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
-    LockedClick(200, WorldY)
-    Sleep 500
+	; Click on the world
+	WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
+	LockedClick(200, WorldY)
+	Sleep 500
 
-    ; Click on the expedition
-    LockedClick(Expedition.X, Expedition.Y)
-    Sleep 300
+	; Click on the expedition
+	LockedClick(Expedition.X, Expedition.Y)
+	Sleep 300
 }
 
 SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
-    SelectDuration(Duration)
-    Sleep 200
+	SelectDuration(Duration)
+	Sleep 200
 
-    ; Click on "Select Character"
-    ClickOnBottomRightButton(False)
-    Sleep 800
+	; Click on "Select Character"
+	ClickOnBottomRightButton(False)
+	Sleep 800
 
-    ; Find and select the character
-    FindAndSelectCharacter(CharacterNumberInList)
-    Sleep 300
+	; Find and select the character
+	FindAndSelectCharacter(CharacterNumberInList)
+	Sleep 300
 }
 
 SelectDuration(Duration) {
-    LockedClick(Duration.X, Duration.Y)
-    Sleep 100
+	LockedClick(Duration.X, Duration.Y)
+	Sleep 100
 }
 
 FindAndSelectCharacter(CharacterNumberInList) {
-    FirstCharacterX := 100
-    FirstCharacterY := 150
-    SpacingBetweenCharacters := 125
+	FirstCharacterX := 100
+	FirstCharacterY := 150
+	SpacingBetweenCharacters := 125
 
-    If (CharacterNumberInList <= 7) {
-        LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1)))
-    } Else {
-        ScrollDownCharacterList(CharacterNumberInList - 7.5)
-        LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7))
-    }
+	If (CharacterNumberInList <= 7) {
+		LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1)))
+	} Else {
+		ScrollDownCharacterList(CharacterNumberInList - 7.5)
+		LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7))
+	}
 }
 
 ; Scroll down the passed number of characters
 ScrollDownCharacterList(CharacterAmount) {
-    MouseMove 950, 540
+	MouseMove 950, 540
 
-    ScrollAmount := CharacterAmount * 7
-    Loop (ScrollAmount) {
-        Send "{WheelDown}"
-        Sleep 10
-    }
+	ScrollAmount := CharacterAmount * 7
+	Loop (ScrollAmount) {
+		Send "{WheelDown}"
+		Sleep 10
+	}
 }
 
 
@@ -2658,9 +2669,9 @@ KleeSimpleJumpCancel() {
 	Global
 	If (PressingToAttack) {
 		Send "{LButton}"
-        Sleep 35
-        Send "{Space}"
-        Sleep 550
+		Sleep 35
+		Send "{Space}"
+		Sleep 550
 		KleeSimpleJumpCancel()
 	}
 }
@@ -2815,6 +2826,7 @@ DisableFeatureImprovedFishing() {
 ; =======================================
 ; Auto Fishing
 ; =======================================
+Global Pulled := False
 Global IsPulling := False
 
 
@@ -2840,23 +2852,27 @@ CheckFishing() {
 }
 
 IsHooked() {
+	Global
 	; Fish baited, start pulling
-	If (PixelSearch(&FoundX, &FoundY, 1613, 980, 1615, 983, "0xFFFFFF", 25)) {
+	If (not Pulled and PixelSearch(&FoundX, &FoundY, 1613, 980, 1615, 983, "0xFFFFFF", 65)) {
 		MouseClick "Left"
+		Pulled := True
 		Return True
 	}
 
 	; Option to cast the rod is present
-	If (IsColor(1740, 1030, "0xFFE92C"))
+	If (IsColor(1740, 1030, "0xFFE92C")) {
+		Pulled := False
 		Return False
+	}
 
 	Return True
 }
 
 CheckShape() {
-    ; 0 -> return
-    ; 1 -> return
-    ; 2 -> pull
+	; 0 -> return
+	; 1 -> return
+	; 2 -> pull
 
 	If (!PixelSearch(&FoundX1, &FoundY1, 718, 100, 1200, 100, "0xFFFFC0")) ; Current position
 		Return 0
@@ -2890,6 +2906,7 @@ DisableFeatureAutoFishing() {
 	Global
 	SetTimer CheckFishing, 0
 
+	Pulled := False
 	IsPulling := False
 
 	AutoFishingBindingsEnabled := False
@@ -2974,7 +2991,7 @@ PerformMenuActions() {
 	; =======================================
 	; Enhance button
 	; =======================================
-	If (MenuArrow and not IsColor(1245, 862, "0xC5C3C0") and IsColor(1200, 930, "0xE9E5DC") and IsColor(1587, 1018, "0xFFCB32")) {
+	If (MenuArrow and not IsColor(1245, 862, "0xC5C3C0") and IsColor(1278, 930, "0xE9E5DC") and IsColor(1587, 1018, "0xFFCB32")) {
 		ClickOnBottomRightButton()
 		Return
 	}
@@ -3215,7 +3232,7 @@ WaitPixelColor(Color, X, Y, Timeout, ReturnOnTimeout := False) {
 		If (A_TickCount - StartTime >= Timeout) {
 			If (ReturnOnTimeout)
 				Return False
-			throw Error("Timeout " . Timeout . " ms")
+			Throw Error("Timeout " . Timeout . " ms")
 		}
 	}
 }
@@ -3241,7 +3258,7 @@ WaitPixelsRegions(Regions, Timeout := 1000) {
 		}
 
 		If (A_TickCount - StartTime >= Timeout)
-			throw Error("Timeout " . Timeout . " ms")
+			Throw Error("Timeout " . Timeout . " ms")
 	}
 }
 
