@@ -16,7 +16,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.5"
+Global ScriptVersion := "1.0.6"
 
 
 
@@ -553,7 +553,7 @@ ConfigureContextualBindings() {
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
 	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
-	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and (IsColor(62, 42, "0xFFFFFF") and not IsColor(65, 29, "0xE2BD89")) ; 3rd action icon bound to LMB & (leave icon present & not Paimon's head)
+	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and (IsColor(62, 42, "0xFFFFFF") and not IsColor(65, 29, "0xE2BD89")) and not IsColor(1723, 1030, "0xFFFFFF") ; 3rd action icon bound to LMB & (leave icon present & not Paimon's head) & no "E" skill
 	PlayScreen := GameScreen and not FishingActive
 
 	If (MenuActionsEnabled) {
