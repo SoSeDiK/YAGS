@@ -13,7 +13,7 @@ YAGS was made for personal usage to make the daily Genshin routine less annoying
 
 This script tries to improve controls, automate repeatable things, and bring some useful shortcuts.
 
-Script is made solely for 1920x1080 game resolution in [borderless window mode](https://gaming.stackexchange.com/a/376533) with 60FPS and low ping in mind.
+Script is made solely for 1920x1080 game resolution in [borderless window mode](https://gaming.stackexchange.com/a/376533) with 60FPS and low ping in mind (not a necessity, but some things *might* not work as expected).
 
 There are no plans to adapt it to other resolutions in the near future.
 
@@ -53,7 +53,7 @@ There are no plans to adapt it to other resolutions in the near future.
 - Hold `1-5` keys to switch characters.
   - I can not be the only one who have chosen the wrong character in the past, and had to rage spam my keyboard to get another character asap, right? RIGHT?!
 - Press `MMB` to toggle AutoWalk!
-  - Press `RMB` to toggle sprint while auto walking. Hold `RMB` to continiously run instead of dashing (useful to start Bunnyhopping).
+  - Press `RMB` to toggle sprint while auto walking. Hold `RMB` to continuously run instead of dashing (useful to start Bunnyhopping).
   - `LShift` can be used too for manual sprinting.
 - Press `H` to toggle Vision!
   - Makes it much easier, less annoying, and had to be done since `MMB` was changed.
@@ -95,9 +95,9 @@ There are no plans to adapt it to other resolutions in the near future.
     - `1` `2` `3`   ` 3` `24` `21`
     - ` ` `0` `.`   `  ` `+1` `-1`
   - For example, `Numpad /` + `Numpad 7` will set the time to `9`.
-  - Press `Numpad 0` inbetween to add 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `10`.
-  - Press `Numpad .` inbetween to subtract 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `8`.
-  - Press `Numpad *` inbetween to add 24 hours. For example, `Numpad /` + `Numpad *` + `Numpad 7` will set the time to `9` tomorrow.
+  - Press `Numpad 0` in-between to add 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `10`.
+  - Press `Numpad .` in-between to subtract 1 hour. For example, `Numpad /` + `Numpad 0` + `Numpad 7` will set the time to `8`.
+  - Press `Numpad *` in-between to add 24 hours. For example, `Numpad /` + `Numpad *` + `Numpad 7` will set the time to `9` tomorrow.
   - And yes, you guessed it, `Numpad /` + `Numpad *` + `Numpad 0` + `Numpad 7` will set the time to `10` tomorrow.
     - `/` to trigger, `*` for tomorrow, `0` to add 1 hour, `7` for 9 hours. Tomorrow at 9 + 1 = 10. Simple :)
 	- Some keyboards might limit such combinations, but you won't need them most times anyway.
@@ -112,7 +112,7 @@ There are no plans to adapt it to other resolutions in the near future.
   - Now you should just click `LMB` to toggle rod casting mode instead of holding.
 - Easier/Lazy combat.
   - Hold `LMB` to spam normal attack.
-  - Press `RMB` to porform charged attack.
+  - Press `RMB` to perform charged attack.
     - Some characters have different charge attacks depending on the holding duration. You can hold `RMB` a bit more if needed.
 
 ### ⚙ Additional info
