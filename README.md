@@ -43,6 +43,7 @@ There are no plans to adapt it to other resolutions in the near future.
 - Hold `XButton1` to spam `F` even more!
   - For some reason, it's easier for me to use a mouse than to press `F`.
   - You may also use this to skip dialogues (you still have to do the choices manually).
+- Click `XButton1` to press `T` (to travel via Four-Leaf Sigils with a mouse).
 - Hold `Space` to jump continuously.
   - Can be used to Bunnyhop (enter the sprinting mode and start jumping).
 - Hold `XButton2` to jump continuously too!

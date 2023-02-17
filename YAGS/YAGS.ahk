@@ -92,6 +92,9 @@ Global BetterMapClickBindingsEnabled := False
 Global AutoAttackEnabled := GetSetting("AutoAttack", True)
 Global AutoAttackBindingsEnabled := False
 
+Global LazySigilEnabled := GetSetting("LazySigil", True)
+Global LazySigilBindingsEnabled := False
+
 
 ; Quick Actions
 Global MenuActionsEnabled := GetSetting("MenuActions", True)
@@ -147,7 +150,7 @@ SetupGui() {
 	ScriptGuiTabs.UseTab(1)
 
 	; Features
-	ScriptGui.Add("GroupBox", "x8 y25 w250 h220", "")
+	ScriptGui.Add("GroupBox", "x8 y25 w250 h240", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Features") " ")
 
 	AddTask("AutoWalk", &AutoWalkEnabled, DisableFeatureAutoWalk)
@@ -160,9 +163,10 @@ SetupGui() {
 	AddTask("AlternateVision", &AlternateVisionEnabled, DisableFeatureAlternateVision)
 	AddTask("BetterMapClick", &BetterMapClickEnabled, DisableFeatureBetterMapClick)
 	AddTask("AutoAttack", &AutoAttackEnabled, DisableFeatureAutoAttack)
+	AddTask("LazySigil", &LazySigilEnabled, DisableFeatureLazySigil)
 
 	; Quick Actions
-	ScriptGui.Add("GroupBox", "x8 y250 w250 h180", "")
+	ScriptGui.Add("GroupBox", "x8 y270 w250 h180", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("QuickActions") " ")
 
 	AddTask("MenuActions", &MenuActionsEnabled, DisableFeatureMenuActions)
@@ -465,6 +469,7 @@ ResetScripts() {
 	DisableFeatureAlternateVision()
 	DisableFeatureBetterMapClick()
 	DisableFeatureAutoAttack()
+	DisableFeatureLazySigil()
 
 	; Quick Actions
 	DisableFeatureMenuActions()
@@ -535,6 +540,8 @@ TriggerXButton1BindingsUp(*) {
 }
 
 TriggerXButton2Bindings(*) {
+	If (LazySigilBindingsEnabled)
+		LazySigil()
 	If (QuickPickupEnabled)
 		XButtonPickup()
 	If (QuickShopBindingsEnabled)
@@ -695,6 +702,14 @@ ConfigureContextualBindings() {
 			EnableFeatureAutoAttack()
 		} Else If (AutoAttackBindingsEnabled and not PlayScreen) {
 			DisableFeatureAutoAttack()
+		}
+	}
+
+	If (LazySigilEnabled) {
+		If (not LazySigilBindingsEnabled and PlayScreen) {
+			EnableFeatureLazySigil()
+		} Else If (LazySigilBindingsEnabled and not PlayScreen) {
+			DisableFeatureLazySigil()
 		}
 	}
 
@@ -2772,6 +2787,33 @@ DisableFeatureAutoAttack() {
 
 	PressingToAttack := False
 	AutoAttackBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Lazy Sigil
+; =======================================
+LazySigil() {
+	Send "{t}"
+}
+
+EnableFeatureLazySigil() {
+	Global
+	If (LazySigilBindingsEnabled)
+		DisableFeatureLazySigil()
+
+	If (not LazySigilEnabled)
+		Return
+
+	LazySigilBindingsEnabled := True
+}
+
+DisableFeatureLazySigil() {
+	Global
+	LazySigilBindingsEnabled := False
 }
 
 

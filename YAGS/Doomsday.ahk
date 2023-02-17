@@ -45,6 +45,7 @@ LangIniEn := "
 	AlternateVision=Alternate Vision Toggle
 	BetterMapClick=Better Map Teleport
 	AutoAttack=Auto Attack
+	LazySigil=Lazy Sigil
 
 	MenuActions=Menu Clicks
 	QuickPartySwitch=Party Switch
@@ -137,6 +138,7 @@ LangIniRu := "
 	AlternateVision=Альтернативное Зрение
 	BetterMapClick=Улучшенный телепорт на карте
 	AutoAttack=Режим автоматической атаки
+	LazySigil=Ленивый четырёхлистник
 
 	MenuActions=Упрощённые клики в меню
 	QuickPartySwitch=Смена отряда
@@ -249,6 +251,7 @@ SettingsIniFile := "
 	AlternateVision=1
 	BetterMapClick=1
 	AutoAttack=1
+	LazySigil=1
 
 	MenuActions=1
 	QuickPartySwitch=1
