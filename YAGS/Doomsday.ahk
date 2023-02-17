@@ -9,6 +9,8 @@
 LangIniEn := "
 (
 	[Locales]
+	enTooltip=Switch to English
+	ruTooltip=Переключиться на Русский
 	Language=English
 	Title=Yet Another Genshin Script
 	Wish=Have a nice game! ♥
@@ -32,35 +34,60 @@ LangIniEn := "
 	Options=Options
 
 	AutoPickup=Auto Items Pickup
+	AutoPickupTooltip=Automatically presses F when prompt to pick up an item shows up
 	AutoUnfreeze=Auto Unfreeze/Unbubble
+	AutoUnfreezeTooltip=Automatically spams Space when frozen or inside the bubble
 	AutoFishing=Auto Fishing
+	AutoFishingTooltip=Automatically pulls the fishing rod and plays the mini game\nYou still have to cast the rod manually
 
 	AutoWalk=Auto Walk
+	AutoWalkTooltip=Press MMB to automatically walk forward\nThen press RMB to toggle sprint mode
 	SimplifiedJump=Simplified Jump
+	SimplifiedJumpTooltip=Hold Space (or mouse XButton2) to jump continuously
 	QuickPickup=Quick Pickup
+	QuickPickupTooltip=Hold F (or mouse XButton1) to spam F
 	SimplifiedCombat=Lazy Combat Mode
+	SimplifiedCombatTooltip=Click RMB for a Changed Attack\nNote: you may also hold RMB if the character\nhas a special attack if held longer
 	DialogueSkipping=Dialogue Skipping
+	DialogueSkippingTooltip=Press XButton1 to skip dialogues\nPress XButton2 to skip dialogues and automatically\npickup the last dialogue choice
 	BetterCharacterSwitch=Better Character Switch
+	BetterCharacterSwitchTooltip=Hold 1-5 buttons to switch characters
 	ImprovedFishing=Improved Fishing
+	ImprovedFishingTooltip=Click LMB to get into (or leave from) rod\ncasting mode instead of holding it
 	AlternateVision=Alternate Vision Toggle
+	AlternateVisionTooltip=Press H to toggle vision mode
 	BetterMapClick=Better Map Teleport
+	BetterMapClickTooltip=Use MMB to quickly teleport using\nthe teleport under the mouse cursor
 	AutoAttack=Auto Attack
+	AutoAttackTooltip=Hold LMB to continuously spam Normal Attack
 	LazySigil=Lazy Sigil
+	LazySigilTooltip=Click XButton1 to press T\n(useful for mouse navigation via Four-Leaf Sigils)
 
 	MenuActions=Menu Clicks
+	MenuActionsTooltip=Plenty of automated menu actions\nRefer to the GitHub page for more info
 	QuickPartySwitch=Party Switch
+	QuickPartySwitchTooltip=Use Numpad+ with Numpad0-9 to quickly\nchange the current party
 	QuickShopBuying=Shop Buying
+	QuickShopBuyingTooltip=Use XButton1 to quickly buy current shop item\nUse XButton2 to continuously buy items from the shop
 	ClockManagement=Clock Management
+	ClockManagementTooltip=Use Numpad/ with Numpad 1-9 to quickly change the time\nNumpad0 adds one hour; Numpad. subtracts on hour\nNumpad* adds 24 hours (next day)
 	SendExpeditions=Send Expeditions
+	SendExpeditionsTooltip=Numpad- with Numpad6 to receive and resend expeditions
 	SereniteaPot=Serenitea Pot
+	SereniteaPotTooltip=Numpad- with Numpad5 to go to the Serenitea Pot
 	ReceiveBPRewards=BP Rewards
+	ReceiveBPRewardsTooltip=Numpad- with Numpad8 to quickly\nget BP experience and rewards
 	Relogin=Relogin
+	ReloginTooltip=Numpad- with Numpad. to relogin
 
 	AutoUpdatesCheck=Check for updates upon start
+	AutoUpdatesCheckTooltip=Checks for updates on GitHub\nand (optionally) updates the script
 	UpdateFound=A new version of YAGS was found!\nCurrent: %current_ver% | New: %new_ver%\n\nChanges since last release:\n%changes%\n\nDo you want to update the script automagically?
 	UpdateNo=You can always update the script manually from GitHub! :)
 	BringOnTopHotkey=Show script on Alt + B hotkey
+	BringOnTopHotkeyTooltip=Shows script this GUI when pressed Alt + B
 	SwapSideMouseButtons=Swap side mouse buttons
+	SwapSideMouseButtonsTooltip=Swaps hotkeys for XButton1 and XButton2
 
 	Show=Show
 	Exit=Exit
@@ -102,6 +129,8 @@ LangIniEn := "
 LangIniRu := "
 (
 	[Locales]
+	enTooltip=Switch to English
+	ruTooltip=Переключиться на Русский
 	Language=Русский
 	Title=Очередной Геншин Скрипт
 	Wish=Приятной игры! ♥
@@ -125,35 +154,60 @@ LangIniRu := "
 	Options=Дополнительно
 
 	AutoPickup=Автоматический подбор предметов
+	AutoPickupTooltip=Автоматически нажимать F, когда появляется\nвозможность подобрать предмет
 	AutoUnfreeze=Автоматическая разморозка
+	AutoUnfreezeTooltip=Автоматически нажимать Пробел во время\nзаморозки или внутри бульбашек
 	AutoFishing=Автоматическая рыбалка
+	AutoFishingTooltip=Автоматически тянет удочку и играет в мини-игру\nЗабрасывать удочку нужно вручную
 
 	AutoWalk=Автоматическая ходьба
+	AutoWalkTooltip=Нажмите СКМ для автоматической ходьбы\nНажатие ПКМ позволяет войти в режим бега
 	SimplifiedJump=Ленивые прыжки
+	SimplifiedJumpTooltip=Зажмите Пробел (или XButton2) для повторяемого прыжка
 	QuickPickup=Быстрый подбор
+	QuickPickupTooltip=Зажмите F (или XButton1), чтобы спамить F
 	SimplifiedCombat=Ленивая боёвка
+	SimplifiedCombatTooltip=Нажмите ПКМ для заряженной атаки\nПримечание: можно удерживать ПКМ, если персонаж имеет\nособую атаку при более длинном удерживании
 	DialogueSkipping=Пропуск диалогов
+	DialogueSkippingTooltip=Зажмите XButton1 для пропуска диалогов\nЗажмите XButton2 для пропуска диалогов с автоматическим\nвыбором последнего пунта диалога
 	BetterCharacterSwitch=Улучшенная смена персонажей
+	BetterCharacterSwitchTooltip=Зажмите 1-5 для смены персонажа
 	ImprovedFishing=Ленивая рыбалка
+	ImprovedFishingTooltip=Зажмите ЛКМ, чтобы войти (или выйти) в режим забрасывания удочки\nвместо того, чтобы удерживать ЛКМ постоянно
 	AlternateVision=Альтернативное Зрение
+	AlternateVisionTooltip=Нажмите H для переключения режима Зрения
 	BetterMapClick=Улучшенный телепорт на карте
+	BetterMapClickTooltip=Нажмите СКМ для быстрой телепортации\nпри помощи телепорта под курсором мыши
 	AutoAttack=Режим автоматической атаки
+	AutoAttackTooltip=Зажмите ЛКМ для постоянной обычной атаки
 	LazySigil=Ленивый четырёхлистник
+	LazySigilTooltip=Нажмите XButton1, чтобы нажать T\n(полезно для передвижения мышкой через четырёхлистники)
 
 	MenuActions=Упрощённые клики в меню
+	MenuActionsTooltip=Множество автоматических действий в меню\nСмотрите GitHub для дополнительной информации
 	QuickPartySwitch=Смена отряда
+	QuickPartySwitchTooltip=Используйте Numpad+ и Numpad0-9 для быстрой смены отряда
 	QuickShopBuying=Покупка в магазинах
+	QuickShopBuyingTooltip=Используйте XButton1 для быстрой покупки текущего предмета в магазине\nИспользуйте XButton2 для покупки всех предметов в магазине
 	ClockManagement=Смена времени
+	ClockManagementTooltip=Используйте Numpad/ и Numpad 1-9 для быстрой смены времени\nNumpad0 добавляет час; Numpad. вычетает час\nNumpad* добавляет 24 часа (следующий день)
 	SendExpeditions=Отправка экспедиций
+	SendExpeditionsTooltip=Numpad- и Numpad6 для сбора и переотправки экспедиций
 	SereniteaPot=Поход в Чайник
+	SereniteaPotTooltip=Numpad- и Numpad5 для перемещения в чайник
 	ReceiveBPRewards=Награды БП
+	ReceiveBPRewardsTooltip=Numpad- и Numpad8 для сбора опыта и наград с БП
 	Relogin=Перезаход
+	ReloginTooltip=Numpad- и Numpad. для перезахода
 
 	AutoUpdatesCheck=Проверка обновлений при запуске
+	AutoUpdatesCheckTooltip=Проверяет обновления на GitHub и предлагает\nобновить скрипт при наличии обновления
 	UpdateFound=Найдена новая версия YAGS!\nТекущая: %current_ver% | Новая: %new_ver%\n\nИзменения с последнего релиза:\n%changes%\n\nЖелаете обновить скрипт автомагически?
 	UpdateNo=Вы всегда можете обновить скрипт самостоятельно, посетив GitHub! :)
 	BringOnTopHotkey=Выводить скрипт при нажатии Alt + B
+	BringOnTopHotkeyTooltip=Выводит это меню при нажатии Alt + B
 	SwapSideMouseButtons=Поменять местами боковые кнопки мыши
+	SwapSideMouseButtonsTooltip=Меняет местами действия для XButton1 и XButton2
 
 	Show=Настройки
 	Exit=Закрыть

@@ -3,7 +3,6 @@
 ; 				~SoSeDiK's Edition
 ; ToDo:
 ; - Fill "Controls" page (possibly even changing hotkeys?)
-; - Add hovers explaining features
 ; - Rework Auto Attack module (customizable sequences?)
 ; =======================================
 #Requires AutoHotkey v2.0-beta
@@ -129,6 +128,7 @@ Global ReloginBindingsEnabled := False
 ; Configure GUI
 ; =======================================
 Global ScriptGui := Gui()
+Global GuiTooltips := Map()
 SetupGui()
 ToggleBringOnTopHotkey() ; Alt + B to bring Gui on top
 SetupGui() {
@@ -336,18 +336,22 @@ SetupGui() {
 }
 
 AddTask(FeatureName, &FeatureVarState, FeatureDisablingFunction) {
-	ScriptGui.Add("Checkbox", "yp+20 v" FeatureName " " (FeatureVarState ? "Checked" : ""), Langed(FeatureName, "Missing locale for " FeatureName))
+	Control := ScriptGui.Add("Checkbox", "yp+20 v" FeatureName " " (FeatureVarState ? "Checked" : ""), Langed(FeatureName, "Missing locale for " FeatureName))
 	ScriptGui[FeatureName].OnEvent("Click", ToggleFeature.Bind(&FeatureVarState, FeatureDisablingFunction, FeatureName))
+	GuiTooltips[Control.ClassNN] := Langed(FeatureName "Tooltip", "Missing tooltip for " FeatureName)
 }
 
 AddOption(OptionName, OptionTask) {
-	ScriptGui.Add("Checkbox", "x277 yp+20 v" OptionName " " (GetSetting(OptionName, False) ? "Checked" : ""), Langed(OptionName, "Missing locale for " OptionName))
+	Control := ScriptGui.Add("Checkbox", "x277 yp+20 v" OptionName " " (GetSetting(OptionName, False) ? "Checked" : ""), Langed(OptionName, "Missing locale for " OptionName))
 	ScriptGui[OptionName].OnEvent("Click", OptionTask)
+	GuiTooltips[Control.ClassNN] := Langed(OptionName "Tooltip", "Missing tooltip for " OptionName)
 }
 
 AddLang(LangId, Num) {
 	Num := 286 + ((Num - 1) * 28)
-	ScriptGui.Add("Picture", "x" Num " y210 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png").OnEvent("Click", UpdateLanguage.Bind(LangId))
+	Control := ScriptGui.Add("Picture", "x" Num " y210 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png")
+	Control.OnEvent("Click", UpdateLanguage.Bind(LangId))
+	GuiTooltips[Control.ClassNN] := Langed(LangId "Tooltip", "Missing language tooltip for " LangId)
 }
 
 HideGui(*) {
@@ -367,6 +371,7 @@ UpdateLanguage(Lang, *) {
 	If (Lang == GetSetting("Language", "en"))
 		Return
 
+	ToolTip , , , 20 ; Clear current GUI tooltip
 	UpdateSetting("Language", Lang)
 	ScriptGui.GetPos(&X, &Y)
 	XN := X
@@ -413,6 +418,35 @@ AutoUpdatesCheckToggle(*) {
 
 
 ; =======================================
+; GUI Tooltips
+; =======================================
+Global CurrentTooltip := ""
+
+
+
+OnMessage 0x200, ShowGuiTooltips
+ShowGuiTooltips(*) {
+	Global
+	MouseGetPos , , , &Control
+	If (not GuiTooltips.Has(Control)) {
+		ToolTip , , , 20
+		CurrentTooltip := ""
+		Return
+	}
+
+	; Tooltip gets stuck in one place, but at least not flickers
+	If (CurrentTooltip == Control)
+		Return
+
+	CurrentTooltip := Control
+	ToolTip GuiTooltips[Control], , , 20
+}
+
+
+
+
+
+; =======================================
 ; Configure Tray
 ; =======================================
 SetupTray()
@@ -437,6 +471,7 @@ SetTimer SuspendOnGameInactive, -1
 SuspendOnGameInactive() {
 	Loop {
 		WinWaitActive GameProcessName
+		ToolTip , , , 20 ; Clear GUI tooltip
 		ScriptEnabled := True
 		EnableGlobalHotkeys()
 		ConfigureContextualBindings()
