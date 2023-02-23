@@ -3433,12 +3433,12 @@ FetchLatestYAGS() {
 }
 
 GetLatestYAGSVersion(Response) {
-	RegExMatch(Response, "_name\W+\K[^`"]+", &SubPat)
+	RegExMatch(Response, "_name`":`"\K[^`"]+", &SubPat)
 	Return SubPat[0]
 }
 
 GetLatestYAGSChanges(Response) {
-	RegExMatch(Response, "body\W+\K[^`"]+", &SubPat)
+	RegExMatch(Response, "body`":`"\K[^`"]+", &SubPat)
 	Return SubPat[0]
 }
 
