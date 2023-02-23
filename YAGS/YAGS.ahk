@@ -1686,12 +1686,12 @@ PressedMButtonToTP(*) {
 DoMapClick() {
 	If (SimpleTeleport())
 		Return
-	
+
 	SimpleLockedClick()
 	Sleep 50
 	Try {
 		; Wait for a little white arrow or teleport button
-		WaitPixelsRegions([ { X1: 1255, Y1: 484, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCD33" } ])
+		WaitPixelsRegions([ { X1: 1255, Y1: 240, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCD33" } ])
 	} Catch {
 		Return
 	}
@@ -1711,14 +1711,14 @@ DoMapClick() {
 	; Find the upper available teleport
 	Y := -1
 	For (Index, TeleportablePointColor in TeleportablePointColors) {
-		If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, TeleportablePointColor)) {
+		If (PixelSearch(&FoundX, &FoundY, 1298, 240, 1299, 1080, TeleportablePointColor)) {
 			If (Y == -1 or FoundY < Y)
 				Y := FoundY
 		}
 	}
 
 	If (Y == -1) {
-		If (PixelSearch(&FoundX, &FoundY, 1298, 460, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
+		If (PixelSearch(&FoundX, &FoundY, 1298, 240, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
 			If (IsColor(FoundX, FoundY - 10, "0xFFFFFF"))
 				Y := FoundY
 		}
