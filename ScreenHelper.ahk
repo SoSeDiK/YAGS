@@ -92,17 +92,21 @@ SetTimer WatchCursor, 100
 	MouseMove x + 1, y
 }
 
-*F12:: {
+*f12:: {
+	Global
 	Toggle := !Toggle
-	If not Toggle
-		ToolTip , , , 2
+	If (Toggle)
+		Return
+
+	ToolTip
+	ToolTip , , , 2
 }
-	
+
 
 
 WatchCursor() {
 	Global
-	If not Toggle
+	If (not Toggle)
 		Return
 	MouseGetPos &x, &y
 	color := PixelGetColor(x, y)

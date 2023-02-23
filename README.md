@@ -74,6 +74,8 @@ There are no plans to adapt it to other resolutions in the near future.
   - Lock/Unlock an artifact or a weapon.
   - Enhance artifact/weapon.
   - Click «Craft»/«Convert» button in Crafting Bench.
+	- Additionally, by using `XButton1` and `XButton2` you can press «+» and «-» to increase or decrease the crafting amount.
+  - Perform mystic offering.
   - Click «Confirm» button in some popups.
   - Collect Coins and Companion Exp in Tea Pot.
   - Click «Continue Challenge» in Domain.

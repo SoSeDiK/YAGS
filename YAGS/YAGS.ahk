@@ -558,32 +558,46 @@ TriggerMButtonBindings(*) {
 	}
 }
 
+Global XButton1Pressed := False
 TriggerXButton1Bindings(*) {
+	Global
+	XButton1Pressed := True
 	If (SimplifiedJumpBindingsEnabled)
 		XButtonJump()
 	If (DialogueSkippingBindingsEnabled)
 		XButtonSkipDialogue()
 	If (QuickShopBindingsEnabled)
 		BuyAll()
+	If (MenuActionsBindingsEnabled)
+		PerformMenuActionsX1()
 }
 
 TriggerXButton1BindingsUp(*) {
+	Global
+	XButton1Pressed := False
 	If (SimplifiedJumpBindingsEnabled)
 		XButtonJumpUp()
 	If (DialogueSkippingBindingsEnabled)
 		XButtonSkipDialogueUp()
 }
 
+Global XButton2Pressed := False
 TriggerXButton2Bindings(*) {
+	Global
+	XButton2Pressed := True
 	If (LazySigilBindingsEnabled)
 		LazySigil()
 	If (QuickPickupEnabled)
 		XButtonPickup()
 	If (QuickShopBindingsEnabled)
 		BuyOnce()
+	If (MenuActionsBindingsEnabled)
+		PerformMenuActionsX2()
 }
 
 TriggerXButton2BindingsUp(*) {
+	Global
+	XButton2Pressed := False
 	If (QuickPickupEnabled)
 		XButtonPickupUp()
 }
@@ -1087,7 +1101,7 @@ Global SkippingDialogueClicking := False
 
 XButtonSkipDialogue(*) {
 	Global
-	If (IsGameScreen())
+	If (IsGameScreen() or IsCraftingMenu())
 		Return
 	If (not SkippingDialogueClicking)
 		SetTimer DialogueSkipClicking, 25
@@ -3025,6 +3039,12 @@ PerformMenuActions() {
 			Return
 	}
 
+	; Character Weapon Switch
+	If (MenuArrow and IsColor(561, 1005, "0x575C6A")) {
+		If (TryToFindTransparentLocker(1774, 230))
+			Return
+	}
+
 	; Artifacts/Weapons enhancement menu
 	If (MenuArrow and IsColor(1099, 46, "0x9D9C9D")) {
 		If (TryToFindLocker(1612, 505))
@@ -3041,6 +3061,22 @@ PerformMenuActions() {
 	If (not MenuArrow and IsColor(715, 700, "0xECE5D8") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
 		If (TryToFindLocker(1151, 494))
 			Return
+	}
+
+	; =======================================
+	; Mystic Offering button
+	; =======================================
+	If (MenuArrow and IsColor(1663, 1012, "0xFFCB32") and IsColor(1358, 452, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
+		ClickOnBottomRightButton()
+		Return
+	}
+
+	; =======================================
+	; Mystic Offering Confirm button
+	; =======================================
+	If (IsColor(600, 757, "0x38A1E4") and IsColor(1017, 752, "0xFFCB32") and IsColor(1400, 261, "0xFEEEAE")) {
+		ClickAndBack(1101, 755)
+		Return
 	}
 
 	; =======================================
@@ -3066,18 +3102,32 @@ PerformMenuActions() {
 	}
 
 	; =======================================
-	; Enhance button
+	; Auto Add & Enhance buttons
 	; =======================================
-	If (MenuArrow and not IsColor(1245, 862, "0xC5C3C0") and IsColor(1278, 930, "0xE9E5DC") and IsColor(1587, 1018, "0xFFCB32")) {
-		ClickOnBottomRightButton()
+	If (MenuArrow and IsColor(1278, 930, "0xE9E5DC") and IsColor(1587, 1017, "0xFFCB32")) {
+		ColorCheck := SubStr(GetColor(1234, 864), 1, 3)
+		EmptyFirstPlus := ColorCheck == "0xB" or ColorCheck == "0xC" ; Weapons or Artifacts
+		If (EmptyFirstPlus) {
+			ClickAndBack(1836, 764)
+		} Else {
+			ClickOnBottomRightButton()
+		}
 		Return
 	}
 
 	; =======================================
 	; Craft/Convert button
 	; =======================================
-	If (MenuArrow and IsColor(1664, 1017, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")) {
+	If (IsCraftingMenu()) {
 		ClickOnBottomRightButton()
+		Return
+	}
+
+	; =======================================
+	; Craft/Convert Confirm button
+	; =======================================
+	If (IsColor(602, 791, "0x38A1E4") and IsColor(1024, 787, "0xFFCB32") and IsColor(1402, 226, "0xFEEEAE")) {
+		ClickAndBack(1063, 787)
 		Return
 	}
 
@@ -3092,7 +3142,7 @@ PerformMenuActions() {
 	; =======================================
 	; Tea Pot Coins & Companion Exp
 	; =======================================
-	If (IsColor(1862, 47, "0x3B4255") and IsColor(1367, 1020, "0xFECA32") and IsColor(1775, 38, "0x3B4255")) {
+	If (IsColor(1862, 47, "0x3B4255") and IsColor(1366, 1016, "0xFFCB32") and IsColor(1775, 38, "0x3B4255")) {
 		MouseGetPos &CoordX, &CoordY
 		LockedClick(1077, 946) ; Coins
 		Sleep 30
@@ -3135,12 +3185,12 @@ PerformMenuActions() {
 }
 
 TryToFindLocker(TopX, TopY) {
-	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
+	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 72, "0xFF8A75")) {
 		If (IsColor(FoundX - 6, FoundY, "0x495366")) { ; Locked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8")) {
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 72, TopX, TopY, "0x9EA1A8")) {
 		If (IsColor(FoundX - 6, FoundY, "0xF3EFEA")) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
@@ -3150,12 +3200,12 @@ TryToFindLocker(TopX, TopY) {
 }
 
 TryToFindTransparentLocker(TopX, TopY) {
-	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 92, "0xFF8A75")) {
+	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 165, "0xFF8A75")) {
 		If (IsColor(TopX - 6, FoundY, "0x495366")) { ; Locked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 92, TopX, TopY, "0x9EA1A8", 50)) {
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 165, TopX, TopY, "0x9EA1A8", 50)) {
 		; Unlocked locker might have some transparency and change its color,
 		; so "IsColor" can't be relayed on
 		If (PixelSearch(&Px, &Py, FoundX - 6, FoundY, FoundX - 6, FoundY, "0xF3EFEA", 160)) { ; Unlocked
@@ -3164,6 +3214,40 @@ TryToFindTransparentLocker(TopX, TopY) {
 		}
 	}
 	Return False ; Not found
+}
+
+PerformMenuActionsX1() {
+	If (IsCraftingMenu()) {
+		BlockInput "MouseMove"
+		MouseGetPos &CoordX, &CoordY
+		Click 1562, 669
+		Sleep 50
+		While (XButton1Pressed) {
+			Click 1562, 669
+			Sleep 50
+		}
+		MouseMove CoordX, CoordY
+		BlockInput "MouseMoveOff"
+	}
+}
+
+PerformMenuActionsX2() {
+	If (IsCraftingMenu()) {
+		BlockInput "MouseMove"
+		MouseGetPos &CoordX, &CoordY
+		Click 1024, 669
+		Sleep 50
+		While (XButton2Pressed) {
+			Click 1024, 669
+			Sleep 50
+		}
+		MouseMove CoordX, CoordY
+		BlockInput "MouseMoveOff"
+	}
+}
+
+IsCraftingMenu() {
+	Return IsColor(1838, 44, "0x3B4255") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
 }
 
 
