@@ -3108,7 +3108,20 @@ PerformMenuActions() {
 		ColorCheck := SubStr(GetColor(1234, 864), 1, 3)
 		EmptyFirstPlus := not PixelSearch(&_, &_, 1200, 908, 1280, 908, "0xFFCC32") ; Weapons or Artifacts
 		If (EmptyFirstPlus) {
+			ClickAndBack(1836, 764) ; Auto Add
 		} Else {
+			If (IsColor(1199, 303, "0xE1BD40", 10) or IsColor(97, 24, "0xD1BA8D")) { ; Will add new stat or is weapons menu
+				ClickOnBottomRightButton() ; Enhance
+				Return
+			}
+			MouseGetPos &CoordX, &CoordY
+			ClickOnBottomRightButton(False) ; Enhance
+			Sleep 100
+			LockedClick(75, 150) ; Switch to "Details" tab to skip animation
+			Sleep 100
+			LockedClick(75, 220) ; Back to "Enhance" tab
+			Sleep 100
+			MouseMove CoordX, CoordY
 		}
 		Return
 	}
@@ -3421,6 +3434,9 @@ WaitPixelsRegions(Regions, Timeout := 1000) {
 	}
 }
 
+IsColor(X, Y, Color, Variation := 0) {
+	If (Variation != 0)
+		Return PixelSearch(&_, &_, X, Y, X, Y, Color, Variation)
 	Return GetColor(X, Y) == Color
 }
 
