@@ -5,7 +5,7 @@
 ; - Fill "Controls" page (possibly even changing hotkeys?)
 ; - Rework Auto Attack module (customizable sequences?)
 ; =======================================
-#Requires AutoHotkey v2.0-beta
+#Requires AutoHotkey v2.0
 
 #SingleInstance Force
 
@@ -15,7 +15,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.8"
+Global ScriptVersion := "1.0.9"
 
 
 
@@ -486,7 +486,8 @@ SuspendOnGameInactive() {
 }
 
 ResetScripts() {
-	BlockInput "MouseMoveOff" ; Just in case
+	; Just in case
+	BlockInput "MouseMoveOff"
 
 	; Tasks
 	DisableFeatureAutoPickup()
