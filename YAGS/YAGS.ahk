@@ -3035,13 +3035,13 @@ PerformMenuActions() {
 
 	; Character's Artifacts
 	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(557, 1010, "0xEBE4D7")) {
-		If (TryToFindTransparentLocker(1776, 310))
+		If (TryToFindTransparentLocker(1846, 310))
 			Return
 	}
 
 	; Character Weapon Switch
 	If (MenuArrow and IsColor(561, 1005, "0x575C6A")) {
-		If (TryToFindTransparentLocker(1774, 230))
+		If (TryToFindTransparentLocker(1846, 230))
 			Return
 	}
 
@@ -3058,7 +3058,7 @@ PerformMenuActions() {
 	}
 
 	; Domain artifacts
-	If (not MenuArrow and IsColor(715, 700, "0xECE5D8") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
+	If (not MenuArrow and IsColor(715, 700, "0xE4DED1") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
 		If (TryToFindLocker(1151, 494))
 			Return
 	}
@@ -3104,13 +3104,11 @@ PerformMenuActions() {
 	; =======================================
 	; Auto Add & Enhance buttons
 	; =======================================
-	If (MenuArrow and IsColor(1278, 930, "0xE9E5DC") and IsColor(1587, 1017, "0xFFCB32")) {
+	If (MenuArrow and IsColor(1278, 930, "0xE9E5DC") and IsColor(1613, 1018, "0x313131")) {
 		ColorCheck := SubStr(GetColor(1234, 864), 1, 3)
-		EmptyFirstPlus := ColorCheck == "0xB" or ColorCheck == "0xC" ; Weapons or Artifacts
+		EmptyFirstPlus := not PixelSearch(&_, &_, 1200, 908, 1280, 908, "0xFFCC32") ; Weapons or Artifacts
 		If (EmptyFirstPlus) {
-			ClickAndBack(1836, 764)
 		} Else {
-			ClickOnBottomRightButton()
 		}
 		Return
 	}
@@ -3190,8 +3188,8 @@ TryToFindLocker(TopX, TopY) {
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 72, TopX, TopY, "0x9EA1A8")) {
-		If (IsColor(FoundX - 6, FoundY, "0xF3EFEA")) { ; Unlocked
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 72, TopX, TopY, "0x9DA0A7")) {
+		If (IsColor(FoundX - 6, FoundY, "0xF2EEE9") or IsColor(FoundX - 6, FoundY, "0xF2EEE8") or IsColor(FoundX - 6, FoundY, "0xF1EEE8")) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
@@ -3205,10 +3203,10 @@ TryToFindTransparentLocker(TopX, TopY) {
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 165, TopX, TopY, "0x9EA1A8", 50)) {
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 105, TopX, TopY, "0x8C9596", 80) and PixelSearch(&_, &_, FoundX + 8, FoundY, FoundX + 8, FoundY, "0x8C9596", 80)) {
 		; Unlocked locker might have some transparency and change its color,
 		; so "IsColor" can't be relayed on
-		If (PixelSearch(&Px, &Py, FoundX - 6, FoundY, FoundX - 6, FoundY, "0xF3EFEA", 160)) { ; Unlocked
+		If (PixelSearch(&Px, &Py, FoundX - 8, FoundY, FoundX - 6, FoundY, "0xD3DAC7", 160)) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
@@ -3423,7 +3421,6 @@ WaitPixelsRegions(Regions, Timeout := 1000) {
 	}
 }
 
-IsColor(X, Y, Color) {
 	Return GetColor(X, Y) == Color
 }
 
