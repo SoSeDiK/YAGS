@@ -3065,6 +3065,17 @@ PerformMenuActions() {
 	}
 
 	; =======================================
+	; Select maximum stacks and craft ores
+	; =======================================
+	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(605, 1015, "0x3B4255")) {
+		ClickAndBack(1467, 669) ; Max stacks
+		Sleep 50
+		ClickOnBottomRightButton()
+		Sleep 50
+		Return
+	}
+
+	; =======================================
 	; Mystic Offering button
 	; =======================================
 	If (MenuArrow and IsColor(1663, 1012, "0xFFCB32") and IsColor(1358, 452, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
@@ -3077,17 +3088,6 @@ PerformMenuActions() {
 	; =======================================
 	If (IsColor(600, 757, "0x38A1E4") and IsColor(1017, 752, "0xFFCB32") and IsColor(1400, 261, "0xFEEEAE")) {
 		ClickAndBack(1101, 755)
-		Return
-	}
-
-	; =======================================
-	; Select maximum stacks and craft ores
-	; =======================================
-	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(605, 1015, "0x3B4255")) {
-		ClickAndBack(1467, 669) ; Max stacks
-		Sleep 50
-		ClickOnBottomRightButton()
-		Sleep 50
 		Return
 	}
 
