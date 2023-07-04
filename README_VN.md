@@ -148,3 +148,5 @@ Cảm ơn [ImagePut](https://github.com/iseahound/ImagePut) vì đã tạo nội
 Ảnh venti được vẽ bởi [@ACenturyMage](https://twitter.com/ACenturyMage/status/1325869153618718720).
 
 Cờ quốc gia đến từ. [Twemoji](https://twemoji.twitter.com/).
+
+Readme Tiếng Việt được dịch bởi: [TeddDepTrai](https://github.com/tedddeptrai)
