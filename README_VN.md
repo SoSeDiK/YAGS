@@ -52,7 +52,6 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
   - Đúng, tôi rất là lười nhấn giữ nút `Spacebar`. Bunnyhop cũng vậy.
   - Cũng hoạt động với Thuyền gió.
   - Có thể dùng để skip các đoạn hội thoại, nhưng hơn nữa cũng tự động chọn những lựa chọn trong nhiệm vụ **nếu khả thi**, hoặc chọn sự lựa chọn hội thoại dòng cuối.
-- Hold `1-5` keys to switch characters.
 - Giữ phím từ `1 đến 5` để đổi nhân vật nhanh hơn.
 - Nhấn `MMB` để bật chế độ ĐI BỘ!
   - Nhấn `RMB` để bật chế độ Chạy khi đang trong chế độ Tự Đi Bộ.
