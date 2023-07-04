@@ -1,4 +1,4 @@
-<img src="./ScriptPreview.png" alt="Happy Moople" align="right" width="450">
+<img src="./ScriptPreview.png" alt="Happy Moople" align="right" width="360">
 
 ## 🎈 [ĐANG PHÁT TRIỂN] Yet Another Genshin Script
 
