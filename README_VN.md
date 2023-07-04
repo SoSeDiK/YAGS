@@ -16,7 +16,7 @@ Script này sẽ cố cải thiện việc điều khiển, tự động tuần 
 
 **Lưu ý**: Script chỉ hoạt động khi đang để độ phân giải game **1920x1080** trong chế độ [cửa sổ không viền](https://gaming.stackexchange.com/a/376533) với 60FPS và ping ổn định (cũng không cần thiết nhưng sẽ có một vài thứ *có thể* không hoạt động được như mong muốn).
 
-Hiện tại chúng tôi không có ý định để thêm độ phân giải khác ở tương lai gần.
+Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân giải khác ở tương lai gần.
 
 ---
 
@@ -35,7 +35,7 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
 4. Nhấn `Alt + B` để hiện script nếu cần.
 5. Nhấn `End` trong trường hợp bạn cần dừng script ngay lập tức.
 
-**Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nếu không, nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách ngon lành.
+**Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nếu không, nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách trơn tru.
 
 ---
 
@@ -107,7 +107,7 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
 
 ### 🎣 Tự động hoá (Có thể chuyển đổi)
 - Tự động nhặt.
-  - Hoạt động với vài nhắc nhở nữa. Nên bỏ qua hội thoại, nấu nương và khiêu chiến.
+  - Hoạt động với vài nhắc nhở nữa. Ví dụ: Bỏ qua hội thoại, nấu nướng và khiêu chiến.
 - Tự động thoát khỏi đóng băng/bong bóng thuỷ.
 - Tự động câu cá.
   - Bạn chỉ cần thả cần câu. Kéo và bắt cá sẽ được hoàn thành một cách tự động.
