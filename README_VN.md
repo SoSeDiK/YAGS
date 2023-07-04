@@ -35,7 +35,7 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
 4. Nhấn `Alt + B` để hiện script nếu cần.
 5. Nhấn `End` trong trường hợp bạn cần dừng script ngay lập tức.
 
-**Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách ngon lành.
+**Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nếu không, nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách ngon lành.
 
 ---
 
