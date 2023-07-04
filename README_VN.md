@@ -48,7 +48,6 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
 - Giữ `Space` để nhảy liên tục.
   - Có thể dùng như là Bunnyhop (nhấn giữ nút chạy rồi bắt đầu nhảy liên tục).
 - Giữ `XButton2` cũng dùng để nhảy liên tục!
-  - Yes, I'm too lazy for `Spacebar` (mouse walking-sprinting-jumping power!). Bunnyhop is possible as well.
   - Đúng, tôi rất là lười nhấn giữ nút `Spacebar`. Bunnyhop cũng vậy.
   - Cũng hoạt động với Thuyền gió.
   - Có thể dùng để skip các đoạn hội thoại, nhưng hơn nữa cũng tự động chọn những lựa chọn trong nhiệm vụ **nếu khả thi**, hoặc chọn sự lựa chọn hội thoại dòng cuối.
