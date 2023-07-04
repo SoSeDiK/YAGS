@@ -76,7 +76,6 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
   - Nhấn phím «Ghép»/«Chuyển đổi» ở Đài Ghép.
   - Hơn nữa, dùng `XButton1` và `XButton2` bạn có thể nhấn «+» và «-» để tăng số lượng hoặc giảm số lượng vật phẩm cần ghép.
   - Thực hiện đổi Tráp Thánh.
-  - Click «Confirm» button in some popups.
   - Nhấn nút «Xác nhận» ở một vài cái bảng hiện lên.
   - Nhận Xu và Kinh nghiệm yêu thích trong Ấm Trần Ca.
   - Nhấn «Tiếp tục» ở trong Bí Cảnh.
