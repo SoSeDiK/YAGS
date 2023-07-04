@@ -91,7 +91,6 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
 - `Numpad -` + `Numpad .` đăng nhập lại.
   - Hữu dụng cho việc reset boss.
 - `Numpad /` + `Numpad 1-9` để thay đổi thời gian nhanh.
-  - Think of numbers as of the in-game clock:
   - Về các con số trong đồng hồ của game:
     - Bàn phím số:    Thời gian:
     - `7` `8` `9`   ` 9` `12` `15`
@@ -119,7 +118,6 @@ Hiện tại chúng tôi không có ý định để thêm độ phân giải kh
   - Nhấn `RMB` để thực hiện đòn trọng kích.
     - Với một vài nhân vật có các loại đòn trọng kích khác nhau dựa trên khoảng thời gian giữ. Bạn có thể giữ `RMB` thêm 1 ít nếu cần.
 
-### ⚙ Additional info
 ### ⚙ Thông tin thêm
 Tất cả các links sẽ được để trong file `yags_data/links.ini`. Bạn có thể xoá hoặc thêm các thứ mà bạn muốn.
 
@@ -135,14 +133,12 @@ Các hoạt động của `XButton1` và `XButton2` có thể bị đổi.
 ---
 
 ## ⚠ Chối bỏ trách nhiệm
-Even though this script does not contain any cheats, only you are responsible for using it.
 Cho dù Script này không có bao gồm các phần mềm can thiệp (gian lận), bạn cũng phải hứng chịu trách nhiệm về việc sử dụng nó.
 
 **Không được nói cho người khác biết về việc bạn sử dụng phần mềm thứ 3**, và bạn sẽ ổn. Bạn đã được cảnh cáo trước.
 
 ---
 
-This script was inspired by other available Genshin Impact AHK scripts. Go check them out too!
 Script này được lấy cảm hứng từ các Genshin Impact AHK Scripts khả dụng. Hãy ghé để check qua họ nhé!
 - [BGC script](https://github.com/onoderis/bgc-script)
 - [Genshi AHK Flex](https://github.com/Kramar1337/GenshinImpact-AHK-flex)
