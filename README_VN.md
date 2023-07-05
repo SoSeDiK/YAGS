@@ -93,7 +93,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Hữu dụng cho việc reset boss.
 - `Numpad /` + `Numpad 1-9` để thay đổi thời gian nhanh.
   - Về các con số trong đồng hồ của game:
-    - Bàn phím số:    Thời gian:
+    - Phím số:    Thời gian:
     - `7` `8` `9`   ` 9` `12` `15`
     - `4` ` ` `6`   ` 6` `  ` `18`
     - `1` `2` `3`   ` 3` `24` `21`
