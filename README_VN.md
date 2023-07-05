@@ -67,6 +67,8 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
 - Nhấn `MMB` trên bản đồ để Dịch chuyển nhanh chóng.
   - Chắc chắn là hữu dụng khi có nhiều các icon gần với điểm dịch chuyển. Giảm một vài cú click chuột, vài giây, tiết kiệm thời gian.
 
+---
+
 ### ✨ Bổ sung nhỏ (có thể hữu ích)
 - Nhấn `MMB` để:
   - Chọn và ghép tối đa quặng (hoặc một vài thứ ở menu của Thợ Rèn).
@@ -105,6 +107,8 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Với một vài bàn phím sẽ giới hạn những tổ hợp phím này, nhưng bạn sẽ không cần chức năng này một cách thường xuyên đâu.
   - `Numpad /` + `Numpad 5` chỉ để mở giao diện đồng hồ cho bạn.
 
+---
+
 ### 🎣 Tự động hoá (Có thể Bật/Tắt tuỳ ý)
 - Tự động nhặt.
   - Hoạt động với vài nhắc nhở nữa. Ví dụ: Bỏ qua hội thoại, nấu nướng và khiêu chiến.
@@ -116,6 +120,8 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Giữ `LMB` để spam đánh thường.
   - Nhấn `RMB` để thực hiện đòn trọng kích.
     - Với một vài nhân vật có các loại đòn trọng kích khác nhau dựa trên khoảng thời gian giữ. Bạn có thể giữ `RMB` thêm 1 ít nếu cần.
+
+---
 
 ### ⚙ Thông tin thêm
 Tất cả các links sẽ được để trong file `yags_data/links.ini`. Bạn có thể xoá hoặc thêm các thứ mà bạn muốn.
@@ -138,7 +144,7 @@ Cho dù Script này không có bao gồm các phần mềm gian lận can thiệ
 
 ---
 
-Script này được lấy cảm hứng từ các Genshin Impact AHK Scripts khả dụng. Hãy ghé để check qua họ nhé!
+Script này được lấy cảm hứng từ các nguồn Genshin Impact AHK Scripts có sẵn. Hãy ghé qua xem sản phẩm của họ nhé!
 - [BGC script](https://github.com/onoderis/bgc-script)
 - [Genshi AHK Flex](https://github.com/Kramar1337/GenshinImpact-AHK-flex)
 - [genshin-impact-script](https://github.com/phonowell/genshin-impact-script)
