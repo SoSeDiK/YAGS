@@ -27,10 +27,10 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
 		- Chạy `YAGS.exe`.
   - Sử dụng development build:
     - Tải và cài đặt [AutoHotkey](https://www.autohotkey.com/) (❕yêu cầu có version 2❕).
-    - Tải repository này, giải nến thư mục `YAGS` ra.
+    - Tải repository này, giải nén thư mục `YAGS` ra.
     - Chạy `YAGS.ahk`.
     - (!) Nên nhớ rằng, development builds không có tự động cập nhật khi chúng tôi cho ra mắt phiên bản mới.
-2. Tuỳ chỉnh những thứ bản cần trong GUI nếu cần.
+2. Tuỳ chỉnh những thứ bạn cần trong GUI nếu cần.
 3. Chạy game để trải nghiệm.
 4. Nhấn `Alt + B` để hiện script nếu cần.
 5. Nhấn `End` trong trường hợp bạn cần dừng script ngay lập tức.
