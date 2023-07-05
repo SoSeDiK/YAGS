@@ -23,7 +23,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
 ### ❓ Hướng dẫn sử dụng
 1. Giải nén và chạy script. Chọn một trong các lựa chọn sau:
   - Sử dụng release build (khuyến nghị)
-    - [Tải xuống](https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe) phiên bản script gần nhất và đưa nó vào thư mục bất kì.
+    - [Tải xuống](https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe) phiên bản script mới nhất và đưa nó vào thư mục bất kì.
 		- Chạy `YAGS.exe`.
   - Sử dụng development build:
     - Tải và cài đặt [AutoHotkey](https://www.autohotkey.com/) (❕yêu cầu có version 2❕).
