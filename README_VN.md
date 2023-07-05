@@ -44,7 +44,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
 - Giữ `XButton1` để spam `F` nhiều hơn!
   - Vì vài lí do, Dùng phím trên chuột sẽ dễ hơn cho tôi là bấm `F`.
   - Bạn có thể dùng chức năng này để skip các đoạn hội thoại (dĩ nhiên là bạn sẽ vẫn phải tự chọn các đoạn hội thoại).
-- Nhấn `XButton1` để nhấn `T` (để bay theo các Ấn Bốn Lá chỉ với việc nhấp chuột).
+- Nhấn `XButton1` để nhấn `T` (bay theo các Ấn Bốn Lá chỉ với việc nhấp chuột).
 - Giữ `Space` để nhảy liên tục.
   - Có thể dùng như là Bunnyhop (nhấn giữ nút chạy rồi bắt đầu nhảy liên tục).
 - Giữ `XButton2` cũng dùng để nhảy liên tục!
