@@ -49,7 +49,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Có thể dùng như là Bunnyhop (nhấn giữ nút chạy rồi bắt đầu nhảy liên tục).
 - Giữ `XButton2` cũng dùng để nhảy liên tục!
   - Đúng, tôi rất là lười nhấn giữ nút `Spacebar`. Bunnyhop cũng vậy.
-  - Cũng hoạt động với Thuyền gió.
+  - Dùng chung với Thuyền gió.
   - Có thể dùng để skip các đoạn hội thoại, nhưng hơn nữa cũng tự động chọn những lựa chọn trong nhiệm vụ **nếu khả thi**, hoặc chọn sự lựa chọn hội thoại dòng cuối.
 - Giữ phím từ `1 đến 5` để đổi nhân vật nhanh hơn.
 - Nhấn `MMB` để bật chế độ ĐI BỘ!
