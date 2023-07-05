@@ -12,7 +12,7 @@
 
 YAGS được làm ra để giúp cho việc chạy daily bớt khó khăn hơn <3.
 
-Script này sẽ cải thiện việc điều khiển, tự động tuần hoàn nhiều thứ, và mang thêm một số những cái phím tắt hữu dụng.
+Script này sẽ cải thiện việc điều khiển, tự động tuần hoàn nhiều thứ, và mang thêm một số những phím tắt hữu dụng.
 
 **Lưu ý**: Script chỉ hoạt động khi đang để độ phân giải game **1920x1080** trong chế độ [cửa sổ không viền](https://gaming.stackexchange.com/a/376533) với 60FPS và ping ổn định (cũng không cần thiết nhưng sẽ có một vài thứ *có thể* không hoạt động được như mong muốn).
 
