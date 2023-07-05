@@ -105,7 +105,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Với một vài bàn phím sẽ giới hạn những tổ hợp phím này, nhưng bạn sẽ không cần chức năng này một cách thường xuyên đâu.
   - `Numpad /` + `Numpad 5` chỉ để mở giao diện đồng hồ cho bạn.
 
-### 🎣 Tự động hoá (Có thể chuyển đổi)
+### 🎣 Tự động hoá (Có thể Bật/Tắt tuỳ ý)
 - Tự động nhặt.
   - Hoạt động với vài nhắc nhở nữa. Ví dụ: Bỏ qua hội thoại, nấu nướng và khiêu chiến.
 - Tự động thoát khỏi đóng băng/bong bóng thuỷ.
