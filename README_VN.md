@@ -131,7 +131,7 @@ Các hoạt động của `XButton1` và `XButton2` có thể bị đổi.
 
 ---
 
-## ⚠ Chối bỏ trách nhiệm
+## ⚠ Miễn trừ trách nhiệm
 Cho dù Script này không có bao gồm các phần mềm can thiệp (gian lận), bạn cũng phải hứng chịu trách nhiệm về việc sử dụng nó.
 
 **Không được nói cho người khác biết về việc bạn sử dụng phần mềm thứ 3**, và bạn sẽ ổn. Bạn đã được cảnh cáo trước.
