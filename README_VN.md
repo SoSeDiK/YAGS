@@ -57,7 +57,7 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - `LShift` có thể dùng cho việc chạy như bình thường.
 - Nhấn `H` để bật Góc Nhìn Nguyên Tố!
   - Làm vậy để dễ hơn nhiều so với việc bạn phải nhấn giữ chuột giữa.
-- Giữ `V` để auto attack!
+- Giữ `V` để tự động đánh!
   - Ở chế độ mặc định. Nhấn `Numpad *` + `Numpad 1-4` để đổi các chế độ có sẵn:
     - `1`: Klee Simple Jump Cancel (NJ)
     - `2`: Klee Trọng Kích (CJ)
