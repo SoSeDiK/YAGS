@@ -6,6 +6,7 @@
   <tr>
     <td valign="center"><img src="https://github.com/twitter/twemoji/blob/master/assets/svg/1f1fa-1f1f8.svg" width="16"/> English</td>
     <td valign="center"><a href="README_RU.md"><img src="https://github.com/twitter/twemoji/blob/master/assets/svg/1f1f7-1f1fa.svg" width="16"/> Русский</a></td>
+    <td valign="center"><a href="README_VN.md"><img src="https://em-content.zobj.net/thumbs/160/twitter/53/flag-for-vietnam_1f1fb-1f1f3.png" width="16"/> Tiếng Việt</td>
   </tr>
 </table>
 
@@ -67,6 +68,8 @@ There are no plans to adapt it to other resolutions in the near future.
 - Press `MMB` while on the map to quickly teleport.
   - Especially useful when there are multiple icons near the teleportation point. Saves a few clicks, seconds, and your sanity.
 
+---
+
 ### ✨ Minor (possibly useful) additions
 - Press `MMB` to:
   - Select and craft max ores (or other things in Blacksmith's menu).
@@ -105,6 +108,8 @@ There are no plans to adapt it to other resolutions in the near future.
 	- Some keyboards might limit such combinations, but you won't need them most times anyway.
   - `Numpad /` + `Numpad 5` is imposter, so it just opens the clock screen for you.
 
+---
+
 ### 🎣 Automation (toggleable)
 - Auto loot pickup.
   - Works with some prompts too. Should ignore dialogues, cooking, and challenges.
@@ -116,6 +121,8 @@ There are no plans to adapt it to other resolutions in the near future.
   - Hold `LMB` to spam normal attack.
   - Press `RMB` to perform charged attack.
     - Some characters have different charge attacks depending on the holding duration. You can hold `RMB` a bit more if needed.
+
+---
 
 ### ⚙ Additional info
 All links are stored inside the `yags_data/links.ini` file. You may remove/add your own stuff to your liking.
