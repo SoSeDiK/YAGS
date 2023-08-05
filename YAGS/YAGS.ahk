@@ -17,7 +17,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.12"
+Global ScriptVersion := "1.0.13"
 
 
 
@@ -1720,7 +1720,7 @@ DoMapClick() {
 		,"0x99ECF5"							; Statue of The Seven
 		,"0xCCFFFF"							; Domain
 		,"0x00FFFF"							; One-time dungeon
-		,"0x63645E" ]						; Portable Waypoint
+		,"0x63645D" ]						; Portable Waypoint
 
 	; Find the upper available teleport
 	Y := -1
@@ -3127,13 +3127,13 @@ PerformMenuActions() {
 	; =======================================
 	; Auto Add & Enhance buttons
 	; =======================================
-	If (MenuArrow and IsColor(1278, 930, "0xE9E5DC") and IsColor(1613, 1018, "0x313131")) {
+	If (MenuArrow and IsColor(1292, 935, "0xE9E5DC") and IsColor(1613, 1018, "0x313131")) {
 		ColorCheck := SubStr(GetColor(1234, 864), 1, 3)
 		EmptyFirstPlus := not PixelSearch(&_, &_, 1200, 908, 1280, 908, "0xFFCC32") ; Weapons or Artifacts
 		If (EmptyFirstPlus) {
 			ClickAndBack(1836, 764) ; Auto Add
 		} Else {
-			If (IsColor(1199, 303, "0xE1BD40", 10) or IsColor(97, 24, "0xD1BA8D")) { ; Will add new stat or is weapons menu
+			If (IsColor(1199, 303, "0xE1BD40", 10) or IsColor(98, 25, "0xD3BC8E")) { ; Will add new stat or is weapons menu
 				ClickOnBottomRightButton() ; Enhance
 				Return
 			}
@@ -3166,6 +3166,14 @@ PerformMenuActions() {
 	}
 
 	; =======================================
+	; Enhance Confirm button
+	; =======================================
+	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE") and IsColor(1025, 755, "0xF3C232")) {
+		ClickAndBack(1105, 760)
+		Return
+	}
+
+	; =======================================
 	; Confirm buttons
 	; =======================================
 	If (not MenuArrow and PixelSearch(&Px, &Py, 805, 828, 831, 902, "0xFFCB32")) {
@@ -3176,7 +3184,7 @@ PerformMenuActions() {
 	; =======================================
 	; Lay Line Blossom (resin Boss rewards)
 	; =======================================
-	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE")) {
+	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE") and not IsColor(623, 776, "0x4A5366")) {
 		ClickAndBack(944, 755)
 		Return
 	}
