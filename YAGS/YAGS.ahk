@@ -3,7 +3,9 @@
 ; 				~SoSeDiK's Edition
 ; ToDo:
 ; - Fill "Controls" page (possibly even changing hotkeys?)
+; - Rework Auto Pickup
 ; - Rework Auto Attack module (customizable sequences?)
+; - Support different screen resolutions?
 ; =======================================
 #Requires AutoHotkey v2.0
 
@@ -15,7 +17,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.10"
+Global ScriptVersion := "1.0.11"
 
 
 
@@ -564,22 +566,24 @@ TriggerXButton1Bindings(*) {
 	Global
 	XButton1Pressed := True
 	If (SimplifiedJumpBindingsEnabled)
-		XButtonJump()
+		SetTimer XButtonJump, -1
 	If (DialogueSkippingBindingsEnabled)
-		XButtonSkipDialogue()
+		SetTimer XButtonSkipDialogue, -1
 	If (QuickShopBindingsEnabled)
-		BuyAll()
+		SetTimer BuyAll, -1
 	If (MenuActionsBindingsEnabled)
-		PerformMenuActionsX1()
+		SetTimer PerformMenuActionsX1, -1
 }
 
 TriggerXButton1BindingsUp(*) {
 	Global
-	XButton1Pressed := False
 	If (SimplifiedJumpBindingsEnabled)
-		XButtonJumpUp()
+		SetTimer XButtonJumpUp, -1
 	If (DialogueSkippingBindingsEnabled)
-		XButtonSkipDialogueUp()
+		SetTimer XButtonSkipDialogueUp, -1
+	If (MenuActionsBindingsEnabled)
+		SetTimer StopMenuActionsX1, -1
+	XButton1Pressed := False
 }
 
 Global XButton2Pressed := False
@@ -587,20 +591,22 @@ TriggerXButton2Bindings(*) {
 	Global
 	XButton2Pressed := True
 	If (LazySigilBindingsEnabled)
-		LazySigil()
+		SetTimer LazySigil, -1
 	If (QuickPickupEnabled)
-		XButtonPickup()
+		SetTimer XButtonPickup, -1
 	If (QuickShopBindingsEnabled)
-		BuyOnce()
+		SetTimer BuyOnce, -1
 	If (MenuActionsBindingsEnabled)
-		PerformMenuActionsX2()
+		SetTimer PerformMenuActionsX2, -1
 }
 
 TriggerXButton2BindingsUp(*) {
 	Global
-	XButton2Pressed := False
 	If (QuickPickupEnabled)
-		XButtonPickupUp()
+		SetTimer XButtonPickupUp, -1
+	If (MenuActionsBindingsEnabled)
+		SetTimer StopMenuActionsX2, -1
+	XButton2Pressed := False
 }
 
 ConfigureContextualBindings() {
@@ -849,8 +855,8 @@ DoAutoSprint() {
 	; Extra run mode
 	If (IsExtraRun()) {
 		SkillColor := SubStr(GetColor(1586, 970), 1, 3)
-		; Super ugly, but works :/
-		If (SkillColor == "0xC" or SkillColor == "0xD" or SkillColor == "0xE" or SkillColor == "0xF") {
+		; Super ugly, but somewhat works :/
+		If (SkillColor == "0xE" or SkillColor == "0xF") {
 			Send "{LShift Up}"
 			Sleep 30
 		}
@@ -902,8 +908,14 @@ ToggleAutoSprint(*) {
 		SetTimer DoAutoSprint, 850
 	} Else {
 		SetTimer DoAutoSprint, 0
-		If (not PressingLShift)
+		If (not PressingLShift) {
 			Send "{LShift Up}"
+			; Boats do not stop "sprinting" unless W unpressed
+			If (IsInBoat()) {
+				; AutoWalk will press it again anyway
+				Send "w Up"
+			}
+		}
 	}
 }
 
@@ -1470,11 +1482,9 @@ Pickup() {
 
 HasPickup() {
 	; Search for "F" icon
-	Color := "0x848484"
+	Color := "0xCDCDCD"
 	If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, Color)) { ; Icon wasn't found
-		Color := "0x383838"
-		If (not PixelSearch(&FoundX, &FoundY, 1120, 340, 1120, 730, Color))
-			Return False
+		Return False
 	}
 
 	; Do not pickup if position of "F" has changed
@@ -1484,7 +1494,7 @@ HasPickup() {
 
 	; Check if there are no extra prompts
 	If (PixelSearch(&FX, &FY, 1173, FoundY - 2, 1200, FoundY + 3, "0xFFFFFF", 25) and PixelSearch(&_, &_, FX + 1, FY + 1, FX + 4, FY + 2, "0xFFFFFF", 25)) {
-		If (IsColor(1177, FoundY - 3, "0xFEFEFE") and IsColor(1200, FoundY + 15, "0xF7F7F7")) ; Hand
+		If (IsColor(1177, FoundY - 3, "0xFDFDFE") and IsColor(1200, FoundY + 14, "0xF4F4F4")) ; Hand
 			Return True
 		If (PixelSearch(&_, &_, 1173, FoundY - 12, 1200, FoundY + 12, "0x000000", 30)) ; Icon has dark color
 			Return True
@@ -1497,6 +1507,8 @@ HasPickup() {
 		If (IsColor(1190, FoundY - 4, "0xACB6CC")) ; Starconch
 			Return True
 		If (IsColor(1183, FoundY + 2, "0x3B58BF")) ; Glaze Lily
+			Return True
+		If (IsColor(1183, FoundY + 9, "0x629C57")) ; Sweet Flower
 			Return True
 		Return False
 	}
@@ -2492,7 +2504,16 @@ GoToSereniTeaPot(*) {
 
 	Sleep 100
 
-	LockedClick(170, 180) ; Select the first gadget
+	; Try to find gadget
+	If (not PixelSearch(&FoundX, &FoundY, 120, 206, 980, 206, "0xC65C2C"))
+		Return
+	If (not IsColor(FoundX + 1, FoundY, "0xC65C2C"))
+		Return
+
+	LockedClick(FoundX, FoundY)
+
+	Sleep 100
+
 	ClickOnBottomRightButton()
 
 	Sleep 100
@@ -2628,7 +2649,7 @@ Relogin(*) {
 
 	LockedClick(49, 1022) ; Logout button
 	Sleep 100
-	WaitPixelColor("0x313131", 1017, 757, 5000) ; Wait logout menu
+	WaitPixelColor("0x303030", 1016, 757, 5000) ; Wait logout menu
 
 	LockedClick(1017, 757) ; Confirm
 	Sleep 100
@@ -3015,9 +3036,9 @@ PerformMenuActions() {
 	; =======================================
 	; Lock Artifacts or Weapons
 	; =======================================
-	MenuArrow := IsColor(1838, 44, "0x3B4255")
+	MenuArrow := IsColor(1839, 44, "0x3B4255")
 	; Backpack
-	If (MenuArrow and IsColor(75, 43, "0xD3BC8E") and IsColor(165, 1010, "0x3B4255")) {
+	If (MenuArrow and IsColor(75, 43, "0xD3BC8E") and IsColor(75, 1005, "0x3B4255")) {
 		If (TryToFindLocker(1746, 444))
 			Return
 	}
@@ -3041,7 +3062,7 @@ PerformMenuActions() {
 	}
 
 	; Character Weapon Switch
-	If (MenuArrow and IsColor(561, 1005, "0x575C6A")) {
+	If (MenuArrow and IsColor(561, 1005, "0x565B69")) {
 		If (TryToFindTransparentLocker(1846, 230))
 			Return
 	}
@@ -3059,7 +3080,7 @@ PerformMenuActions() {
 	}
 
 	; Domain artifacts
-	If (not MenuArrow and IsColor(715, 700, "0xE4DED1") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
+	If (not MenuArrow and IsColor(715, 700, "0xECE5D8") and PixelSearch(&Px, &Py, 753, 475, 753, 110, "0xFFCC32")) {
 		If (TryToFindLocker(1151, 494))
 			Return
 	}
@@ -3078,7 +3099,7 @@ PerformMenuActions() {
 	; =======================================
 	; Mystic Offering button
 	; =======================================
-	If (MenuArrow and IsColor(1663, 1012, "0xFFCB32") and IsColor(1358, 452, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
+	If (MenuArrow and IsColor(1663, 1012, "0xFDCB32") and IsColor(1358, 452, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
 		ClickOnBottomRightButton()
 		Return
 	}
@@ -3086,7 +3107,7 @@ PerformMenuActions() {
 	; =======================================
 	; Mystic Offering Confirm button
 	; =======================================
-	If (IsColor(600, 757, "0x38A1E4") and IsColor(1017, 752, "0xFFCB32") and IsColor(1400, 261, "0xFEEEAE")) {
+	If (not MenuArrow and IsColor(600, 757, "0x38A2E4") and IsColor(1017, 752, "0xFBCB32") and IsColor(1400, 261, "0xFEEEAE")) {
 		ClickAndBack(1101, 755)
 		Return
 	}
@@ -3138,7 +3159,7 @@ PerformMenuActions() {
 	; =======================================
 	; Craft/Convert Confirm button
 	; =======================================
-	If (IsColor(602, 791, "0x38A1E4") and IsColor(1024, 787, "0xFFCB32") and IsColor(1402, 226, "0xFEEEAE")) {
+	If (IsColor(602, 791, "0x38A2E4") and IsColor(1024, 787, "0xFDCB32") and IsColor(1402, 226, "0xFEEEAE")) {
 		ClickAndBack(1063, 787)
 		Return
 	}
@@ -3148,6 +3169,14 @@ PerformMenuActions() {
 	; =======================================
 	If (not MenuArrow and PixelSearch(&Px, &Py, 805, 828, 831, 902, "0xFFCB32")) {
 		ClickAndBack(888, Py)
+		Return
+	}
+
+	; =======================================
+	; Lay Line Blossom (resin Boss rewards)
+	; =======================================
+	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE")) {
+		ClickAndBack(944, 755)
 		Return
 	}
 
@@ -3202,8 +3231,8 @@ TryToFindLocker(TopX, TopY) {
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 72, TopX, TopY, "0x9DA0A7")) {
-		If (IsColor(FoundX - 6, FoundY, "0xF2EEE9") or IsColor(FoundX - 6, FoundY, "0xF2EEE8") or IsColor(FoundX - 6, FoundY, "0xF1EEE8")) { ; Unlocked
+	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 72, TopX, TopY, "0x9EA1A8")) {
+		If (IsColor(FoundX - 6, FoundY, "0xF3EFEA")) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
@@ -3212,54 +3241,131 @@ TryToFindLocker(TopX, TopY) {
 }
 
 TryToFindTransparentLocker(TopX, TopY) {
+	; Search for a locked lock
 	If (PixelSearch(&FoundX, &FoundY, TopX, TopY, TopX, 165, "0xFF8A75")) {
 		If (IsColor(TopX - 6, FoundY, "0x495366")) { ; Locked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
-	} Else If (PixelSearch(&FoundX, &FoundY, TopX, 105, TopX, TopY, "0x8C9596", 80) and PixelSearch(&_, &_, FoundX + 8, FoundY, FoundX + 8, FoundY, "0x8C9596", 80)) {
-		; Unlocked locker might have some transparency and change its color,
-		; so "IsColor" can't be relayed on
+	}
+
+	; Unlocked locker might have some transparency and change its color,
+	; so "IsColor" can't be relayed on, and simple "PixelSearch" might be
+	; wrong due to text elements
+	LastY := 105
+	While (LastY < TopY) {
+		If (not PixelSearch(&FoundX, &FoundY, TopX, LastY, TopX, TopY, "0x978080", 30)) {
+			Return False
+		}
+		If (not IsColor(FoundX, FoundY + 10, "0x978080", 30)) {
+			LastY := FoundY + 10
+			Continue
+		}
+		If (not PixelSearch(&_, &_, FoundX + 8, FoundY, FoundX + 8, FoundY, "0x978080", 30)) {
+			Return False ; Not found
+		}
 		If (PixelSearch(&Px, &Py, FoundX - 8, FoundY, FoundX - 6, FoundY, "0xD3DAC7", 160)) { ; Unlocked
 			ClickAndBack(FoundX, FoundY)
 			Return True
 		}
+		Return False ; Not found
 	}
 	Return False ; Not found
 }
 
+
+
+Global IncreasingGoods := False
+Global DecreasingGoods := False
+Global GoodsSavedX := 0
+Global GoodsSavedY := 0
+
 PerformMenuActionsX1() {
-	If (IsCraftingMenu()) {
+	Global
+	; This is dumb, but XButton1Pressed might be unpressed during IsCraftingMenu() check :/
+	If (IsCraftingMenu() and not IncreasingGoods and XButton1Pressed) {
+		IncreasingGoods := True
 		BlockInput "MouseMove"
-		MouseGetPos &CoordX, &CoordY
-		Click 1562, 669
-		Sleep 50
-		While (XButton1Pressed) {
-			Click 1562, 669
-			Sleep 50
+		If (not DecreasingGoods) {
+			MouseGetPos &CoordX, &CoordY
+			GoodsSavedX := CoordX
+			GoodsSavedY := CoordY
 		}
-		MouseMove CoordX, CoordY
-		BlockInput "MouseMoveOff"
+		SetTimer IncreaseGoods, -1
+		Sleep 300
+		If (not IncreasingGoods) {
+			If (not DecreasingGoods) {
+				MouseMove GoodsSavedX, GoodsSavedY
+				BlockInput "MouseMoveOff"
+			}
+			Return
+		}
+		If (XButton1Pressed) {
+			SetTimer IncreaseGoods, 20
+		}
 	}
+}
+
+StopMenuActionsX1() {
+	Global
+	If (IncreasingGoods) {
+		SetTimer IncreaseGoods, 0
+		If (not DecreasingGoods) {
+			MouseMove GoodsSavedX, GoodsSavedY
+			BlockInput "MouseMoveOff"
+		}
+		IncreasingGoods := False
+	}
+}
+
+IncreaseGoods() {
+	Click 1562, 669
 }
 
 PerformMenuActionsX2() {
-	If (IsCraftingMenu()) {
+	Global
+	; This is dumb, but XButton2Pressed might be unpressed during IsCraftingMenu() check :/
+	If (IsCraftingMenu() and not DecreasingGoods and XButton2Pressed) {
+		DecreasingGoods := True
 		BlockInput "MouseMove"
-		MouseGetPos &CoordX, &CoordY
-		Click 1024, 669
-		Sleep 50
-		While (XButton2Pressed) {
-			Click 1024, 669
-			Sleep 50
+		If (not IncreasingGoods) {
+			MouseGetPos &CoordX, &CoordY
+			GoodsSavedX := CoordX
+			GoodsSavedY := CoordY
 		}
-		MouseMove CoordX, CoordY
-		BlockInput "MouseMoveOff"
+		SetTimer DecreaseGoods, -1
+		Sleep 300
+		If (not DecreasingGoods) {
+			If (not IncreasingGoods) {
+				MouseMove GoodsSavedX, GoodsSavedY
+				BlockInput "MouseMoveOff"
+			}
+			Return
+		}
+		If (XButton2Pressed) {
+			SetTimer DecreaseGoods, 20
+		}
 	}
 }
 
+StopMenuActionsX2() {
+	Global
+	If (DecreasingGoods) {
+		SetTimer DecreaseGoods, 0
+		If (not IncreasingGoods) {
+			MouseMove GoodsSavedX, GoodsSavedY
+			BlockInput "MouseMoveOff"
+		}
+		DecreasingGoods := False
+	}
+}
+
+DecreaseGoods() {
+	Click 1024, 669
+}
+
 IsCraftingMenu() {
-	Return IsColor(1838, 44, "0x3B4255") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
+	Return IsColor(1838, 44, "0x3C4356") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
 }
 
 
@@ -3366,11 +3472,11 @@ IsGameScreen() {
 ; Note: always better to check if not IsFullScreenMenuOpen()
 ; and not IsGameScreen() before checking the dialogue screen
 IsDialogueScreen() {
-	Return IsColor(109, 56, "0xECE5D8") ; Play or Pause button
+	Return IsColor(60, 48, "0xECE5D8") and IsColor(58, 48, "0xECE5D8") ; Play or Pause button
 }
 
 IsInBoat() {
-	Return IsColor(828, 976, "0xEDE5D9") ; Boat icon color
+	Return IsColor(828, 976, "0xECE5D8") ; Boat icon color
 }
 
 WaitDeployButtonActive(Timeout) {
