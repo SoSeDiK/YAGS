@@ -17,7 +17,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.0.11"
+Global ScriptVersion := "1.0.12"
 
 
 
@@ -471,6 +471,7 @@ SetupTray() {
 SetTimer SuspendOnGameInactive, -1
 
 SuspendOnGameInactive() {
+	Global
 	Loop {
 		WinWaitActive GameProcessName
 		ToolTip , , , 20 ; Clear GUI tooltip
