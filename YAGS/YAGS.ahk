@@ -2037,7 +2037,7 @@ QuicklyBuyOnce() {
 	If (not WaitPixelColor("0x4A5366", 1050, 750, 1000, True)) ; Wait for tab to be active
 		Return
 	Sleep 50
-	LockedClick(1178, 625) ; Max stacks
+	LockedClick(1178, 600) ; Max stacks
 	Sleep 50
 	LockedClick(1050, 750) ; Click Exchange
 	Sleep 50
@@ -3184,7 +3184,7 @@ PerformMenuActions() {
 	; =======================================
 	; Lay Line Blossom (resin Boss rewards)
 	; =======================================
-	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE") and not IsColor(623, 776, "0x4A5366")) {
+	If (not MenuArrow and IsColor(835, 734, "0x4A5366") and IsColor(515, 263, "0xFEEEAE") and not IsColor(633, 782, "0x4A5366")) {
 		ClickAndBack(944, 755)
 		Return
 	}
@@ -3481,7 +3481,7 @@ IsGameScreen() {
 ; Note: always better to check if not IsFullScreenMenuOpen()
 ; and not IsGameScreen() before checking the dialogue screen
 IsDialogueScreen() {
-	Return IsColor(60, 48, "0xECE5D8") and IsColor(58, 48, "0xECE5D8") ; Play or Pause button
+	Return IsColor(60, 48, "0xECE5D8") and IsColor(80, 48, "0xECE5D8") ; Play or Pause button
 }
 
 IsInBoat() {
