@@ -474,13 +474,20 @@ SuspendOnGameInactive() {
 	Global
 	Loop {
 		WinWaitActive GameProcessName
+		ToggleScript(True)
+		WinWaitNotActive GameProcessName
+		ToggleScript(False)
+	}
+}
+
+ToggleScript(State) {
+	If (State) {
 		ToolTip , , , 20 ; Clear GUI tooltip
 		ScriptEnabled := True
 		EnableGlobalHotkeys()
 		ConfigureContextualBindings()
 		SetTimer ConfigureContextualBindings, 250
-
-		WinWaitNotActive GameProcessName
+	} Else {
 		ScriptEnabled := False
 		DisableGlobalHotkeys()
 		SetTimer ConfigureContextualBindings, 0
