@@ -635,9 +635,10 @@ ConfigureContextualBindings() {
 	}
 
 	If (SimplifiedJumpEnabled) {
-		If (not SimplifiedJumpBindingsEnabled and PlayScreen) {
+		SorushGadget := HasSorushGadget()
+		If (not SimplifiedJumpBindingsEnabled and PlayScreen and not SorushGadget) {
 			EnableFeatureSimplifiedJump()
-		} Else If (SimplifiedJumpBindingsEnabled and not PlayScreen) {
+		} Else If (SimplifiedJumpBindingsEnabled and (not PlayScreen or SorushGadget)) {
 			DisableFeatureSimplifiedJump()
 		}
 	}
@@ -911,8 +912,8 @@ ToggleAutoSprint(*) {
 		SetTimer DoAutoSprint, 0
 		If (not PressingLShift) {
 			Send "{LShift Up}"
-			; Boats do not stop "sprinting" unless W unpressed
-			If (IsInBoat()) {
+			; Boats and Sorush Gadget do not stop "sprinting" unless W is unpressed
+			If (IsInBoat() or HasSorushGadget()) {
 				; AutoWalk will press it again anyway
 				Send "w Up"
 			}
@@ -997,6 +998,7 @@ XButtonJump(*) {
 XButtonJumpUp(*) {
 	Global
 	PressingXButtonToJump := False
+	Send "{Space Up}" ; Will be down in case of diving
 	If (SkippingDialogueClicking) {
 		SkippingDialogueClicking := False
 		SetTimer DialogueSkipClicking, 0
@@ -1042,6 +1044,10 @@ BunnyhopS() {
 		SetTimer BunnyhopS, 0
 		Return
 	}
+	; No need to spam
+	If (IsDiving()) {
+		Return
+	}
 	SimpleJump()
 }
 
@@ -1051,8 +1057,13 @@ SimpleJump() {
 	If (ResetAutoSprint) {
 		SetTimer ContinueAutoSprint, 0 ; Kill old timer
 		SetTimer ContinueAutoSprint, -1200
-	} Else If (AutoSprint and IsExtraRun()) {
+	} Else If (AutoSprint and (IsExtraRun() and not IsDiving())) {
 		InterruptAutoSprint()
+	}
+	
+	If (IsDiving()) {
+		Send "{Space Down}"
+		Return
 	}
 
 	; Just jump
@@ -1848,7 +1859,7 @@ ChangeParty(NewPartyNum) {
 	} Catch {
 		Return
 	}
-	Sleep 100
+	Sleep 800
 
 	; Check for current party (even)
 	Loop (10) {
@@ -1877,22 +1888,22 @@ ChangeParty(NewPartyNum) {
 
 	Before := 0
 	After := 0
-	CheckXCoord := Even ? 805 : 823
+	CheckXCoord := Even ? 792 : 810
 
-	; Figure out how many patries available before current
+	; Figure out how many parties available <before current
 	Loop (CurrentPartyNum - 1) {
 		Ind := CurrentPartyNum - A_Index
 		XCoord := CheckXCoord + ((Ind - 1) * 36)
-		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x4")
+		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x3")
 			Break
 		Before++
 	}
 
-	; Figure out how many patries available after current
+	; Figure out how many parties available >after current
 	Loop (10 - CurrentPartyNum) {
 		Ind := CurrentPartyNum + A_Index
 		XCoord := CheckXCoord + ((Ind - 1) * 36)
-		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x4")
+		If (SubStr(GetColor(XCoord, 48), 1, 3) != "0x3")
 			Break
 		After++
 	}
@@ -2039,7 +2050,7 @@ QuicklyBuyOnce() {
 	Sleep 50
 	LockedClick(1178, 600) ; Max stacks
 	Sleep 50
-	LockedClick(1050, 750) ; Click Exchange
+	LockedClick(1050, 760) ; Click Exchange
 	Sleep 50
 	If (not WaitPixelColor("0xD3BC8E", 1060, 280, 1000, True))
 		Return
@@ -2503,7 +2514,7 @@ GoToSereniTeaPot(*) {
 	LockedClick(1050, 50) ; Gadgets tab
 	WaitPixelColor("0xD3BC8E", 1055, 92, 1000) ; Wait for tab to be active
 
-	Sleep 100
+	Sleep 200
 
 	; Try to find gadget
 	If (not PixelSearch(&FoundX, &FoundY, 120, 206, 980, 206, "0xC65C2C"))
@@ -3485,7 +3496,7 @@ IsDialogueScreen() {
 }
 
 IsInBoat() {
-	Return IsColor(828, 976, "0xECE5D8") ; Boat icon color
+	Return IsColor(828, 976, "0xEDE5D9") ; Boat icon color
 }
 
 WaitDeployButtonActive(Timeout) {
@@ -3502,9 +3513,19 @@ IsFrozen() {
 	Return IsColor(1417, 596, "0x333333") and IsColor(1417, 585, "0xFFFFFF")
 }
 
+HasSorushGadget() { ; ToDo: workaround gadget delay
+	Return IsColor(1810, 806, "0xD05C66") and IsColor(1804, 822, "0xDD7361")
+}
+
+IsDiving() {
+	Return IsColor(1692, 1045, "0xFFFFFF") and IsColor(1692, 1046, "0xFFFFFF")
+}
+
+
 ; Check if run should be infinite
 IsExtraRun() {
-	Return IsColor(1695, 1030, "0xFFE92C") ; Ayaka / Mona run mode
+	ExtraRunMode := IsColor(1695, 1030, "0xFFE92C") ; Ayaka / Mona run mode
+	Return ExtraRunMode or HasSorushGadget() or IsDiving()
 }
 
 ; Wait for pixel to be the specified color or throw exception after the specified Timeout.
