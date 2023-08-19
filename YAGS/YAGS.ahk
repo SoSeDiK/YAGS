@@ -2220,6 +2220,8 @@ SkipToTime(NeededTime) {
 		If (Offset > 24)
 			Offset -= 24
 		LockedClick(HourXCoords[Offset], HourYCoords[Offset])
+		Sleep 50
+		LockedClick(HourXCoords[Offset], HourYCoords[Offset]) ; Sometimes Genshin ignores the first click
 		Sleep 250
 	}
 
