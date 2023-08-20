@@ -583,9 +583,9 @@ DisableGlobalHotkeys() {
 TriggerMButtonBindings(*) {
 	If (AutoWalkBindingsEnabled) {
 		PressedMButtonToAutoWalk()
-	} Else If (BetterMapClickBindingsEnabled)
+	} Else If (BetterMapClickBindingsEnabled) {
 		PressedMButtonToTP()
-	Else If (MenuActionsBindingsEnabled) {
+	} Else If (MenuActionsBindingsEnabled) {
 		PerformMenuActions()
 	} Else {
 		Send "{MButton Down}"
@@ -2084,7 +2084,7 @@ QuicklyBuyOnce() {
 	Sleep 50
 	LockedClick(1050, 760) ; Click Exchange
 	Sleep 50
-	If (not WaitPixelColor("0xD3BC8E", 1060, 280, 1000, True))
+	If (not WaitPixelColor("0xE9E5DC", 902, 574, 1000, True))
 		Return
 	ClickOnBottomRightButton(False) ; Skip purchased dialogue
 }
