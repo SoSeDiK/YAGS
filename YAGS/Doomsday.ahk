@@ -86,6 +86,8 @@ LangIniEn := "
 	UpdateNo=You can always update the script manually from GitHub! :)
 	BringOnTopHotkey=Show script on Alt + B hotkey
 	BringOnTopHotkeyTooltip=Shows script this GUI when pressed Alt + B
+	PauseHotkey=Pause on Alt + P
+	PauseHotkeyTooltip=Pauses or continues script on Alt + P
 	SwapSideMouseButtons=Swap side mouse buttons
 	SwapSideMouseButtonsTooltip=Swaps hotkeys for XButton1 and XButton2
 
@@ -222,6 +224,8 @@ LangIniRu := "
 	UpdateNo=Вы всегда можете обновить скрипт самостоятельно, посетив GitHub! :)
 	BringOnTopHotkey=Выводить скрипт при нажатии Alt + B
 	BringOnTopHotkeyTooltip=Выводит это меню при нажатии Alt + B
+	PauseHotkey=Пауза на Alt + P
+	PauseHotkeyTooltip=Приостанавливает или продолжает скрипт при нажатии Alt + P
 	SwapSideMouseButtons=Поменять местами боковые кнопки мыши
 	SwapSideMouseButtonsTooltip=Меняет местами действия для XButton1 и XButton2
 
@@ -350,6 +354,7 @@ SettingsIniFile := "
 
 	AutoUpdatesCheck=1
 	BringOnTopHotkey=1
+	PauseHotkey=1
 	SwapSideMouseButtons=0
 
 	AutoAttackMode=HuTaoDashCancel

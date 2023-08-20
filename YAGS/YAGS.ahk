@@ -49,6 +49,7 @@ Global LightMenuColor := "0xECE5D8"
 
 
 Global ScriptEnabled := False
+Global ScriptPaused := False
 
 
 ; Tasks
@@ -132,7 +133,7 @@ Global ReloginBindingsEnabled := False
 Global ScriptGui := Gui()
 Global GuiTooltips := Map()
 SetupGui()
-ToggleBringOnTopHotkey() ; Alt + B to bring Gui on top
+ToggleExtraHotkeys()
 SetupGui() {
 	Global
 	;ScriptGui.Opt("+LastFound +Resize MinSize530x470")
@@ -189,11 +190,12 @@ SetupGui() {
 	AddTask("AutoFishing", &AutoFishingEnabled, DisableFeatureAutoFishing)
 
 	; Options
-	ScriptGui.Add("GroupBox", "x270 y110 w250 h80", "")
+	ScriptGui.Add("GroupBox", "x270 y110 w250 h100", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Options") " ")
 
 	AddOption("AutoUpdatesCheck", AutoUpdatesCheckToggle)
 	AddOption("BringOnTopHotkey", ToggleBringOnTopHotkey)
+	AddOption("PauseHotkey", TogglePauseHotkey)
 	AddOption("SwapSideMouseButtons", SwapSideMouseButtons)
 
 
@@ -202,7 +204,7 @@ SetupGui() {
 
 
 	; Language settings
-	ScriptGui.Add("GroupBox", "x280 y195 w65 h43", "")
+	ScriptGui.Add("GroupBox", "x270 y405 w65 h43", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Language", "English") " ")
 	AddLang("en", 1)
 	AddLang("ru", 2)
@@ -374,8 +376,8 @@ AddOption(OptionName, OptionTask) {
 }
 
 AddLang(LangId, Num) {
-	Num := 286 + ((Num - 1) * 28)
-	Control := ScriptGui.Add("Picture", "x" Num " y210 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png")
+	Num := 278 + ((Num - 1) * 28)
+	Control := ScriptGui.Add("Picture", "x" Num " y420 w24 h24 +BackgroundTrans", ".\yags_data\graphics\lang_" LangId ".png")
 	Control.OnEvent("Click", UpdateLanguage.Bind(LangId))
 	GuiTooltips[Control.ClassNN] := Langed(LangId "Tooltip", "Missing language tooltip for " LangId)
 }
@@ -506,8 +508,11 @@ SuspendOnGameInactive() {
 }
 
 ToggleScript(State) {
+	Global
 	If (State) {
 		ToolTip , , , 20 ; Clear GUI tooltip
+		If (ScriptPaused)
+			Return
 		ScriptEnabled := True
 		EnableGlobalHotkeys()
 		ConfigureContextualBindings()
@@ -3742,7 +3747,7 @@ GetLatestYAGSChanges(Response) {
 
 
 
-; Bring Script On Top
+; Bring Script On Top | Alt + B
 BringOnTop(*) {
 	Global
 	If (WinActive(ScriptGui)) {
@@ -3759,7 +3764,31 @@ ToggleBringOnTopHotkey(*) {
 	Global
 	State := ScriptGui["BringOnTopHotkey"].Value
 	UpdateSetting("BringOnTopHotkey", State)
-	Hotkey "!b", BringOnTop, State ? "On" : "Off" ; Alt + B
+	Hotkey "!b", BringOnTop, State ? "On" : "Off" 			; Alt + B
+}
+
+; (Un/)Pause script | Alt + P
+TogglePauseState(*) {
+	Global
+	If (not WinActive(GameProcessName))
+		Return
+
+	ScriptPaused := !ScriptPaused
+	ToolTip "YAGS: Script " (ScriptPaused ? "paused" : "unpaused")
+	SetTimer () => ToolTip(), -1000
+	ToggleScript(!ScriptPaused)
+}
+
+TogglePauseHotkey(*) {
+	Global
+	State := ScriptGui["PauseHotkey"].Value
+	UpdateSetting("PauseHotkey", State)
+	Hotkey "!p", TogglePauseState, State ? "On" : "Off" 	; Alt + P
+}
+
+ToggleExtraHotkeys(*) {
+	ToggleBringOnTopHotkey()
+	TogglePauseHotkey()
 }
 
 
