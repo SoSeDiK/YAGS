@@ -1049,7 +1049,9 @@ XButtonJump(*) {
 XButtonJumpUp(*) {
 	Global
 	PressingXButtonToJump := False
-	Send "{Space Up}" ; Will be down in case of diving
+	If (IsDiving()) {
+		Send "{Space Up}"
+	}
 	If (SkippingDialogueClicking) {
 		SkippingDialogueClicking := False
 		SetTimer DialogueSkipClicking, 0
@@ -3135,13 +3137,13 @@ PerformMenuActions() {
 	}
 
 	; Character's Artifacts
-	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(557, 1010, "0xEBE4D7")) {
+	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(557, 1010, "0xECE5D8")) {
 		If (TryToFindTransparentLocker(1846, 310))
 			Return
 	}
 
 	; Character Weapon Switch
-	If (MenuArrow and IsColor(561, 1005, "0x565B69")) {
+	If (MenuArrow and IsColor(561, 1005, "0x575C6A")) {
 		If (TryToFindTransparentLocker(1846, 230))
 			Return
 	}
@@ -3186,7 +3188,7 @@ PerformMenuActions() {
 	; =======================================
 	; Mystic Offering Confirm button
 	; =======================================
-	If (not MenuArrow and IsColor(600, 757, "0x38A2E4") and IsColor(1017, 752, "0xFBCB32") and IsColor(1400, 261, "0xFEEEAE")) {
+	If (not MenuArrow and IsColor(600, 757, "0x38A2E4") and IsColor(1017, 752, "0xEDBE32") and IsColor(1400, 261, "0xFEEEAE")) {
 		ClickAndBack(1101, 755)
 		Return
 	}
@@ -3211,7 +3213,7 @@ PerformMenuActions() {
 		If (EmptyFirstPlus) {
 			ClickAndBack(1836, 764) ; Auto Add
 		} Else {
-			If (IsColor(1199, 303, "0xE1BD40", 10) or IsColor(98, 25, "0xD3BC8E")) { ; Will add new stat or is weapons menu
+			If (IsColor(1199, 303, "0xE1BD40", 25) or IsColor(98, 25, "0xD3BC8E")) { ; Will add new stat or is weapons menu
 				ClickOnBottomRightButton() ; Enhance
 				Return
 			}
@@ -3301,7 +3303,7 @@ PerformMenuActions() {
 	}
 
 	; =======================================
-	; Skip in Domain
+	; Skip in Domain or Gacha
 	; =======================================
 	If (not PixelSearch(&_, &_, 0, 0, 1920, 1080, "0xECE5D8") and not IsGameScreen()) {
 		Click
@@ -3452,7 +3454,7 @@ DecreaseGoods() {
 }
 
 IsCraftingMenu() {
-	Return IsColor(1838, 44, "0x3C4356") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
+	Return IsColor(1838, 44, "0x3B4255") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
 }
 
 
