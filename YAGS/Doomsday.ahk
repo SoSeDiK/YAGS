@@ -99,30 +99,46 @@ LangIniEn := "
 	Duration=Duration
 	CharNum=Character Number In The List
 	DoNotSend=Do not send on expedition
-	WhisperingWoodsExpedition=Whispering Woods
-	DadaupaGorgeExpedition=Dadaupa Gorge
-	YaoguangShoalExpedition=Yaoguang Shoal
-	StormterrorLairExpedition=Stormterror Lair
-	JueyunKarstExpedition=Jueyun Karst
-	GuiliPlainsExpedition=Guili Plains
-	TatarasunaExpedition=Tarasuna
-	JinrenIslandExpedition=Jinren Island
-	ArdraviValleyExpedition=Ardravi Valley
-	WindriseExpedition=Windrise
-	MusoujinGorgeExpedition=Musoujin Gorge
-	WolvendomExpedition=Wolvendom
-	GuyunStoneForestExpedition=Guyun Stone Forest
-	KondaVillageExpedition=Konda Village
-	ChinvatRavineExpedition=Chinvat Ravine
+
+	MondstandtExpeditions=Mondstandt
 	StormbearerMountainsExpedition=Stormbearer Mountains
+	WhisperingWoodsExpedition=Whispering Woods
+	StormterrorLairExpedition=Stormterror Lair
+	WindriseExpedition=Windrise
+	WolvendomExpedition=Wolvendom
+	DadaupaGorgeExpedition=Dadaupa Gorge
+
+	LiyueExpeditions=Liyue
 	DihuaMarshExpedition=Dihua Marsh
+	YaoguangShoalExpedition=Yaoguang Shoal
+	GuiliPlainsExpedition=Guili Plains
+	JueyunKarstExpedition=Jueyun Karst
+	GuyunStoneForestExpedition=Guyun Stone Forest
 	DunyuRuinsExpedition=Dunyu Ruins
-	NazuchiBeachExpedition=Nazuchi Beach
+
+	InazumaExpeditions=Inazuma
+	JinrenIslandExpedition=Jinren Island
+	KondaVillageExpedition=Konda Village
 	ByakkoPlainExpedition=Byakko Plain
-	AshavanRealmExpedition=Ashavan Realm
-	ChatrakamCaveExpedition=Chatrakam Cave
-	AvidyaForestExpedition=Avidya Forest
+	NazuchiBeachExpedition=Nazuchi Beach
+	MusoujinGorgeExpedition=Musoujin Gorge
+	TatarasunaExpedition=Tarasuna
+
+	SumeruExpeditions=Sumeru
 	MawtiyimaForestExpedition=Mawtiyima Forest
+	ChatrakamCaveExpedition=Chatrakam Cave
+	ChinvatRavineExpedition=Chinvat Ravine
+	AvidyaForestExpedition=Avidya Forest
+	ArdraviValleyExpedition=Ardravi Valley
+	AshavanRealmExpedition=Ashavan Realm
+
+	FontaineExpeditions=Fontaine
+	ErinnyesExpedition=Erinnyes
+	MontEsusExpedition=Mont Esus
+	SalaciaPlainExpedition=Salacia Plain
+	BerylMountainsExpedition=Beryl Mountains
+	TheOutskirtsOfPoissonExpedition=The Outskirts of Poisson
+	ElynasRidgeExpedition=Elynas Ridge
 )"
 
 
@@ -219,30 +235,46 @@ LangIniRu := "
 	Duration=Время
 	CharNum=Номер персонажа в списке
 	DoNotSend=Не отправлять на экспедицию
-	WhisperingWoodsExpedition=Шепчущий лес
-	DadaupaGorgeExpedition=Ущелье Дадаупа
-	YaoguangShoalExpedition=Отмель Яогуан
-	StormterrorLairExpedition=Логово Ужаса бури
-	JueyunKarstExpedition=Заоблачный предел
-	GuiliPlainsExpedition=Долина Гуйли
-	TatarasunaExpedition=Татарасуна
-	JinrenIslandExpedition=Остров Дзинрэн
-	ArdraviValleyExpedition=Долина Ардрави
-	WindriseExpedition=Долина Ветров
-	MusoujinGorgeExpedition=Ущелье Мусодзин
-	WolvendomExpedition=Вольфендом
-	GuyunStoneForestExpedition=Каменный лес Гуюнь
-	KondaVillageExpedition=Деревня Конда
-	ChinvatRavineExpedition=Ущелье Чинват
+
+	MondstandtExpeditions=Мондштадт
 	StormbearerMountainsExpedition=Горы Буревестника
+	WhisperingWoodsExpedition=Шепчущий лес
+	StormterrorLairExpedition=Логово Ужаса Бури
+	WindriseExpedition=Долина Ветров
+	WolvendomExpedition=Вольфендом
+	DadaupaGorgeExpedition=Ущелье Дадаупа
+
+	LiyueExpeditions=Ли Юэ
 	DihuaMarshExpedition=Тростниковые острова
+	YaoguangShoalExpedition=Отмель Яогуан
+	GuiliPlainsExpedition=Долина Гуйли
+	JueyunKarstExpedition=Заоблачный предел
+	GuyunStoneForestExpedition=Каменный лес Гуюнь
 	DunyuRuinsExpedition=Гробница Дуньюй
-	NazuchiBeachExpedition=Отмель Надзути
+
+	InazumaExpeditions=Инадзума
+	JinrenIslandExpedition=Остров Дзинрэн
+	KondaVillageExpedition=Деревня Конда
 	ByakkoPlainExpedition=Равнина Бякко
-	AshavanRealmExpedition=Земля Ашаван
-	ChatrakamCaveExpedition=Пещера Чатракам
-	AvidyaForestExpedition=Лес Авидья
+	NazuchiBeachExpedition=Побережье Надзути
+	MusoujinGorgeExpedition=Ущелье Мусодзин
+	TatarasunaExpedition=Татарасуна
+
+	SumeruExpeditions=Сумеру
 	MawtiyimaForestExpedition=Лес Мотийимы
+	ChatrakamCaveExpedition=Пещера Чатракам
+	ChinvatRavineExpedition=Ущелье Чинват
+	AvidyaForestExpedition=Лес Авидья
+	ArdraviValleyExpedition=Долина Ардрави
+	AshavanRealmExpedition=Земля Ашаван
+
+	FontaineExpeditions=Фонтейн
+	ErinnyesExpedition=Остров Эриний
+	MontEsusExpedition=Предгорье Эсус
+	SalaciaPlainExpedition=Салосское морское плато
+	BerylMountainsExpedition=Горы Берилл
+	TheOutskirtsOfPoissonExpedition=Окрестности деревни Пуассон
+	ElynasRidgeExpedition=Горный хребет Элинас
 )"
 
 

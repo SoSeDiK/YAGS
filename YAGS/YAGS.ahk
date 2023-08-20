@@ -243,36 +243,57 @@ SetupGui() {
 	ScriptGui.Add("Text", "x348 y24", " " Langed("CharNum") " ")
 
 	Expeditions := Array()
-	Expeditions.Push({Types: "", Id: "DoNotSend"})
-	; 💎 Ores
-	Expeditions.Push({Types: "💎🪨", Id: "WhisperingWoodsExpedition"})		; Mondstandt
-	Expeditions.Push({Types: "💎🪨", Id: "DadaupaGorgeExpedition"})			; Mondstandt
-	Expeditions.Push({Types: "💎🪨", Id: "YaoguangShoalExpedition"})		; Liyue
-	; 💰 Mora
-	Expeditions.Push({Types: "💰🪙", Id: "StormterrorLairExpedition"})		; Mondstandt
-	Expeditions.Push({Types: "💰🪙", Id: "JueyunKarstExpedition"})			; Liyue
-	Expeditions.Push({Types: "💰🪙", Id: "GuiliPlainsExpedition"})			; Liyue
-	Expeditions.Push({Types: "💰🪙", Id: "TatarasunaExpedition"})			; Inazuma
-	Expeditions.Push({Types: "💰🪙", Id: "JinrenIslandExpedition"})			; Inazuma
-	Expeditions.Push({Types: "💰🪙", Id: "ArdraviValleyExpedition"})		; Sumeru
-	; 🥩 Meat
-	Expeditions.Push({Types: "🥩🍗", Id: "WindriseExpedition"})				; Mondstandt
-	Expeditions.Push({Types: "🥩🥚", Id: "MusoujinGorgeExpedition"})		; Inazuma
-	; 🥕 Vegetables / Fruits
-	Expeditions.Push({Types: "🥕🥕", Id: "WolvendomExpedition"})			; Mondstandt
-	Expeditions.Push({Types: "🥕🥕", Id: "GuyunStoneForestExpedition"})		; Liyue
-	Expeditions.Push({Types: "🥕🥕", Id: "KondaVillageExpedition"})			; Inazuma
-	Expeditions.Push({Types: "🥕🥕", Id: "ChinvatRavineExpedition"})		; Sumeru
-	; 📜 Mixed
-	Expeditions.Push({Types: "🌷🥚", Id: "StormbearerMountainsExpedition"})	; Mondstandt
-	Expeditions.Push({Types: "🌷🌷", Id: "DihuaMarshExpedition"})			; Liyue
-	Expeditions.Push({Types: "🪷🍄", Id: "DunyuRuinsExpedition"})			; Liyue
-	Expeditions.Push({Types: "🍗🌾", Id: "NazuchiBeachExpedition"})			; Inazuma
-	Expeditions.Push({Types: "🌷🍑", Id: "ByakkoPlainExpedition"})			; Inazuma
-	Expeditions.Push({Types: "🥚🍑", Id: "AshavanRealmExpedition"})			; Sumeru
-	Expeditions.Push({Types: "🍄🍄", Id: "ChatrakamCaveExpedition"})		; Sumeru
-	Expeditions.Push({Types: "🍑🌰", Id: "AvidyaForestExpedition"})			; Sumeru
-	Expeditions.Push({Types: "🌷🍎", Id: "MawtiyimaForestExpedition"})		; Sumeru
+	Expeditions.Push({Types: "==", Id: "DoNotSend"})
+
+	; Mondstandt
+	Expeditions.Push({Types: "", Id: ""})
+	Expeditions.Push({Types: "==", Id: "MondstandtExpeditions"})
+	Expeditions.Push({Types: "🌷🥚", Id: "StormbearerMountainsExpedition"})		; Sweet Flower, Bird Egg
+	Expeditions.Push({Types: "💎🪨", Id: "WhisperingWoodsExpedition"})			; White Iron Chunk, Crystal Chunk
+	Expeditions.Push({Types: "💰🪙", Id: "StormterrorLairExpedition"})			; Mora
+	Expeditions.Push({Types: "🥩🍗", Id: "WindriseExpedition"})					; Raw Meat, Fowl
+	Expeditions.Push({Types: "🥕🥕", Id: "WolvendomExpedition"})				; Radish, Carrot
+	Expeditions.Push({Types: "💎🪨", Id: "DadaupaGorgeExpedition"})				; White Iron Chunk, Crystal Chunk
+
+	; Liyue
+	Expeditions.Push({Types: "", Id: ""})
+	Expeditions.Push({Types: "==", Id: "LiyueExpeditions"})
+	Expeditions.Push({Types: "🌷🌷", Id: "DihuaMarshExpedition"})				; Horsetail, Snapdragon
+	Expeditions.Push({Types: "💎🪨", Id: "YaoguangShoalExpedition"})			; White Iron Chunk, Crystal Chunk
+	Expeditions.Push({Types: "💰🪙", Id: "GuiliPlainsExpedition"})				; Mora
+	Expeditions.Push({Types: "💰🪙", Id: "JueyunKarstExpedition"})				; Mora
+	Expeditions.Push({Types: "🥕🥕", Id: "GuyunStoneForestExpedition"})			; Radish, Carrot
+	Expeditions.Push({Types: "🪷🍄", Id: "DunyuRuinsExpedition"})				; Lotus Head, Matsutake
+
+	; Inazuma
+	Expeditions.Push({Types: "", Id: ""})
+	Expeditions.Push({Types: "==", Id: "InazumaExpeditions"})
+	Expeditions.Push({Types: "💰🪙", Id: "JinrenIslandExpedition"})				; Mora
+	Expeditions.Push({Types: "🥕🥕", Id: "KondaVillageExpedition"})				; Radish, Lavender Melon
+	Expeditions.Push({Types: "🌷🍑", Id: "ByakkoPlainExpedition"})				; Sweet Flower, Sunsettia
+	Expeditions.Push({Types: "🍗🌾", Id: "NazuchiBeachExpedition"})				; Fowl, Seagrass
+	Expeditions.Push({Types: "🥩🥚", Id: "MusoujinGorgeExpedition"})			; Raw Meat, Bird Egg
+	Expeditions.Push({Types: "💰🪙", Id: "TatarasunaExpedition"})				; Mora
+
+	; Sumeru
+	Expeditions.Push({Types: "", Id: ""})
+	Expeditions.Push({Types: "==", Id: "SumeruExpeditions"})
+	Expeditions.Push({Types: "🌷🍎", Id: "MawtiyimaForestExpedition"})			; Sumeru Rose, Apple
+	Expeditions.Push({Types: "🍄🍄", Id: "ChatrakamCaveExpedition"})			; Matsutake, Mushroom
+	Expeditions.Push({Types: "🥕🥕", Id: "ChinvatRavineExpedition"})			; Harra Fruit, Carrot
+	Expeditions.Push({Types: "🍑🌰", Id: "AvidyaForestExpedition"})				; Zaytun Peach, Pinecone
+	Expeditions.Push({Types: "💰🪙", Id: "ArdraviValleyExpedition"})			; Mora
+	Expeditions.Push({Types: "🥚🍑", Id: "AshavanRealmExpedition"})				; Bird Egg, Sunsettia
+
+	; Fontaine
+	Expeditions.Push({Types: "", Id: ""})
+	Expeditions.Push({Types: "==", Id: "FontaineExpeditions"})
+	Expeditions.Push({Types: "💰🪙", Id: "ErinnyesExpedition"})					; Mora
+	Expeditions.Push({Types: "🍎🍗", Id: "MontEsusExpedition"})					; Bulle Fruit, Fowl
+	Expeditions.Push({Types: "🌿🍄", Id: "SalaciaPlainExpedition"})				; Tidalga, Mushroom
+	Expeditions.Push({Types: "🌷🌷", Id: "BerylMountainsExpedition"})			; Sweet Flower, Mint
+	Expeditions.Push({Types: "🌷🥚", Id: "TheOutskirtsOfPoissonExpedition"})	; Marcotte, Bird Egg
+	Expeditions.Push({Types: "🪷🥩", Id: "ElynasRidgeExpedition"})				; Pluie Lotus, Raw Meat
 
 	Durations := ["4", "8", "12", "20"]
 	DurationsH := ["4h", "8h", "12h", "20h"]
@@ -302,7 +323,10 @@ SetupGui() {
 			ExpeditionId := Value.Id
 			If (Expedition == ExpeditionId)
 				ExpeditionNum := Index
-			ExpeditionDisplay := Value.Types " " Langed(ExpeditionId)
+			If (ExpeditionId == "")
+				ExpeditionDisplay := ""
+			Else
+				ExpeditionDisplay := Value.Types " " Langed(ExpeditionId)
 			ExpeditionsDisplay.Push(ExpeditionDisplay)
 		}
 
@@ -387,7 +411,8 @@ UpdateLanguage(Lang, *) {
 
 UpdateExpeditions(Expeditions, ExpeditionNum, *) {
 	ExpeditionName := Expeditions[ScriptGui["Expedition" ExpeditionNum].Value].Id
-	Duration := SubStr(ScriptGui["Duration" ExpeditionNum].Text, -1)
+	Duration := ScriptGui["Duration" ExpeditionNum].Text
+	Duration := SubStr(Duration, 1, StrLen(Duration) - 1)
 	CharacterNumberInList := ScriptGui["Characters" ExpeditionNum].Value
 	IniWrite ExpeditionName "," Duration "," CharacterNumberInList, GetExpeditions(), "Expeditions", "Expedition" ExpeditionNum
 }
@@ -2315,33 +2340,40 @@ Global Duration12H := { X: 1700, Y: 700 }
 Global Duration20H := { X: 1800, Y: 700 }
 
 ; Mondstandt Expeditions
-Global StormterrorLairExpedition := { MapNumber: 0, X: 550, Y: 400 }
-Global WolvendomExpedition := { MapNumber: 0, X: 740, Y: 530 }
 Global StormbearerMountainsExpedition := { MapNumber: 0, X: 810, Y: 240 }
 Global WhisperingWoodsExpedition := { MapNumber: 0, X: 1050, Y: 330 }
+Global StormterrorLairExpedition := { MapNumber: 0, X: 550, Y: 400 }
 Global WindriseExpedition := { MapNumber: 0, X: 1111, Y: 455 }
+Global WolvendomExpedition := { MapNumber: 0, X: 740, Y: 530 }
 Global DadaupaGorgeExpedition := { MapNumber: 0, X: 1170, Y: 660 }
 ; Liyue Expeditions
-Global JueyunKarstExpedition := { MapNumber: 1, X: 559, Y: 561 }
 Global DihuaMarshExpedition := { MapNumber: 1, X: 728, Y: 332 }
-Global DunyuRuinsExpedition := { MapNumber: 1, X: 730, Y: 810 }
-Global GuiliPlainsExpedition := { MapNumber: 1, X: 800, Y: 550 }
 Global YaoguangShoalExpedition := { MapNumber: 1, X: 950, Y: 450 }
+Global GuiliPlainsExpedition := { MapNumber: 1, X: 800, Y: 550 }
+Global JueyunKarstExpedition := { MapNumber: 1, X: 559, Y: 561 }
 Global GuyunStoneForestExpedition := { MapNumber: 1, X: 1170, Y: 610 }
+Global DunyuRuinsExpedition := { MapNumber: 1, X: 730, Y: 810 }
 ; Inazuma Expeditions
-Global MusoujinGorgeExpedition := { MapNumber: 2, X: 580, Y: 800 }
-Global NazuchiBeachExpedition := { MapNumber: 2, X: 725, Y: 695 }
-Global TatarasunaExpedition := { MapNumber: 2, X: 828, Y: 828 }
-Global KondaVillageExpedition := { MapNumber: 2, X: 935, Y: 345 }
 Global JinrenIslandExpedition := { MapNumber: 2, X: 1097, Y: 274 }
+Global KondaVillageExpedition := { MapNumber: 2, X: 935, Y: 345 }
 Global ByakkoPlainExpedition := { MapNumber: 2, X: 1145, Y: 435 }
+Global NazuchiBeachExpedition := { MapNumber: 2, X: 725, Y: 695 }
+Global MusoujinGorgeExpedition := { MapNumber: 2, X: 580, Y: 800 }
+Global TatarasunaExpedition := { MapNumber: 2, X: 828, Y: 828 }
 ; Sumeru Expeditions
-Global AshavanRealmExpedition := { MapNumber: 3, X: 675, Y: 635 }
-Global ChatrakamCaveExpedition := { MapNumber: 3, X: 795, Y: 295 }
-Global AvidyaForestExpedition := { MapNumber: 3, X: 900, Y: 560 }
-Global ChinvatRavineExpedition := { MapNumber: 3, X: 960, Y: 375 }
-Global ArdraviValleyExpedition := { MapNumber: 3, X: 1025, Y: 610 }
 Global MawtiyimaForestExpedition := { MapNumber: 3, X: 1055, Y: 245 }
+Global ChatrakamCaveExpedition := { MapNumber: 3, X: 795, Y: 295 }
+Global ChinvatRavineExpedition := { MapNumber: 3, X: 960, Y: 375 }
+Global AvidyaForestExpedition := { MapNumber: 3, X: 900, Y: 560 }
+Global ArdraviValleyExpedition := { MapNumber: 3, X: 1025, Y: 610 }
+Global AshavanRealmExpedition := { MapNumber: 3, X: 675, Y: 635 }
+; Fontaine Expeditions
+Global ErinnyesExpedition := { MapNumber: 4, X: 1055, Y: 250 }
+Global MontEsusExpedition := { MapNumber: 4, X: 655, Y: 320 }
+Global SalaciaPlainExpedition := { MapNumber: 4, X: 895, Y: 455 }
+Global BerylMountainsExpedition := { MapNumber: 4, X: 615, Y: 550 }
+Global TheOutskirtsOfPoissonExpedition := { MapNumber: 4, X: 1030, Y: 580 }
+Global ElynasRidgeExpedition := { MapNumber: 4, X: 824, Y: 643 }
 
 
 
@@ -2372,33 +2404,40 @@ ParseExpeditions() {
 		Expedition := Expedition[1]
 		Switch (Expedition) {
 			; Mondstandt Expeditions
-			case "StormterrorLairExpedition": Expedition := StormterrorLairExpedition
-			case "WolvendomExpedition": Expedition := WolvendomExpedition
 			case "StormbearerMountainsExpedition": Expedition := StormbearerMountainsExpedition
 			case "WhisperingWoodsExpedition": Expedition := WhisperingWoodsExpedition
+			case "StormterrorLairExpedition": Expedition := StormterrorLairExpedition
 			case "WindriseExpedition": Expedition := WindriseExpedition
+			case "WolvendomExpedition": Expedition := WolvendomExpedition
 			case "DadaupaGorgeExpedition": Expedition := DadaupaGorgeExpedition
 			; Liyue Expeditions
-			case "JueyunKarstExpedition": Expedition := JueyunKarstExpedition
 			case "DihuaMarshExpedition": Expedition := DihuaMarshExpedition
-			case "DunyuRuinsExpedition": Expedition := DunyuRuinsExpedition
-			case "GuiliPlainsExpedition": Expedition := GuiliPlainsExpedition
 			case "YaoguangShoalExpedition": Expedition := YaoguangShoalExpedition
+			case "GuiliPlainsExpedition": Expedition := GuiliPlainsExpedition
+			case "JueyunKarstExpedition": Expedition := JueyunKarstExpedition
 			case "GuyunStoneForestExpedition": Expedition := GuyunStoneForestExpedition
+			case "DunyuRuinsExpedition": Expedition := DunyuRuinsExpedition
 			; Inazuma Expeditions
-			case "MusoujinGorgeExpedition": Expedition := MusoujinGorgeExpedition
-			case "NazuchiBeachExpedition": Expedition := NazuchiBeachExpedition
-			case "TatarasunaExpedition": Expedition := TatarasunaExpedition
-			case "KondaVillageExpedition": Expedition := KondaVillageExpedition
 			case "JinrenIslandExpedition": Expedition := JinrenIslandExpedition
+			case "KondaVillageExpedition": Expedition := KondaVillageExpedition
 			case "ByakkoPlainExpedition": Expedition := ByakkoPlainExpedition
+			case "NazuchiBeachExpedition": Expedition := NazuchiBeachExpedition
+			case "MusoujinGorgeExpedition": Expedition := MusoujinGorgeExpedition
+			case "TatarasunaExpedition": Expedition := TatarasunaExpedition
 			; Sumeru Expeditions
-			case "AshavanRealmExpedition": Expedition := AshavanRealmExpedition
-			case "ChatrakamCaveExpedition": Expedition := ChatrakamCaveExpedition
-			case "AvidyaForestExpedition": Expedition := AvidyaForestExpedition
-			case "ChinvatRavineExpedition": Expedition := ChinvatRavineExpedition
-			case "ArdraviValleyExpedition": Expedition := ArdraviValleyExpedition
 			case "MawtiyimaForestExpedition": Expedition := MawtiyimaForestExpedition
+			case "ChatrakamCaveExpedition": Expedition := ChatrakamCaveExpedition
+			case "ChinvatRavineExpedition": Expedition := ChinvatRavineExpedition
+			case "AvidyaForestExpedition": Expedition := AvidyaForestExpedition
+			case "ArdraviValleyExpedition": Expedition := ArdraviValleyExpedition
+			case "AshavanRealmExpedition": Expedition := AshavanRealmExpedition
+			; Fontaine Expeditions
+			case "ErinnyesExpedition": Expedition := ErinnyesExpedition
+			case "MontEsusExpedition": Expedition := MontEsusExpedition
+			case "SalaciaPlainExpedition": Expedition := SalaciaPlainExpedition
+			case "BerylMountainsExpedition": Expedition := BerylMountainsExpedition
+			case "TheOutskirtsOfPoissonExpedition": Expedition := TheOutskirtsOfPoissonExpedition
+			case "ElynasRidgeExpedition": Expedition := ElynasRidgeExpedition
 		}
 		ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList)
 	}
