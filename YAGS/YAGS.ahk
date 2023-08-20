@@ -557,8 +557,7 @@ ResetScripts() {
 ; and due to lag we cannot perfectly switch between them separately
 ; via Enable/Disable Feature methods
 EnableGlobalHotkeys() {
-	Hotkey "*MButton", TriggerMButtonBindings, "On"
-
+	ToggleMButtonHotkeys(True)
 	Mapping := GetSetting("SwapSideMouseButtons", False)
 	XButtonF := Mapping ? "XButton1" : "XButton2"
 	XButtonS := Mapping ? "XButton2" : "XButton1"
@@ -569,8 +568,7 @@ EnableGlobalHotkeys() {
 }
 
 DisableGlobalHotkeys() {
-	Hotkey "*MButton", TriggerMButtonBindings, "Off"
-
+	ToggleMButtonHotkeys(False)
 	Mapping := GetSetting("SwapSideMouseButtons", False)
 	XButtonF := Mapping ? "XButton1" : "XButton2"
 	XButtonS := Mapping ? "XButton2" : "XButton1"
@@ -578,6 +576,21 @@ DisableGlobalHotkeys() {
 	Hotkey "*" XButtonF " Up", TriggerXButton1BindingsUp, "Off"
 	Hotkey "*" XButtonS, TriggerXButton2Bindings, "Off"
 	Hotkey "*" XButtonS " Up", TriggerXButton2BindingsUp, "Off"
+}
+
+ToggleMButtonHotkeys(State) {
+	If (State) {
+		ToggleMButtonHotkeys(False)
+		ShouldBlockMButton := AutoWalkEnabled
+		If (ShouldBlockMButton) { ; Only block MMB functions if used outside menus
+			Hotkey "*MButton", TriggerMButtonBindings, "On"
+		} Else {
+			Hotkey "~*MButton", TriggerMButtonBindings, "On"
+		}
+	} Else {
+		Hotkey "*MButton", TriggerMButtonBindings, "Off"
+		Hotkey "~*MButton", TriggerMButtonBindings, "Off"
+	}
 }
 
 TriggerMButtonBindings(*) {
@@ -968,6 +981,7 @@ EnableFeatureAutoWalk() {
 	Hotkey "~*LShift", PressedLShift, "On"
 	Hotkey "~*LShift Up", UnpressedLShift, "On"
 
+	ToggleMButtonHotkeys(True)
 	AutoWalkBindingsEnabled := True
 }
 
@@ -3284,7 +3298,7 @@ PerformMenuActions() {
 	; =======================================
 	; Skip in Domain
 	; =======================================
-	If (not PixelSearch(&_, &_, 0, 0, 1920, 1080, "0xECE5D8")) {
+	If (not PixelSearch(&_, &_, 0, 0, 1920, 1080, "0xECE5D8") and not IsGameScreen()) {
 		Click
 		If (WaitPixelColor("0xFFFFFF", 1817, 52, 500, True) and IsColor(1825, 52, "0xFFFFFF")) {
 			ClickAndBack(1817, 52)
