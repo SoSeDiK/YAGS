@@ -79,6 +79,9 @@ Global QuickPickupBindingsEnabled := False
 Global SimplifiedCombatEnabled := GetSetting("SimplifiedCombat", True)
 Global SimplifiedCombatBindingsEnabled := False
 
+Global EasierChargedAttackEnabled := GetSetting("EasierChargedAttack", True)
+Global EasierChargedAttackBindingsEnabled := False
+
 Global DialogueSkippingEnabled := GetSetting("DialogueSkipping", True)
 Global DialogueSkippingBindingsEnabled := False
 
@@ -153,13 +156,14 @@ SetupGui() {
 	ScriptGuiTabs.UseTab(1)
 
 	; Features
-	ScriptGui.Add("GroupBox", "x8 y25 w250 h240", "")
+	ScriptGui.Add("GroupBox", "x8 y25 w250 h260", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("Features") " ")
 
 	AddTask("AutoWalk", &AutoWalkEnabled, DisableFeatureAutoWalk)
 	AddTask("SimplifiedJump", &SimplifiedJumpEnabled, DisableFeatureSimplifiedJump)
 	AddTask("QuickPickup", &QuickPickupEnabled, DisableFeatureQuickPickup)
 	AddTask("SimplifiedCombat", &SimplifiedCombatEnabled, DisableFeatureSimplifiedCombat)
+	AddTask("EasierChargedAttack", &EasierChargedAttackEnabled, DisableFeatureEasierChargedAttack)
 	AddTask("DialogueSkipping", &DialogueSkippingEnabled, DisableFeatureDialogueSkipping)
 	AddTask("BetterCharacterSwitch", &BetterCharacterSwitchEnabled, DisableFeatureBetterCharacterSwitch)
 	AddTask("ImprovedFishing", &ImprovedFishingEnabled, DisableFeatureImprovedFishing)
@@ -169,7 +173,7 @@ SetupGui() {
 	AddTask("LazySigil", &LazySigilEnabled, DisableFeatureLazySigil)
 
 	; Quick Actions
-	ScriptGui.Add("GroupBox", "x8 y270 w250 h180", "")
+	ScriptGui.Add("GroupBox", "x8 y290 w250 h180", "")
 	ScriptGui.Add("Text", "xp+7 yp", " " Langed("QuickActions") " ")
 
 	AddTask("MenuActions", &MenuActionsEnabled, DisableFeatureMenuActions)
@@ -539,6 +543,7 @@ ResetScripts() {
 	DisableFeatureSimplifiedJump()
 	DisableFeatureQuickPickup()
 	DisableFeatureSimplifiedCombat()
+	DisableFeatureEasierChargedAttack()
 	DisableFeatureDialogueSkipping()
 	DisableFeatureBetterCharacterSwitch()
 	DisableFeatureImprovedFishing()
@@ -716,6 +721,14 @@ ConfigureContextualBindings() {
 			EnableFeatureSimplifiedCombat()
 		} Else If (SimplifiedCombatBindingsEnabled and not PlayScreen) {
 			DisableFeatureSimplifiedCombat()
+		}
+	}
+
+	If (EasierChargedAttackEnabled) {
+		If (not EasierChargedAttackBindingsEnabled and PlayScreen) {
+			EnableFeatureEasierChargedAttack()
+		} Else If (EasierChargedAttackBindingsEnabled and not PlayScreen) {
+			DisableFeatureEasierChargedAttack()
 		}
 	}
 
@@ -930,16 +943,16 @@ ToggleAutoWalk() {
 	Global
 	AutoWalk := !AutoWalk
 	If (AutoWalk) {
-		If (SimplifiedCombatBindingsEnabled)
-			EnableFeatureSimplifiedCombat()
+		If (EasierChargedAttackBindingsEnabled)
+			EnableFeatureEasierChargedAttack()
 		Hotkey "*RButton", PressedRMButton, "On"
 		Hotkey "*RButton Up", UnpressedRMButton, "On"
 		SetTimer DoAutoWalk, 100
 	} Else {
 		Hotkey "*RButton", PressedRMButton, "Off"
 		Hotkey "*RButton Up", UnpressedRMButton, "Off"
-		If (SimplifiedCombatBindingsEnabled)
-			DisableFeatureSimplifiedCombat()
+		If (EasierChargedAttackBindingsEnabled)
+			DisableFeatureEasierChargedAttack()
 		SetTimer DoAutoWalk, 0
 		If (not PressingW)
 			Send "{w Up}"
@@ -1339,7 +1352,7 @@ DisableFeatureQuickPickup() {
 
 
 ; =======================================
-; Simplified Combat (Lazy Combat Mode)
+; Simplified Combat (Lazy Combat Mode | Hold LMB to spam attack)
 ; =======================================
 Global PressingLButton := False
 
@@ -1364,17 +1377,6 @@ NormalAutoAttack() {
 	Click
 }
 
-StrongAttack(*) {
-	Click "Down"
-	KeyWait "RButton"
-	TimeSinceKeyPressed := A_TimeSinceThisHotkey
-	If (TimeSinceKeyPressed < 350) {
-		; Hold LMB for at least 350ms
-		Sleep 350 - TimeSinceKeyPressed
-	}
-	Click "Up"
-}
-
 
 
 EnableFeatureSimplifiedCombat() {
@@ -1390,7 +1392,6 @@ EnableFeatureSimplifiedCombat() {
 
 	Hotkey "~*LButton", PressedLButton, "On"
 	Hotkey "~*LButton Up", UnpressedLButton, "On"
-	Hotkey "*RButton", StrongAttack, "On"
 
 	SimplifiedCombatBindingsEnabled := True
 }
@@ -1399,7 +1400,6 @@ DisableFeatureSimplifiedCombat() {
 	Global
 	Hotkey "~*LButton", PressedLButton, "Off"
 	Hotkey "~*LButton Up", UnpressedLButton, "Off"
-	Hotkey "*RButton", StrongAttack, "Off"
 
 	PressingLButton := False
 
@@ -1408,6 +1408,50 @@ DisableFeatureSimplifiedCombat() {
 	Click "Up"
 
 	SimplifiedCombatBindingsEnabled := False
+}
+
+
+
+
+
+; =======================================
+; Easier Charged Attack
+; =======================================
+
+StrongAttack(*) {
+	Click "Down"
+	KeyWait "RButton"
+	TimeSinceKeyPressed := A_TimeSinceThisHotkey
+	If (TimeSinceKeyPressed < 350) {
+		; Hold LMB for at least 350ms
+		Sleep 350 - TimeSinceKeyPressed
+	}
+	Click "Up"
+}
+
+
+
+EnableFeatureEasierChargedAttack() {
+	Global
+	If (EasierChargedAttackBindingsEnabled)
+		DisableFeatureEasierChargedAttack()
+
+	If (not EasierChargedAttackEnabled)
+		Return
+
+	If (AutoWalk)
+		Return
+
+	Hotkey "*RButton", StrongAttack, "On"
+
+	EasierChargedAttackBindingsEnabled := True
+}
+
+DisableFeatureEasierChargedAttack() {
+	Global
+	Hotkey "*RButton", StrongAttack, "Off"
+
+	EasierChargedAttackBindingsEnabled := False
 }
 
 
