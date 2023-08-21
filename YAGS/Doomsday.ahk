@@ -13,7 +13,7 @@ LangIniEn := "
 	ruTooltip=Переключиться на Русский
 	Language=English
 	Title=Yet Another Genshin Script
-	Wish=Have a nice game! ♥
+	Wish=Have a nice game! ❤
 	Thanks=Thank you for using my script!
 	MadeBy=Made with Love by
 
@@ -153,7 +153,7 @@ LangIniRu := "
 	ruTooltip=Переключиться на Русский
 	Language=Русский
 	Title=Очередной Геншин Скрипт
-	Wish=Приятной игры! ♥
+	Wish=Приятной игры! ❤
 	Thanks=Спасибо за использование моего скрипта!
 	MadeBy=С любовью от
 
