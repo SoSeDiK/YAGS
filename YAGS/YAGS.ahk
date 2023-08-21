@@ -619,7 +619,7 @@ TriggerXButton1Bindings(*) {
 	If (SimplifiedJumpBindingsEnabled)
 		SetTimer XButtonJump, -1
 	If (DialogueSkippingBindingsEnabled)
-		SetTimer XButtonSkipDialogue, -1
+		SetTimer XButtonSkipDialogueClicking, -1
 	If (QuickShopBindingsEnabled)
 		SetTimer BuyAll, -1
 	If (MenuActionsBindingsEnabled)
@@ -631,7 +631,7 @@ TriggerXButton1BindingsUp(*) {
 	If (SimplifiedJumpBindingsEnabled)
 		SetTimer XButtonJumpUp, -1
 	If (DialogueSkippingBindingsEnabled)
-		SetTimer XButtonSkipDialogueUp, -1
+		SetTimer XButtonSkipDialogueClickingUp, -1
 	If (MenuActionsBindingsEnabled)
 		SetTimer StopMenuActionsX1, -1
 	XButton1Pressed := False
@@ -645,6 +645,8 @@ TriggerXButton2Bindings(*) {
 		SetTimer LazySigil, -1
 	If (QuickPickupEnabled)
 		SetTimer XButtonPickup, -1
+	If (DialogueSkippingBindingsEnabled)
+		SetTimer XButtonSkipDialogue, -1
 	If (QuickShopBindingsEnabled)
 		SetTimer BuyOnce, -1
 	If (MenuActionsBindingsEnabled)
@@ -655,6 +657,8 @@ TriggerXButton2BindingsUp(*) {
 	Global
 	If (QuickPickupEnabled)
 		SetTimer XButtonPickupUp, -1
+	If (DialogueSkippingBindingsEnabled)
+		SetTimer XButtonSkipDialogueUp, -1
 	If (MenuActionsBindingsEnabled)
 		SetTimer StopMenuActionsX2, -1
 	XButton2Pressed := False
@@ -1173,6 +1177,7 @@ DisableFeatureSimplifiedJump() {
 ; =======================================
 ; Dialogue skipping
 ; =======================================
+Global SkippingDialogue := False
 Global SkippingDialogueClicking := False
 
 
@@ -1181,18 +1186,37 @@ XButtonSkipDialogue(*) {
 	Global
 	If (IsGameScreen() or IsCraftingMenu())
 		Return
+	If (not SkippingDialogue)
+		SetTimer DialogueSkip, 25
+	SkippingDialogue := True
+}
+
+XButtonSkipDialogueUp(*) {
+	Global
+	SetTimer DialogueSkip, 0
+	SkippingDialogue := False
+}
+
+XButtonSkipDialogueClicking(*) {
+	Global
+	If (IsGameScreen() or IsCraftingMenu())
+		Return
 	If (not SkippingDialogueClicking)
 		SetTimer DialogueSkipClicking, 25
 	SkippingDialogueClicking := True
 }
 
-XButtonSkipDialogueUp(*) {
+XButtonSkipDialogueClickingUp(*) {
 	Global
 	SetTimer DialogueSkipClicking, 0
 	SkippingDialogueClicking := False
 }
 
 
+
+DialogueSkip() {
+	Send "{f}"
+}
 
 DialogueSkipClicking() {
 	Send "{f}"
@@ -1269,6 +1293,8 @@ PickupOnceF() {
 }
 
 PickupOnceX() {
+	If (IsDialogueScreen())
+		Return
 	PickupOnce()
 }
 
