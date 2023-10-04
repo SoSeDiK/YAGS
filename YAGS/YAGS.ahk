@@ -2479,6 +2479,7 @@ SendExpeditions(*) {
 
 ParseExpeditions() {
 	Global
+	PrevMapNumber := -1
 	Loop (5) {
 		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
 		If (Expedition == "")
@@ -2530,13 +2531,19 @@ ParseExpeditions() {
 			case "TheOutskirtsOfPoissonExpedition": Expedition := TheOutskirtsOfPoissonExpedition
 			case "ElynasRidgeExpedition": Expedition := ElynasRidgeExpedition
 		}
-		ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList)
+		ReceiveRewardAndResendOnExpedition(Expedition, PrevMapNumber, Duration, CharacterNumberInList)
+		PrevMapNumber := Expedition.MapNumber
+		If (not WaitPixelColor("0x3B4255", 1840, 45, 2000, True))
+			Return
 	}
 }
 
 ; CharacterNumberInList - starts from 1.
-ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) {
-	ReceiveReward(Expedition)
+ReceiveRewardAndResendOnExpedition(Expedition, PrevMapNumber, Duration, CharacterNumberInList) {
+	ReceiveReward(Expedition, PrevMapNumber)
+	; Wait for expeditions menu
+	If (not WaitPixelColor("0x3B4255", 1840, 45, 3000, True))
+		Return
 
 	If (IsColor(1600, 1020, "0xFE5C5C")) ; Already Occupied
 		Return
@@ -2546,8 +2553,8 @@ ReceiveRewardAndResendOnExpedition(Expedition, Duration, CharacterNumberInList) 
 	Sleep 200
 }
 
-ReceiveReward(Expedition, ReceiveRewardLag := 0) {
-	SelectExpedition(Expedition)
+ReceiveReward(Expedition, PrevMapNumber) {
+	SelectExpedition(Expedition, PrevMapNumber)
 
 	If (not IsColor(1600, 1020, "0x99CC33")) ; Already Received
 		Return
@@ -2556,18 +2563,18 @@ ReceiveReward(Expedition, ReceiveRewardLag := 0) {
 	; Receive reward
 	ClickOnBottomRightButton(False)
 	Sleep 200
-	Sleep ReceiveRewardLag
 
 	; Skip reward menu
 	ClickOnBottomRightButton(False)
-	Sleep 200
 }
 
-SelectExpedition(Expedition) {
+SelectExpedition(Expedition, PrevMapNumber) {
 	; Click on the world
-	WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
-	LockedClick(200, WorldY)
-	Sleep 500
+	If (Expedition.MapNumber != PrevMapNumber) {
+		WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
+		LockedClick(200, WorldY)
+		Sleep 500
+	}
 
 	; Click on the expedition
 	LockedClick(Expedition.X, Expedition.Y)
@@ -2580,7 +2587,9 @@ SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
 
 	; Click on "Select Character"
 	ClickOnBottomRightButton(False)
-	Sleep 800
+	If (not WaitPixelColor("0x263240", 945, 10, 2000, True))
+		Return
+	Sleep 100
 
 	; Find and select the character
 	FindAndSelectCharacter(CharacterNumberInList)
