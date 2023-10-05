@@ -3249,7 +3249,7 @@ PerformMenuActions() {
 	; Select maximum stacks and craft ores
 	; =======================================
 	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(605, 1015, "0x3B4255")) {
-		ClickAndBack(1467, 669) ; Max stacks
+		LockedClick(1467, 669) ; Max stacks
 		Sleep 50
 		ClickOnBottomRightButton()
 		Sleep 50
@@ -3666,7 +3666,7 @@ HasSorushGadget() { ; ToDo: workaround gadget delay
 }
 
 IsDiving() {
-	Return IsColor(1692, 1045, "0xFFFFFF") and IsColor(1692, 1046, "0xFFFFFF")
+	Return IsColor(1692, 1044, "0xFFFFFF", 3) and IsColor(1692, 1045, "0xFFFFFF", 3)
 }
 
 
