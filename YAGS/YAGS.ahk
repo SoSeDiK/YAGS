@@ -3319,8 +3319,8 @@ PerformMenuActions() {
 	; =======================================
 	; Craft/Convert Confirm button
 	; =======================================
-	If (IsColor(602, 791, "0x38A2E4") and IsColor(1024, 787, "0xFDCB32") and IsColor(1402, 226, "0xFEEEAE")) {
-		ClickAndBack(1063, 787)
+	If (not MenuArrow and PixelSearch(&Px, &Py, 964, 700, 1050, 900, "0xFFCB32")) {
+		ClickAndBack(Px, Py)
 		Return
 	}
 
@@ -3452,6 +3452,9 @@ PerformMenuActionsX1() {
 	Global
 	; This is dumb, but XButton1Pressed might be unpressed during IsCraftingMenu() check :/
 	If (IsCraftingMenu() and not IncreasingGoods and XButton1Pressed) {
+		If (not IsColor(1562, 669, "0x3E4655")) {
+			Return
+		}
 		IncreasingGoods := True
 		BlockInput "MouseMove"
 		If (not DecreasingGoods) {
@@ -3494,6 +3497,9 @@ PerformMenuActionsX2() {
 	Global
 	; This is dumb, but XButton2Pressed might be unpressed during IsCraftingMenu() check :/
 	If (IsCraftingMenu() and not DecreasingGoods and XButton2Pressed) {
+		If (not IsColor(1024, 669, "0x6C7079")) {
+			Return
+		}
 		DecreasingGoods := True
 		BlockInput "MouseMove"
 		If (not IncreasingGoods) {
