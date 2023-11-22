@@ -675,7 +675,7 @@ ConfigureContextualBindings() {
 	MapMenu := IsMapMenuOpen()
 	GameScreen := not FullScreenMenu and IsGameScreen()
 	DialogueActive := not FullScreenMenu and not GameScreen and IsDialogueScreen()
-	DialogueActiveOrNotShop := DialogueActive or (not FullScreenMenu and not GameScreen and not IsColor(1855, 45, "0xECE5D8") and not IsColor(1292, 778, "0x4A5366")) ; "X" button in menus and "Purchase" dialogue
+	DialogueActiveOrNotShop := DialogueActive or not IsShopMenu()
 	FishingActive := GameScreen and IsColor(1626, 1029, "0xFFE92C") and (IsColor(62, 42, "0xFFFFFF") and not IsColor(65, 29, "0xE2BD89")) and not IsColor(1723, 1030, "0xFFFFFF") ; 3rd action icon bound to LMB & (leave icon present & not Paimon's head) & no "E" skill
 	PlayScreen := GameScreen and not FishingActive
 
@@ -1844,7 +1844,7 @@ DoMapClick() {
 		Return
 	}
 
-	Sleep 100
+	Sleep 150
 
 	If (SimpleTeleport())
 		Return
@@ -1877,7 +1877,7 @@ DoMapClick() {
 }
 
 SimpleTeleport() {
-	If (not IsColor(1478, 1012, "0xFFCD33"))
+	If (not IsColor(1478, 1006, "0xFFCB33"))
 		Return False
 
 	; Selected point has only 1 selectable option, and it's available for the teleport
@@ -3248,8 +3248,8 @@ PerformMenuActions() {
 	; =======================================
 	; Select maximum stacks and craft ores
 	; =======================================
-	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(605, 1015, "0x3B4255")) {
-		LockedClick(1467, 669) ; Max stacks
+	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(643, 1015, "0x3B4255")) {
+		LockedClick(1516, 672) ; Max stacks
 		Sleep 50
 		ClickOnBottomRightButton()
 		Sleep 50
@@ -3275,7 +3275,7 @@ PerformMenuActions() {
 	; =======================================
 	; Obtain crafted item
 	; =======================================
-	If (MenuArrow and IsColor(1655, 1015, "0x99CC33")) {
+	If (MenuArrow and IsColor(1639, 1015, "0x99CC33")) {
 		ClickOnBottomRightButton() ; Obtain
 		Sleep 200
 		Send "{Esc}" ; Skip animation
@@ -3452,7 +3452,7 @@ PerformMenuActionsX1() {
 	Global
 	; This is dumb, but XButton1Pressed might be unpressed during IsCraftingMenu() check :/
 	If (IsCraftingMenu() and not IncreasingGoods and XButton1Pressed) {
-		If (not IsColor(1562, 669, "0x3E4655")) {
+		If (not IsColor(1610, 669, "0x3E4655")) {
 			Return
 		}
 		IncreasingGoods := True
@@ -3490,14 +3490,14 @@ StopMenuActionsX1() {
 }
 
 IncreaseGoods() {
-	Click 1562, 669
+	Click 1611, 670
 }
 
 PerformMenuActionsX2() {
 	Global
 	; This is dumb, but XButton2Pressed might be unpressed during IsCraftingMenu() check :/
 	If (IsCraftingMenu() and not DecreasingGoods and XButton2Pressed) {
-		If (not IsColor(1024, 669, "0x6C7079")) {
+		If (not IsColor(1071, 670, "0x3B4354")) {
 			Return
 		}
 		DecreasingGoods := True
@@ -3535,11 +3535,11 @@ StopMenuActionsX2() {
 }
 
 DecreaseGoods() {
-	Click 1024, 669
+	Click 1072, 669
 }
 
 IsCraftingMenu() {
-	Return IsColor(1838, 44, "0x3B4255") and IsColor(1664, 1014, "0xFFCB32") and IsColor(620, 1020, "0x3B4255")
+	Return IsColor(1838, 44, "0x3B4255") and IsColor(1647, 1014, "0xFFCB32") and IsColor(647, 1016, "0x3B4255")
 }
 
 
