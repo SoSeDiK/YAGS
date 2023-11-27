@@ -17,7 +17,7 @@ TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 
-Global ScriptVersion := "1.1.3"
+Global ScriptVersion := "1.1.4"
 
 
 
@@ -1831,6 +1831,7 @@ PressedMButtonToTP(*) {
 
 
 
+Global MapTPButton := { Color: "0xFFCB33", X: 1478, Y: 1006 } ; "Teleport" button on the lower right
 DoMapClick() {
 	If (SimpleTeleport())
 		Return
@@ -1839,7 +1840,7 @@ DoMapClick() {
 	Sleep 50
 	Try {
 		; Wait for a little white arrow or teleport button
-		WaitPixelsRegions([ { X1: 1255, Y1: 240, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: 1478, Y1: 1012, X2: 1478, Y2: 1013, Color: "0xFFCD33" } ])
+		WaitPixelsRegions([ { X1: 1255, Y1: 240, X2: 1258, Y2: 1080, Color: "0xECE5D8" }, { X1: MapTPButton.X, Y1: MapTPButton.Y, X2: MapTPButton.X, Y2: MapTPButton.Y, Color: MapTPButton.Color } ])
 	} Catch {
 		Return
 	}
@@ -1866,7 +1867,7 @@ DoMapClick() {
 	}
 
 	If (Y == -1) {
-		If (PixelSearch(&FoundX, &FoundY, 1298, 240, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint
+		If (PixelSearch(&FoundX, &FoundY, 1298, 240, 1299, 1080, "0xFFCC00")) { ; Sub-Space Waypoint (Tea Pot)
 			If (IsColor(FoundX, FoundY - 10, "0xFFFFFF"))
 				Y := FoundY
 		}
@@ -1877,7 +1878,7 @@ DoMapClick() {
 }
 
 SimpleTeleport() {
-	If (not IsColor(1478, 1006, "0xFFCB33"))
+	If (not IsColor(MapTPButton.X, MapTPButton.Y, MapTPButton.Color))
 		Return False
 
 	; Selected point has only 1 selectable option, and it's available for the teleport
@@ -1893,7 +1894,7 @@ Teleport(Y) {
 
 	LockedClick(1298, Y)
 
-	If (not WaitPixelColor("0xFFCD33", 1478, 1012, 3000, True)) ; "Teleport" button
+	If (not WaitPixelColor(MapTPButton.Color, MapTPButton.X, MapTPButton.Y, 3000, True))
 		Return
 	Sleep 100
 
