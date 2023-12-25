@@ -72,6 +72,8 @@ There are no plans to adapt it to other resolutions in the near future.
 
 ### ✨ Minor (possibly useful) additions
 - Press `MMB` to:
+  - Collect all expeditions and resend them.
+  - Collect Coins and Companion Exp in Tea Pot.
   - Select and craft max ores (or other things in Blacksmith's menu).
   - Obtain crafted item.
   - Lock/Unlock an artifact or a weapon.
@@ -80,7 +82,6 @@ There are no plans to adapt it to other resolutions in the near future.
 	- Additionally, by using `XButton1` and `XButton2` you can press «+» and «-» to increase or decrease the crafting amount.
   - Perform mystic offering.
   - Click «Confirm» button in some popups.
-  - Collect Coins and Companion Exp in Tea Pot.
   - Click «Continue Challenge» in Domain.
   - Click «Skip» in Domain/Wish/Cutscenes.
   - Toggle «Auto-Play Story» mode in dialogue.
@@ -88,7 +89,6 @@ There are no plans to adapt it to other resolutions in the near future.
   - Press `XButton2` to purchase items continuously. Press again to stop.
 - `Numpad +` + `Numpad 0-9` to change current party (0 is 10).
 - `Numpad -` + `Numpad 5` to go to the Serenitea Pot (via gadget).
-- `Numpad -` + `Numpad 6` to receive and resend expeditions (use GUI to configure),
 - `Numpad -` + `Numpad 8` to obtain all BP experience and rewards.
 - `Numpad -` + `Numpad .` to relogin.
   - Useful for resetting bosses.

@@ -118,9 +118,6 @@ Global QuickShopBindingsEnabled := False
 Global ClockManagementEnabled := GetSetting("ClockManagement", True)
 Global ClockManagementBindingsEnabled := False
 
-Global SendExpeditionsEnabled := GetSetting("SendExpeditions", True)
-Global SendExpeditionsBindingsEnabled := False
-
 Global SereniteaPotEnabled := GetSetting("SereniteaPot", True)
 Global SereniteaPotBindingsEnabled := False
 
@@ -152,7 +149,7 @@ SetupGui() {
 		Default: TitleVer := ScriptVersion
 	}
 	ScriptGui.Title := Langed("Title", "Yet Another Genshin Script") " v" TitleVer
-	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Expeditions"), Langed("Controls")])
+	ScriptGuiTabs := ScriptGui.Add("Tab3", "x0 y0 w530 h470", [Langed("Settings"), Langed("Links"), Langed("Controls")])
 
 	ScriptGui.OnEvent("Close", ButtonQuit)
 
@@ -184,7 +181,6 @@ SetupGui() {
 	AddTask("QuickPartySwitch", &QuickPartySwitchEnabled, DisableFeatureQuickPartySwitch)
 	AddTask("QuickShopBuying", &QuickShopBuyingEnabled, DisableFeatureQuickShopBuying)
 	AddTask("ClockManagement", &ClockManagementEnabled, DisableFeatureClockManagement)
-	AddTask("SendExpeditions", &SendExpeditionsEnabled, DisableFeatureSendExpeditions)
 	AddTask("SereniteaPot", &SereniteaPotEnabled, DisableFeatureSereniteaPot)
 	AddTask("ReceiveBPRewards", &ReceiveBPRewardsEnabled, DisableFeatureReceiveBPRewards)
 	AddTask("Relogin", &ReloginEnabled, DisableFeatureRelogin)
@@ -242,116 +238,6 @@ SetupGui() {
 	ScriptGui.Add("Text", "x15 y395 w499 +Center", Langed("Thanks") " o((>ω< ))o")
 	ScriptGui.Add("Link", "x230 yp+20", 'GitHub: ' '<a href="https://github.com/SoSeDiK/YAGS">YAGS</a>')
 	ScriptGui.Add("Text", "x15 yp+20 w499 +Center", Langed("MadeBy") " SoSeDiK").SetFont("bold")
-
-
-	; Expeditions
-	ScriptGuiTabs.UseTab(3)
-
-	ScriptGui.Add("GroupBox", "x8 y24 w515 h150", "")
-	ScriptGui.Add("Text", "x15 y24", " " Langed("Expedition") " ")
-	ScriptGui.Add("Text", "x248 y24", " " Langed("Duration") " ")
-	ScriptGui.Add("Text", "x348 y24", " " Langed("CharNum") " ")
-
-	Expeditions := Array()
-	Expeditions.Push({Types: "==", Id: "DoNotSend"})
-
-	; Mondstandt
-	Expeditions.Push({Types: "", Id: ""})
-	Expeditions.Push({Types: "==", Id: "MondstandtExpeditions"})
-	Expeditions.Push({Types: "🌷🥚", Id: "StormbearerMountainsExpedition"})		; Sweet Flower, Bird Egg
-	Expeditions.Push({Types: "💎🪨", Id: "WhisperingWoodsExpedition"})			; White Iron Chunk, Crystal Chunk
-	Expeditions.Push({Types: "💰🪙", Id: "StormterrorLairExpedition"})			; Mora
-	Expeditions.Push({Types: "🥩🍗", Id: "WindriseExpedition"})					; Raw Meat, Fowl
-	Expeditions.Push({Types: "🥕🥕", Id: "WolvendomExpedition"})				; Radish, Carrot
-	Expeditions.Push({Types: "💎🪨", Id: "DadaupaGorgeExpedition"})				; White Iron Chunk, Crystal Chunk
-
-	; Liyue
-	Expeditions.Push({Types: "", Id: ""})
-	Expeditions.Push({Types: "==", Id: "LiyueExpeditions"})
-	Expeditions.Push({Types: "🌷🌷", Id: "DihuaMarshExpedition"})				; Horsetail, Snapdragon
-	Expeditions.Push({Types: "💎🪨", Id: "YaoguangShoalExpedition"})			; White Iron Chunk, Crystal Chunk
-	Expeditions.Push({Types: "💰🪙", Id: "GuiliPlainsExpedition"})				; Mora
-	Expeditions.Push({Types: "💰🪙", Id: "JueyunKarstExpedition"})				; Mora
-	Expeditions.Push({Types: "🥕🥕", Id: "GuyunStoneForestExpedition"})			; Radish, Carrot
-	Expeditions.Push({Types: "🪷🍄", Id: "DunyuRuinsExpedition"})				; Lotus Head, Matsutake
-
-	; Inazuma
-	Expeditions.Push({Types: "", Id: ""})
-	Expeditions.Push({Types: "==", Id: "InazumaExpeditions"})
-	Expeditions.Push({Types: "💰🪙", Id: "JinrenIslandExpedition"})				; Mora
-	Expeditions.Push({Types: "🥕🥕", Id: "KondaVillageExpedition"})				; Radish, Lavender Melon
-	Expeditions.Push({Types: "🌷🍑", Id: "ByakkoPlainExpedition"})				; Sweet Flower, Sunsettia
-	Expeditions.Push({Types: "🍗🌾", Id: "NazuchiBeachExpedition"})				; Fowl, Seagrass
-	Expeditions.Push({Types: "🥩🥚", Id: "MusoujinGorgeExpedition"})			; Raw Meat, Bird Egg
-	Expeditions.Push({Types: "💰🪙", Id: "TatarasunaExpedition"})				; Mora
-
-	; Sumeru
-	Expeditions.Push({Types: "", Id: ""})
-	Expeditions.Push({Types: "==", Id: "SumeruExpeditions"})
-	Expeditions.Push({Types: "🌷🍎", Id: "MawtiyimaForestExpedition"})			; Sumeru Rose, Apple
-	Expeditions.Push({Types: "🍄🍄", Id: "ChatrakamCaveExpedition"})			; Matsutake, Mushroom
-	Expeditions.Push({Types: "🥕🥕", Id: "ChinvatRavineExpedition"})			; Harra Fruit, Carrot
-	Expeditions.Push({Types: "🍑🌰", Id: "AvidyaForestExpedition"})				; Zaytun Peach, Pinecone
-	Expeditions.Push({Types: "💰🪙", Id: "ArdraviValleyExpedition"})			; Mora
-	Expeditions.Push({Types: "🥚🍑", Id: "AshavanRealmExpedition"})				; Bird Egg, Sunsettia
-
-	; Fontaine
-	Expeditions.Push({Types: "", Id: ""})
-	Expeditions.Push({Types: "==", Id: "FontaineExpeditions"})
-	Expeditions.Push({Types: "💰🪙", Id: "ErinnyesExpedition"})					; Mora
-	Expeditions.Push({Types: "🍎🍗", Id: "MontEsusExpedition"})					; Bulle Fruit, Fowl
-	Expeditions.Push({Types: "🌿🍄", Id: "SalaciaPlainExpedition"})				; Tidalga, Mushroom
-	Expeditions.Push({Types: "🌷🌷", Id: "BerylMountainsExpedition"})			; Sweet Flower, Mint
-	Expeditions.Push({Types: "🌷🥚", Id: "TheOutskirtsOfPoissonExpedition"})	; Marcotte, Bird Egg
-	Expeditions.Push({Types: "🪷🥩", Id: "ElynasRidgeExpedition"})				; Pluie Lotus, Raw Meat
-
-	Durations := ["4", "8", "12", "20"]
-	DurationsH := ["4h", "8h", "12h", "20h"]
-
-	Loop (5) {
-		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
-		If (Expedition == "")
-			Expedition := ",,"
-		Else
-			Expedition := StrSplit(Expedition, ",")
-
-		CharacterNumberInList := Integer(Expedition[3])
-
-		Duration := Expedition[2]
-		For (Index, Value in Durations) {
-			If (Duration == Value) {
-				Duration := Index
-				Break
-			}
-		}
-
-		Expedition := Expedition[1]
-		ExpeditionNum := 1
-
-		ExpeditionsDisplay := Array()
-		For (Index, Value in Expeditions) {
-			ExpeditionId := Value.Id
-			If (Expedition == ExpeditionId)
-				ExpeditionNum := Index
-			If (ExpeditionId == "")
-				ExpeditionDisplay := ""
-			Else
-				ExpeditionDisplay := Value.Types " " Langed(ExpeditionId)
-			ExpeditionsDisplay.Push(ExpeditionDisplay)
-		}
-
-		Y := 20 + 25 * A_Index
-		Exped := ScriptGui.Add("DropDownList", "vExpedition" A_Index " x17 w180 Choose" ExpeditionNum " y" Y, ExpeditionsDisplay)
-		Exped.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-
-		Durat := ScriptGui.Add("DropDownList", "vDuration" A_Index " x250 w50 Choose" Duration "h y" Y, DurationsH)
-		Durat.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-
-		Chars := ScriptGui.Add("Edit", "x350 y45 w50" " y" Y)
-		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-		Chars := ScriptGui.Add("UpDown", "vCharacters" A_Index " Range1-30", CharacterNumberInList)
-		Chars.OnEvent("Change", UpdateExpeditions.Bind(Expeditions, A_Index))
-	}
 
 	; Controls
 	ScriptGuiTabs.UseTab(4)
@@ -417,14 +303,6 @@ UpdateLanguage(Lang, *) {
 	SetupGui()
 	SetupTray()
 	ScriptGui.Move(XN, YN)
-}
-
-UpdateExpeditions(Expeditions, ExpeditionNum, *) {
-	ExpeditionName := Expeditions[ScriptGui["Expedition" ExpeditionNum].Value].Id
-	Duration := ScriptGui["Duration" ExpeditionNum].Text
-	Duration := SubStr(Duration, 1, StrLen(Duration) - 1)
-	CharacterNumberInList := ScriptGui["Characters" ExpeditionNum].Value
-	IniWrite ExpeditionName "," Duration "," CharacterNumberInList, GetExpeditions(), "Expeditions", "Expedition" ExpeditionNum
 }
 
 ToggleFeature(&FeatureVarState, FeatureDisablingFunction, FeatureName, *) {
@@ -561,7 +439,6 @@ ResetScripts() {
 	DisableFeatureQuickPartySwitch()
 	DisableFeatureQuickShopBuying()
 	DisableFeatureClockManagement()
-	DisableFeatureSendExpeditions()
 	DisableFeatureSereniteaPot()
 	DisableFeatureReceiveBPRewards()
 	DisableFeatureRelogin()
@@ -795,12 +672,6 @@ ConfigureContextualBindings() {
 	If (ClockManagementEnabled) {
 		If (not ClockManagementBindingsEnabled) {
 			EnableFeatureClockManagement()
-		}
-	}
-
-	If (SendExpeditionsEnabled) {
-		If (not SendExpeditionsBindingsEnabled) {
-			EnableFeatureSendExpeditions()
 		}
 	}
 
@@ -2427,236 +2298,6 @@ DisableFeatureClockManagement() {
 
 
 ; =======================================
-; Expeditions
-; =======================================
-; Expedition duration coordinates
-Global Duration4H := { X: 1500, Y: 700 }
-Global Duration8H := { X: 1600, Y: 700 }
-Global Duration12H := { X: 1700, Y: 700 }
-Global Duration20H := { X: 1800, Y: 700 }
-
-; Mondstandt Expeditions
-Global StormbearerMountainsExpedition := { MapNumber: 0, X: 810, Y: 240 }
-Global WhisperingWoodsExpedition := { MapNumber: 0, X: 1050, Y: 330 }
-Global StormterrorLairExpedition := { MapNumber: 0, X: 550, Y: 400 }
-Global WindriseExpedition := { MapNumber: 0, X: 1111, Y: 455 }
-Global WolvendomExpedition := { MapNumber: 0, X: 740, Y: 530 }
-Global DadaupaGorgeExpedition := { MapNumber: 0, X: 1170, Y: 660 }
-; Liyue Expeditions
-Global DihuaMarshExpedition := { MapNumber: 1, X: 728, Y: 332 }
-Global YaoguangShoalExpedition := { MapNumber: 1, X: 950, Y: 450 }
-Global GuiliPlainsExpedition := { MapNumber: 1, X: 800, Y: 550 }
-Global JueyunKarstExpedition := { MapNumber: 1, X: 559, Y: 561 }
-Global GuyunStoneForestExpedition := { MapNumber: 1, X: 1170, Y: 610 }
-Global DunyuRuinsExpedition := { MapNumber: 1, X: 730, Y: 810 }
-; Inazuma Expeditions
-Global JinrenIslandExpedition := { MapNumber: 2, X: 1097, Y: 274 }
-Global KondaVillageExpedition := { MapNumber: 2, X: 935, Y: 345 }
-Global ByakkoPlainExpedition := { MapNumber: 2, X: 1145, Y: 435 }
-Global NazuchiBeachExpedition := { MapNumber: 2, X: 725, Y: 695 }
-Global MusoujinGorgeExpedition := { MapNumber: 2, X: 580, Y: 800 }
-Global TatarasunaExpedition := { MapNumber: 2, X: 828, Y: 828 }
-; Sumeru Expeditions
-Global MawtiyimaForestExpedition := { MapNumber: 3, X: 1055, Y: 245 }
-Global ChatrakamCaveExpedition := { MapNumber: 3, X: 795, Y: 295 }
-Global ChinvatRavineExpedition := { MapNumber: 3, X: 960, Y: 375 }
-Global AvidyaForestExpedition := { MapNumber: 3, X: 900, Y: 560 }
-Global ArdraviValleyExpedition := { MapNumber: 3, X: 1025, Y: 610 }
-Global AshavanRealmExpedition := { MapNumber: 3, X: 675, Y: 635 }
-; Fontaine Expeditions
-Global ErinnyesExpedition := { MapNumber: 4, X: 1055, Y: 250 }
-Global MontEsusExpedition := { MapNumber: 4, X: 655, Y: 320 }
-Global SalaciaPlainExpedition := { MapNumber: 4, X: 895, Y: 455 }
-Global BerylMountainsExpedition := { MapNumber: 4, X: 615, Y: 550 }
-Global TheOutskirtsOfPoissonExpedition := { MapNumber: 4, X: 1030, Y: 580 }
-Global ElynasRidgeExpedition := { MapNumber: 4, X: 824, Y: 643 }
-
-
-
-; Recieve all expedition rewards and resend back
-SendExpeditions(*) {
-	; Check if in expeditions screen
-	ParseExpeditions()
-	Send "{Esc}"
-}
-
-
-
-ParseExpeditions() {
-	Global
-	PrevMapNumber := -1
-	Loop (5) {
-		Expedition := IniRead(GetExpeditions(), "Expeditions", "Expedition" A_Index, "")
-		If (Expedition == "")
-			Continue
-		Expedition := StrSplit(Expedition, ",")
-		CharacterNumberInList := Integer(Expedition[3])
-		Duration := Expedition[2]
-		Switch (Duration) {
-			case "4": Duration := Duration4H
-			case "8": Duration := Duration8H
-			case "12": Duration := Duration12H
-			case "20": Duration := Duration20H
-		}
-		Expedition := Expedition[1]
-		Switch (Expedition) {
-			; Mondstandt Expeditions
-			case "StormbearerMountainsExpedition": Expedition := StormbearerMountainsExpedition
-			case "WhisperingWoodsExpedition": Expedition := WhisperingWoodsExpedition
-			case "StormterrorLairExpedition": Expedition := StormterrorLairExpedition
-			case "WindriseExpedition": Expedition := WindriseExpedition
-			case "WolvendomExpedition": Expedition := WolvendomExpedition
-			case "DadaupaGorgeExpedition": Expedition := DadaupaGorgeExpedition
-			; Liyue Expeditions
-			case "DihuaMarshExpedition": Expedition := DihuaMarshExpedition
-			case "YaoguangShoalExpedition": Expedition := YaoguangShoalExpedition
-			case "GuiliPlainsExpedition": Expedition := GuiliPlainsExpedition
-			case "JueyunKarstExpedition": Expedition := JueyunKarstExpedition
-			case "GuyunStoneForestExpedition": Expedition := GuyunStoneForestExpedition
-			case "DunyuRuinsExpedition": Expedition := DunyuRuinsExpedition
-			; Inazuma Expeditions
-			case "JinrenIslandExpedition": Expedition := JinrenIslandExpedition
-			case "KondaVillageExpedition": Expedition := KondaVillageExpedition
-			case "ByakkoPlainExpedition": Expedition := ByakkoPlainExpedition
-			case "NazuchiBeachExpedition": Expedition := NazuchiBeachExpedition
-			case "MusoujinGorgeExpedition": Expedition := MusoujinGorgeExpedition
-			case "TatarasunaExpedition": Expedition := TatarasunaExpedition
-			; Sumeru Expeditions
-			case "MawtiyimaForestExpedition": Expedition := MawtiyimaForestExpedition
-			case "ChatrakamCaveExpedition": Expedition := ChatrakamCaveExpedition
-			case "ChinvatRavineExpedition": Expedition := ChinvatRavineExpedition
-			case "AvidyaForestExpedition": Expedition := AvidyaForestExpedition
-			case "ArdraviValleyExpedition": Expedition := ArdraviValleyExpedition
-			case "AshavanRealmExpedition": Expedition := AshavanRealmExpedition
-			; Fontaine Expeditions
-			case "ErinnyesExpedition": Expedition := ErinnyesExpedition
-			case "MontEsusExpedition": Expedition := MontEsusExpedition
-			case "SalaciaPlainExpedition": Expedition := SalaciaPlainExpedition
-			case "BerylMountainsExpedition": Expedition := BerylMountainsExpedition
-			case "TheOutskirtsOfPoissonExpedition": Expedition := TheOutskirtsOfPoissonExpedition
-			case "ElynasRidgeExpedition": Expedition := ElynasRidgeExpedition
-		}
-		ReceiveRewardAndResendOnExpedition(Expedition, PrevMapNumber, Duration, CharacterNumberInList)
-		PrevMapNumber := Expedition.MapNumber
-		If (not WaitPixelColor("0x3B4255", 1840, 45, 2000, True))
-			Return
-	}
-}
-
-; CharacterNumberInList - starts from 1.
-ReceiveRewardAndResendOnExpedition(Expedition, PrevMapNumber, Duration, CharacterNumberInList) {
-	ReceiveReward(Expedition, PrevMapNumber)
-	; Wait for expeditions menu
-	If (not WaitPixelColor("0x3B4255", 1840, 45, 3000, True))
-		Return
-
-	If (IsColor(1600, 1020, "0xFE5C5C")) ; Already Occupied
-		Return
-
-	Sleep 200
-	SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration)
-	Sleep 200
-}
-
-ReceiveReward(Expedition, PrevMapNumber) {
-	SelectExpedition(Expedition, PrevMapNumber)
-
-	If (not IsColor(1600, 1020, "0x99CC33")) ; Already Received
-		Return
-	Sleep 200
-
-	; Receive reward
-	ClickOnBottomRightButton(False)
-	Sleep 200
-
-	; Skip reward menu
-	ClickOnBottomRightButton(False)
-}
-
-SelectExpedition(Expedition, PrevMapNumber) {
-	; Click on the world
-	If (Expedition.MapNumber != PrevMapNumber) {
-		WorldY := 160 + (Expedition.MapNumber * 72) ; Initial position + offset between the lines
-		LockedClick(200, WorldY)
-		Sleep 500
-	}
-
-	; Click on the expedition
-	LockedClick(Expedition.X, Expedition.Y)
-	Sleep 300
-}
-
-SendOnExpeditionSelected(Expedition, CharacterNumberInList, Duration) {
-	SelectDuration(Duration)
-	Sleep 200
-
-	; Click on "Select Character"
-	ClickOnBottomRightButton(False)
-	If (not WaitPixelColor("0x263240", 945, 10, 2000, True))
-		Return
-	Sleep 100
-
-	; Find and select the character
-	FindAndSelectCharacter(CharacterNumberInList)
-	Sleep 300
-}
-
-SelectDuration(Duration) {
-	LockedClick(Duration.X, Duration.Y)
-	Sleep 100
-}
-
-FindAndSelectCharacter(CharacterNumberInList) {
-	FirstCharacterX := 100
-	FirstCharacterY := 150
-	SpacingBetweenCharacters := 125
-
-	If (CharacterNumberInList <= 7) {
-		LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * (CharacterNumberInList - 1)))
-	} Else {
-		ScrollDownCharacterList(CharacterNumberInList - 7.5)
-		LockedClick(FirstCharacterX, FirstCharacterY + (SpacingBetweenCharacters * 7))
-	}
-}
-
-; Scroll down the passed number of characters
-ScrollDownCharacterList(CharacterAmount) {
-	MouseMove 950, 540
-
-	ScrollAmount := CharacterAmount * 7
-	Loop (ScrollAmount) {
-		Send "{WheelDown}"
-		Sleep 10
-	}
-}
-
-
-
-EnableFeatureSendExpeditions() {
-	Global
-	If (SendExpeditionsBindingsEnabled)
-		DisableFeatureSereniteaPot()
-
-	If (not SendExpeditionsEnabled)
-		Return
-
-	Hotkey "~NumpadSub & Numpad6", SendExpeditions, "On"
-
-	SendExpeditionsBindingsEnabled := True
-}
-
-DisableFeatureSendExpeditions() {
-	Global
-	Hotkey "~NumpadSub & Numpad6", SendExpeditions, "Off"
-
-	SendExpeditionsBindingsEnabled := False
-}
-
-
-
-
-
-; =======================================
 ; Go to the Serenitea Pot
 ; =======================================
 GoToSereniTeaPot(*) {
@@ -3371,6 +3012,19 @@ PerformMenuActions() {
 	}
 
 	; =======================================
+	; Expeditions
+	; =======================================
+	If (MenuArrow and IsColor(63, 56, "0xECE5D8") and IsColor(73, 1014, "0xFFCC33")) {
+		MouseGetPos &CoordX, &CoordY
+		LockedClick(73, 1014) ; Claim All
+		WaitPixelColor("0x313131", 1007, 1019, 3000, True)
+		LockedClick(1007, 1019) ; Dispatch Again
+		Sleep 30
+		MouseMove CoordX, CoordY
+		Return
+	}
+
+	; =======================================
 	; Continue Challenge (Domain)
 	; =======================================
 	If (not MenuArrow and SubStr(GetColor(597, 998), 1, 3) == "0x3" and SubStr(GetColor(1033, 998), 1, 3) == "0xF" and IsColor(1018, 582, "0xECEAEB")) {
@@ -3767,10 +3421,6 @@ Langed(Key, Def := "", Lang := GetSetting("Language", "en")) {
 
 GetLanguagePath(Lang) {
 	Return A_ScriptDir "\yags_data\langs\lang_" Lang ".ini"
-}
-
-GetExpeditions() {
-	Return A_ScriptDir "\yags_data\expeditions.ini"
 }
 
 CheckForUpdates() {

@@ -71,6 +71,8 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
 
 ### ✨ Bổ sung nhỏ (có thể hữu ích)
 - Nhấn `MMB` để:
+  - Collect all expeditions and resend them.
+  - Nhận Xu và Kinh nghiệm yêu thích trong Ấm Trần Ca.
   - Chọn và ghép tối đa quặng (hoặc một vài thứ ở menu của Thợ Rèn).
   - Nhận các vật phẩn đã ghép.
   - Khoá/Mở Khoá thánh di vật hoặc vũ khí.
@@ -79,7 +81,6 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Hơn nữa, dùng `XButton1` và `XButton2` bạn có thể nhấn «+» và «-» để tăng số lượng hoặc giảm số lượng vật phẩm cần ghép.
   - Thực hiện đổi Tráp Thánh.
   - Nhấn nút «Xác nhận» ở một vài cái bảng hiện lên.
-  - Nhận Xu và Kinh nghiệm yêu thích trong Ấm Trần Ca.
   - Nhấn «Tiếp tục» ở trong Bí Cảnh.
   - Nhấn «Bỏ Qua» ở trong Bí Cảnh/Cầu Nguyện/Cutscenes.
   - Chuyển đổi chế độ «Tự động chạy cốt truyện» trong hội thoại.
@@ -87,7 +88,6 @@ Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân g
   - Nhấn `XButton2` để mua các vật phẩm liên tục. Nhấn tại lần nữa để dừng.
 - `Numpad +` + `Numpad 0-9` để đổi đội hiện tại (0 là 10)
 - `Numpad -` + `Numpad 5` để đi đến Ấm trần ca (thông qua Ấm trong túi đồ).
-- `Numpad -` + `Numpad 6` để nhận và gửi đi thám hiểm lại (dùng GUI để tuỳ chỉnh),
 - `Numpad -` + `Numpad 8` để nhận tất cả kinh nghiệm và phần thưởng.
 - `Numpad -` + `Numpad .` đăng nhập lại.
   - Hữu dụng cho việc reset boss.

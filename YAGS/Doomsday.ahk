@@ -21,7 +21,6 @@ LangIniEn := "
 
 	Settings=Settings
 	Links=Links
-	Expeditions=Expeditions
 	Controls=Controls
 
 	LinksTab1=Utils
@@ -73,8 +72,6 @@ LangIniEn := "
 	QuickShopBuyingTooltip=Use XButton1 to quickly buy current shop item\nUse XButton2 to continuously buy items from the shop
 	ClockManagement=Clock Management
 	ClockManagementTooltip=Use Numpad/ with Numpad 1-9 to quickly change the time\nNumpad0 adds one hour; Numpad. subtracts on hour\nNumpad* adds 24 hours (next day)
-	SendExpeditions=Send Expeditions
-	SendExpeditionsTooltip=Numpad- with Numpad6 to receive and resend expeditions
 	SereniteaPot=Serenitea Pot
 	SereniteaPotTooltip=Numpad- with Numpad5 to go to the Serenitea Pot
 	ReceiveBPRewards=BP Rewards
@@ -98,51 +95,6 @@ LangIniEn := "
 
 	Quit=Quit
 	Hide=Hide to tray
-
-	Expedition=Expedition
-	Duration=Duration
-	CharNum=Character Number In The List
-	DoNotSend=Do not send on expedition
-
-	MondstandtExpeditions=Mondstandt
-	StormbearerMountainsExpedition=Stormbearer Mountains
-	WhisperingWoodsExpedition=Whispering Woods
-	StormterrorLairExpedition=Stormterror Lair
-	WindriseExpedition=Windrise
-	WolvendomExpedition=Wolvendom
-	DadaupaGorgeExpedition=Dadaupa Gorge
-
-	LiyueExpeditions=Liyue
-	DihuaMarshExpedition=Dihua Marsh
-	YaoguangShoalExpedition=Yaoguang Shoal
-	GuiliPlainsExpedition=Guili Plains
-	JueyunKarstExpedition=Jueyun Karst
-	GuyunStoneForestExpedition=Guyun Stone Forest
-	DunyuRuinsExpedition=Dunyu Ruins
-
-	InazumaExpeditions=Inazuma
-	JinrenIslandExpedition=Jinren Island
-	KondaVillageExpedition=Konda Village
-	ByakkoPlainExpedition=Byakko Plain
-	NazuchiBeachExpedition=Nazuchi Beach
-	MusoujinGorgeExpedition=Musoujin Gorge
-	TatarasunaExpedition=Tarasuna
-
-	SumeruExpeditions=Sumeru
-	MawtiyimaForestExpedition=Mawtiyima Forest
-	ChatrakamCaveExpedition=Chatrakam Cave
-	ChinvatRavineExpedition=Chinvat Ravine
-	AvidyaForestExpedition=Avidya Forest
-	ArdraviValleyExpedition=Ardravi Valley
-	AshavanRealmExpedition=Ashavan Realm
-
-	FontaineExpeditions=Fontaine
-	ErinnyesExpedition=Erinnyes
-	MontEsusExpedition=Mont Esus
-	SalaciaPlainExpedition=Salacia Plain
-	BerylMountainsExpedition=Beryl Mountains
-	TheOutskirtsOfPoissonExpedition=The Outskirts of Poisson
-	ElynasRidgeExpedition=Elynas Ridge
 )"
 
 
@@ -161,7 +113,6 @@ LangIniRu := "
 
 	Settings=Настройки
 	Links=Ссылки
-	Expeditions=Экспедиции
 	Controls=Управление
 
 	LinksTab1=Утилиты
@@ -213,8 +164,6 @@ LangIniRu := "
 	QuickShopBuyingTooltip=Используйте XButton1 для быстрой покупки текущего предмета в магазине\nИспользуйте XButton2 для покупки всех предметов в магазине
 	ClockManagement=Смена времени
 	ClockManagementTooltip=Используйте Numpad/ и Numpad 1-9 для быстрой смены времени\nNumpad0 добавляет час; Numpad. вычетает час\nNumpad* добавляет 24 часа (следующий день)
-	SendExpeditions=Отправка экспедиций
-	SendExpeditionsTooltip=Numpad- и Numpad6 для сбора и переотправки экспедиций
 	SereniteaPot=Поход в Чайник
 	SereniteaPotTooltip=Numpad- и Numpad5 для перемещения в чайник
 	ReceiveBPRewards=Награды БП
@@ -238,51 +187,6 @@ LangIniRu := "
 
 	Quit=Закрыть
 	Hide=Свернуть в трей
-
-	Expedition=Экспедиция
-	Duration=Время
-	CharNum=Номер персонажа в списке
-	DoNotSend=Не отправлять на экспедицию
-
-	MondstandtExpeditions=Мондштадт
-	StormbearerMountainsExpedition=Горы Буревестника
-	WhisperingWoodsExpedition=Шепчущий лес
-	StormterrorLairExpedition=Логово Ужаса Бури
-	WindriseExpedition=Долина Ветров
-	WolvendomExpedition=Вольфендом
-	DadaupaGorgeExpedition=Ущелье Дадаупа
-
-	LiyueExpeditions=Ли Юэ
-	DihuaMarshExpedition=Тростниковые острова
-	YaoguangShoalExpedition=Отмель Яогуан
-	GuiliPlainsExpedition=Долина Гуйли
-	JueyunKarstExpedition=Заоблачный предел
-	GuyunStoneForestExpedition=Каменный лес Гуюнь
-	DunyuRuinsExpedition=Гробница Дуньюй
-
-	InazumaExpeditions=Инадзума
-	JinrenIslandExpedition=Остров Дзинрэн
-	KondaVillageExpedition=Деревня Конда
-	ByakkoPlainExpedition=Равнина Бякко
-	NazuchiBeachExpedition=Побережье Надзути
-	MusoujinGorgeExpedition=Ущелье Мусодзин
-	TatarasunaExpedition=Татарасуна
-
-	SumeruExpeditions=Сумеру
-	MawtiyimaForestExpedition=Лес Мотийимы
-	ChatrakamCaveExpedition=Пещера Чатракам
-	ChinvatRavineExpedition=Ущелье Чинват
-	AvidyaForestExpedition=Лес Авидья
-	ArdraviValleyExpedition=Долина Ардрави
-	AshavanRealmExpedition=Земля Ашаван
-
-	FontaineExpeditions=Фонтейн
-	ErinnyesExpedition=Остров Эриний
-	MontEsusExpedition=Предгорье Эсус
-	SalaciaPlainExpedition=Салосское морское плато
-	BerylMountainsExpedition=Горы Берилл
-	TheOutskirtsOfPoissonExpedition=Окрестности деревни Пуассон
-	ElynasRidgeExpedition=Горный хребет Элинас
 )"
 
 
@@ -312,20 +216,6 @@ LinksIniData := "
 )"
 
 
-ExpeditionsIniFile := "
-(
-	; =======================================
-	; (!) PLEASE, USE GUI TO CHANGE THIS FILE
-	; =======================================
-	[Expeditions]
-	Expedition1=WhisperingWoodsExpedition,20,1
-	Expedition2=DadaupaGorgeExpedition,20,2
-	Expedition3=YaoguangShoalExpedition,20,1
-	Expedition4=GuyunStoneForestExpedition,20,2
-	Expedition5=MusoujinGorgeExpedition,20,1
-)"
-
-
 SettingsIniFile := "
 (
 	[Settings]
@@ -352,7 +242,6 @@ SettingsIniFile := "
 	QuickPartySwitch=1
 	QuickShopBuying=1
 	ClockManagement=1
-	SendExpeditions=1
 	SereniteaPot=1
 	ReceiveBPRewards=1
 	Relogin=1
@@ -465,7 +354,6 @@ CreateMissingAssets() {
 
 	CreateIni(SettingsIniFile, ".\yags_data\settings.ini")
 	CreateIni(LinksIniData, ".\yags_data\links.ini")
-	CreateIni(ExpeditionsIniFile, ".\yags_data\expeditions.ini")
 
 	DirCreate ".\yags_data\graphics"
 	ImagePutFile(IconBase64, ".\yags_data\graphics\genicon.ico")
