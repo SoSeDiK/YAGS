@@ -37,6 +37,9 @@ Global VersionState := "Unchecked"
 If (GetSetting("AutoUpdatesCheck", True))
 	CheckForUpdates()
 
+EnableReloadScriptHotkey()
+EnableExitScriptHotkey()
+
 
 
 
@@ -3881,13 +3884,25 @@ ToggleExtraHotkeys(*) {
 
 
 
+; Reload script (debugging)
+EnableReloadScriptHotkey() {
+	If (VersionState != "Indev")
+		Return
 
-
-; Exit script
-$End:: {
-	CloseYAGS()
+	Hotkey "^!r", ReloadYAGS, "On" 							; Ctrl + Alt + R
 }
 
-CloseYAGS() {
+ReloadYAGS(*) {
+	ToolTip "Reloading script!"
+	Sleep 100
+	Reload
+}
+
+; Exit script
+EnableExitScriptHotkey() {
+	Hotkey "$End", CloseYAGS, "On" 							; End
+}
+
+CloseYAGS(*) {
 	ExitApp
 }
