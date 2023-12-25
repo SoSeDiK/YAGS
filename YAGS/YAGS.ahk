@@ -16,6 +16,7 @@
 TraySetIcon ".\yags_data\graphics\genicon.ico", , 1
 A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
+SetTitleMatchMode "RegEx" ; Allow matching title by regex (to support multiple versions)
 
 Global ScriptVersion := "1.1.5-dev"
 
@@ -45,7 +46,7 @@ EnableExitScriptHotkey()
 
 
 ; Static variables
-Global GameProcessName := "ahk_exe GenshinImpact.exe"
+Global GameProcessName := "ahk_exe (GenshinImpact|YuanShen)\.exe$"
 
 Global LightMenuColor := "0xECE5D8"
 
