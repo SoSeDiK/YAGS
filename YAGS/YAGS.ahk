@@ -2044,7 +2044,7 @@ BuyAvailable() {
 
 QuicklyBuyOnce() {
 	ClickOnBottomRightButton(False)
-	If (not WaitPixelColor("0x4A5366", 1050, 750, 1000, True)) ; Wait for tab to be active
+	If (not WaitPixelColor("0x313131", 1007, 780, 1000, True)) ; Wait for tab to be active
 		Return
 	Sleep 50
 	LockedClick(1178, 600) ; Max stacks
@@ -2862,7 +2862,7 @@ PerformMenuActions() {
 	}
 
 	; Character's Artifacts
-	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(557, 1010, "0xECE5D8")) {
+	If (MenuArrow and IsColor(60, 999, "0x3B4255") and IsColor(558, 1010, "0x3F4658")) {
 		If (TryToFindTransparentLocker(1846, 310))
 			Return
 	}
@@ -2874,13 +2874,13 @@ PerformMenuActions() {
 	}
 
 	; Artifacts/Weapons enhancement menu
-	If (MenuArrow and IsColor(1099, 46, "0x9D9C9D")) {
+	If (MenuArrow and IsColor(1096, 53, "0x3C4356")) {
 		If (TryToFindLocker(1612, 505))
 			Return
 	}
 
 	; Mystic Offering
-	If (not MenuArrow and IsColor(1840, 45, "0x353B4B") and IsColor(907, 45, "0xA6A4A4")) {
+	If (not MenuArrow and IsColor(1840, 45, "0x353B4B") and IsColor(904, 54, "0x3C4356")) {
 		If (TryToFindLocker(1421, 506))
 			Return
 	}
@@ -2895,17 +2895,19 @@ PerformMenuActions() {
 	; Select maximum stacks and craft ores
 	; =======================================
 	If (MenuArrow and IsColor(62, 52, "0xD3BC8E") and IsColor(643, 1015, "0x3B4255")) {
+		MouseGetPos &CoordX, &CoordY
 		LockedClick(1516, 672) ; Max stacks
 		Sleep 50
 		ClickOnBottomRightButton()
-		Sleep 50
+		Sleep 30
+		MouseMove CoordX, CoordY
 		Return
 	}
 
 	; =======================================
 	; Mystic Offering button
 	; =======================================
-	If (MenuArrow and IsColor(1663, 1012, "0xFDCB32") and IsColor(1358, 452, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
+	If (MenuArrow and IsColor(1646, 1014, "0xDCB132") and IsColor(1381, 469, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
 		ClickOnBottomRightButton()
 		Return
 	}
@@ -3140,6 +3142,7 @@ StopMenuActionsX1() {
 	Global
 	If (IncreasingGoods) {
 		SetTimer IncreaseGoods, 0
+		Sleep 30
 		If (not DecreasingGoods) {
 			MouseMove GoodsSavedX, GoodsSavedY
 			BlockInput "MouseMoveOff"
@@ -3185,6 +3188,7 @@ StopMenuActionsX2() {
 	Global
 	If (DecreasingGoods) {
 		SetTimer DecreaseGoods, 0
+		Sleep 30
 		If (not IncreasingGoods) {
 			MouseMove GoodsSavedX, GoodsSavedY
 			BlockInput "MouseMoveOff"
