@@ -1111,7 +1111,7 @@ XButtonSkipDialogueClickingUp(*) {
 }
 
 CantSkipDialogue() {
-	return IsGameScreen() or IsCraftingMenu() or IsShopBuyingPopup() or HasMenuCross()
+	Return IsGameScreen() or IsCraftingMenu() or IsShopBuyingPopup() or HasMenuCross()
 }
 
 
@@ -2088,7 +2088,7 @@ IsAvailableForStock() {
 }
 
 IsShopBuyingPopup() {
-	return IsColor(600, 780, "0x38A1E4") and IsColor(1005, 780, "0x313131")
+	Return IsColor(600, 780, "0x38A1E4") and IsColor(1005, 780, "0x313131")
 }
 
 
@@ -3120,101 +3120,93 @@ TryToFindTransparentLocker(TopX, TopY) {
 
 
 
+Global ChangingAmountOfGoods := False
 Global IncreasingGoods := False
-Global DecreasingGoods := False
 Global GoodsSavedX := 0
 Global GoodsSavedY := 0
 
 PerformMenuActionsX1() {
-	Global
-	; This is dumb, but XButton1Pressed might be unpressed during IsCraftingMenu() check :/
-	If (IsCraftingMenu() and not IncreasingGoods and XButton1Pressed) {
-		If (not IsColor(1610, 669, "0x3E4655")) {
-			Return
-		}
-		IncreasingGoods := True
-		BlockInput "MouseMove"
-		If (not DecreasingGoods) {
-			MouseGetPos &CoordX, &CoordY
-			GoodsSavedX := CoordX
-			GoodsSavedY := CoordY
-		}
-		SetTimer IncreaseGoods, -1
-		Sleep 300
-		If (not IncreasingGoods) {
-			If (not DecreasingGoods) {
-				MouseMove GoodsSavedX, GoodsSavedY
-				BlockInput "MouseMoveOff"
-			}
-			Return
-		}
-		If (XButton1Pressed) {
-			SetTimer IncreaseGoods, 20
-		}
-	}
+	ChangeAmountOfGoods(False)
 }
 
 StopMenuActionsX1() {
-	Global
-	If (IncreasingGoods) {
-		SetTimer IncreaseGoods, 0
-		Sleep 30
-		If (not DecreasingGoods) {
-			MouseMove GoodsSavedX, GoodsSavedY
-			BlockInput "MouseMoveOff"
-		}
-		IncreasingGoods := False
-	}
-}
-
-IncreaseGoods() {
-	Click 1611, 670
+	StopChangingAmountOfGoods()
 }
 
 PerformMenuActionsX2() {
-	Global
-	; This is dumb, but XButton2Pressed might be unpressed during IsCraftingMenu() check :/
-	If (IsCraftingMenu() and not DecreasingGoods and XButton2Pressed) {
-		If (not IsColor(1071, 670, "0x3B4354")) {
-			Return
-		}
-		DecreasingGoods := True
-		BlockInput "MouseMove"
-		If (not IncreasingGoods) {
-			MouseGetPos &CoordX, &CoordY
-			GoodsSavedX := CoordX
-			GoodsSavedY := CoordY
-		}
-		SetTimer DecreaseGoods, -1
-		Sleep 300
-		If (not DecreasingGoods) {
-			If (not IncreasingGoods) {
-				MouseMove GoodsSavedX, GoodsSavedY
-				BlockInput "MouseMoveOff"
-			}
-			Return
-		}
-		If (XButton2Pressed) {
-			SetTimer DecreaseGoods, 20
-		}
-	}
+	ChangeAmountOfGoods(True)
 }
 
 StopMenuActionsX2() {
+	StopChangingAmountOfGoods()
+}
+
+
+ChangeAmountOfGoods(Increasing) {
 	Global
-	If (DecreasingGoods) {
-		SetTimer DecreaseGoods, 0
-		Sleep 30
-		If (not IncreasingGoods) {
-			MouseMove GoodsSavedX, GoodsSavedY
-			BlockInput "MouseMoveOff"
-		}
-		DecreasingGoods := False
+	If (ChangingAmountOfGoods)
+		Return
+
+	ChangingAmountOfGoods := True
+	IncreasingGoods := Increasing
+
+	BlockInput "MouseMove"
+	MouseGetPos &CoordX, &CoordY
+	GoodsSavedX := CoordX
+	GoodsSavedY := CoordY
+
+	If (not IsCraftingMenu() or not IsColor(GoodsCheckX(), GoodsCheckY(), "0x3B4354")) {
+		StopChangingAmountOfGoods()
+		Return
+	}
+
+	Click GoodsCheckX(), GoodsCheckY()
+	If (not ChangingAmountOfGoods)
+		Return
+
+	SetTimer DelayedChangeGoodsAmount, -300
+}
+
+DelayedChangeGoodsAmount() {
+	Global
+	If (not ChangingAmountOfGoods)
+		Return
+
+	SetTimer ChangeGoodsAmount, 20
+}
+
+ChangeGoodsAmount() {
+	Global
+	If (not ChangingAmountOfGoods) {
+		SetTimer DelayedChangeGoodsAmount, 0
+		SetTimer ChangeGoodsAmount, 0
+		Return
+	}
+	If (not (IncreasingGoods ? XButton2Pressed : XButton1Pressed)) {
+		StopChangingAmountOfGoods()
+		Return
+	}
+	Click GoodsCheckX(), GoodsCheckY()
+}
+
+StopChangingAmountOfGoods() {
+	Global
+	If (ChangingAmountOfGoods) {
+		SetTimer DelayedChangeGoodsAmount, 0
+		SetTimer ChangeGoodsAmount, 0
+		MouseMove GoodsSavedX, GoodsSavedY
+		BlockInput "MouseMoveOff"
+		ChangingAmountOfGoods := False
 	}
 }
 
-DecreaseGoods() {
-	Click 1072, 669
+GoodsCheckX() {
+	Global
+	Return IncreasingGoods ? 1070 : 1610
+}
+
+GoodsCheckY() {
+	Return 670
 }
 
 IsCraftingMenu() {
@@ -3324,7 +3316,7 @@ IsGameScreen() {
 
 
 HasMenuCross() {
-	return IsColor(1860, 45, "0xECE5D8")
+	Return IsColor(1860, 45, "0xECE5D8")
 }
 
 ; Note: always better to check if not IsFullScreenMenuOpen()
