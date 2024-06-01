@@ -2940,7 +2940,7 @@ PerformMenuActions() {
 		If (EmptyFirstPlus) {
 			ClickAndBack(1836, 764) ; Auto Add
 		} Else {
-			If (IsColor(1199, 303, "0xE1BD40", 25) or IsColor(98, 25, "0xD3BC8E")) { ; Will add new stat or is weapons menu
+			If (IsColor(1178, 326, "0xE1BD40", 25) or IsColor(98, 25, "0xD3BC8E")) { ; Will add new stat or is weapons menu
 				ClickOnBottomRightButton() ; Enhance
 				Return
 			}
