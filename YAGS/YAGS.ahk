@@ -1072,11 +1072,16 @@ Global SkippingDialogueClicking := False
 
 XButtonSkipDialogue(*) {
 	Global
-	If (IsGameScreen() or IsCraftingMenu())
+	If (SkippingDialogue)
 		Return
-	If (not SkippingDialogue)
-		SetTimer DialogueSkip, 25
 	SkippingDialogue := True
+	If (CantSkipDialogue()) {
+		SkippingDialogue := False
+		Return
+	}
+	If (not SkippingDialogue) ; Race condition
+		Return
+	SetTimer DialogueSkip, 25
 }
 
 XButtonSkipDialogueUp(*) {
@@ -1087,11 +1092,16 @@ XButtonSkipDialogueUp(*) {
 
 XButtonSkipDialogueClicking(*) {
 	Global
-	If (IsGameScreen() or IsCraftingMenu())
+	If (SkippingDialogueClicking)
 		Return
-	If (not SkippingDialogueClicking)
-		SetTimer DialogueSkipClicking, 25
 	SkippingDialogueClicking := True
+	If (CantSkipDialogue()) {
+		SkippingDialogueClicking := False
+		Return
+	}
+	If (not SkippingDialogueClicking) ; Race condition
+		Return
+	SetTimer DialogueSkipClicking, 25
 }
 
 XButtonSkipDialogueClickingUp(*) {
@@ -1100,6 +1110,9 @@ XButtonSkipDialogueClickingUp(*) {
 	SkippingDialogueClicking := False
 }
 
+CantSkipDialogue() {
+	return IsGameScreen() or IsCraftingMenu() or IsShopBuyingPopup() or HasMenuCross()
+}
 
 
 DialogueSkip() {
@@ -2074,6 +2087,9 @@ IsAvailableForStock() {
 	Return not IsColor(1770, 930, "0xE5967E") ; Sold out
 }
 
+IsShopBuyingPopup() {
+	return IsColor(600, 780, "0x38A1E4") and IsColor(1005, 780, "0x313131")
+}
 
 
 EnableFeatureQuickShopBuying() {
@@ -3304,6 +3320,11 @@ IsMapMenuOpen() {
 ; Note: always better to check if not IsFullScreenMenuOpen() before checking the game screen
 IsGameScreen() {
 	Return IsColor(276, 58, "0xFFFFFF") ; Eye icon next to the map
+}
+
+
+HasMenuCross() {
+	return IsColor(1860, 45, "0xECE5D8")
 }
 
 ; Note: always better to check if not IsFullScreenMenuOpen()
