@@ -1,6 +1,6 @@
 <img src="./ScriptPreview.png" alt="Happy Moople" align="right" width="435">
 
-## 🎈 [ĐANG PHÁT TRIỂN] Yet Another Genshin Script
+## 🎈 Yet Another Genshin Script
 
 <table>
   <tr>
@@ -14,28 +14,34 @@ YAGS được làm ra để giúp cho việc chạy daily bớt khó khăn hơn 
 
 Script này sẽ cải thiện việc điều khiển, tự động tuần hoàn nhiều thứ, và mang đến một số những phím tắt hữu ích.
 
-**Lưu ý**: Script chỉ hoạt động khi đang để độ phân giải game **1920x1080** trong chế độ [cửa sổ không viền](https://gaming.stackexchange.com/a/376533) với 60FPS và ping ổn định (cũng không cần thiết nhưng sẽ có một vài thứ *có thể* không hoạt động được như mong đợi).
-
-Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân giải khác ở tương lai gần.
+> [!IMPORTANT]
+> **Lưu ý**: Script chỉ hoạt động khi đang để độ phân giải game **1920x1080** trong chế độ [cửa sổ không viền](https://gaming.stackexchange.com/a/376533) với 60FPS và ping ổn định (cũng không cần thiết nhưng sẽ có một vài thứ *có thể* không hoạt động được như mong đợi).
+> 
+> Hiện tại chúng tôi không có ý định thêm tuỳ chỉnh độ phân giải khác ở tương lai gần.
 
 ---
 
 ### ❓ Hướng dẫn sử dụng
 1. Giải nén và chạy script. Chọn một trong các lựa chọn sau:
-  - Sử dụng release build (khuyến nghị)
-    - [Tải xuống](https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe) phiên bản script mới nhất và đưa nó vào thư mục bất kì.
+	- Sử dụng release build (khuyến nghị)
+		- [Tải xuống](https://github.com/SoSeDiK/YAGS/releases/latest/download/YAGS.exe) phiên bản script mới nhất và đưa nó vào thư mục bất kì.
 		- Chạy `YAGS.exe` với **quyền admin**.
-  - Sử dụng development build:
-    - Tải và cài đặt [AutoHotkey](https://www.autohotkey.com/) (❕yêu cầu có version 2❕).
-    - Tải repository này, giải nén thư mục `YAGS` ra.
-    - Chạy `YAGS.ahk`.
-    - (!) Nên nhớ rằng, development builds không có tự động cập nhật khi chúng tôi cho ra mắt phiên bản mới.
+	- Sử dụng development build:
+		- Tải và cài đặt [AutoHotkey](https://www.autohotkey.com/) (❕yêu cầu có version 2❕).
+		- Tải repository này, giải nén thư mục `YAGS` ra.
+		- Chạy `YAGS.ahk`.
+		- (!) Nên nhớ rằng, development builds không có tự động cập nhật khi chúng tôi cho ra mắt phiên bản mới.
+
+> [!WARNING]
+> Some antivirus software report the `.exe` file as a virus. The script controls user input and has access to the Internet for optional auto update, so it's understanable. You may use the `.ahk` instead or add the file to exclusions.
+
 2. Tuỳ chỉnh những thứ bạn cần trong GUI nếu cần.
 3. Chạy game để trải nghiệm.
 4. Nhấn `Alt + B` để hiện script nếu cần.
 5. Nhấn `End` trong trường hợp bạn cần dừng script ngay lập tức.
 
-**Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nếu không, nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách trơn tru.
+> [!NOTE]
+> **Note:** để cho script hoạt động ok, thì script phải được chạy với quyền admin. Bởi vì nếu không, nó sẽ không xử lí nhập liệu của bàn phím và chuột của AHK một cách trơn tru.
 
 ---
 
@@ -140,7 +146,8 @@ Các hoạt động của `XButton1` và `XButton2` có thể bị đổi.
 ## ⚠ Miễn trừ trách nhiệm
 Cho dù Script này không có bao gồm các phần mềm gian lận can thiệp, bạn vẫn phải chịu rủi ro khi sử dụng nó.
 
-**Không được nói cho người khác biết về việc bạn sử dụng phần mềm thứ 3**. Bạn đã được cảnh cáo trước.
+> [!CAUTION]
+> **Không được nói cho người khác biết về việc bạn sử dụng phần mềm thứ 3**. Bạn đã được cảnh cáo trước.
 
 ---
 
@@ -155,4 +162,4 @@ Cảm ơn [ImagePut](https://github.com/iseahound/ImagePut) vì đã tạo nội
 
 Cờ quốc gia đến từ. [Twemoji](https://github.com/jdecked/twemoji).
 
-Readme Tiếng Việt được dịch bởi: [TeddDepTrai](https://github.com/tedddeptrai)
+Readme Tiếng Việt được dịch bởi: [TeddDepTrai](https://github.com/tedddeptrai).

@@ -1,6 +1,6 @@
 <img src="./ScriptPreview.png" alt="Happy Moople" align="right" width="450">
 
-## 🎈 [WIP] Yet Another Genshin Script
+## 🎈 Yet Another Genshin Script
 
 <table>
   <tr>
@@ -10,13 +10,14 @@
   </tr>
 </table>
 
-YAGS was made for personal usage to make the daily Genshin routine less annoying.
+YAGS was made to make the daily Genshin routine less annoying.
 
 This script tries to improve controls, automate repeatable things, and bring some useful shortcuts.
 
-Script is made solely for 1920x1080 game resolution in [borderless window mode](https://gaming.stackexchange.com/a/376533) with 60FPS and low ping in mind (not a necessity, but some things *might* not work as expected).
-
-There are no plans to adapt it to other resolutions in the near future.
+> [!IMPORTANT]
+> Script is made solely for 1920x1080 game resolution with stable 60FPS and low ping in mind (not a necessity, but some things *might* not work as expected). The script might not work unless the game is in [borderless mode](https://gaming.stackexchange.com/a/376533).
+> 
+> There are no plans to adapt it to other resolutions in the near future.
 
 ---
 
@@ -30,12 +31,17 @@ There are no plans to adapt it to other resolutions in the near future.
 		- Download this repository, extract `YAGS` folder.
 		- Run `YAGS.ahk`.
 		- (!) Keep in mind that development builds do not support auto updating.
+
+> [!WARNING]
+> Some antivirus software report the `.exe` file as a virus. The script controls user input and has access to the Internet for optional auto update, so it's understanable. You may use the `.ahk` instead or add the file to exclusions.
+
 2. Configure the settings in the GUI if needed.
 3. Run the game and enjoy.
 4. Press `Alt + B` to bring the script on top if needed.
 5. Press `End` in case of an emergency to force stop the script.
 
-**Note:** in order to work properly, the script must be able to run with administrator privileges. This is due to the game not handling AHK's keyboard and mouse inputs properly otherwise.
+> [!NOTE]
+> In order to work properly, the script must be able to run with administrator privileges. This is due to the game not handling AHK's keyboard and mouse inputs properly otherwise.
 
 ---
 
@@ -139,9 +145,10 @@ Just in case:
 ---
 
 ## ⚠ Disclaimer
-Even though this script does not contain any cheats, only you are responsible for using it.
+Even though this script does not (and will not) contain any cheats, only you are responsible for using it.
 
-**Do not spread info about you using some third-party software**, and you shall be good. You've been warned.
+> [!CAUTION]
+> **Do not spread info about you using some third-party software**, and you shall be good. You've been warned.
 
 ---
 
