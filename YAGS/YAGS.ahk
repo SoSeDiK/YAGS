@@ -18,7 +18,7 @@ A_HotkeyInterval := 0 ; Disable delay between hotkeys to allow many at once
 Thread "interrupt", 0 ; Make all threads always-interruptible
 SetTitleMatchMode "RegEx" ; Allow matching title by regex (to support multiple versions)
 
-Global ScriptVersion := "1.1.5"
+Global ScriptVersion := "1.1.6"
 
 
 
