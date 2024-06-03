@@ -2855,10 +2855,10 @@ DisableFeatureAutoFishing() {
 ; Menu Actions
 ; =======================================
 PerformMenuActions() {
+	MenuArrow := IsColor(1839, 44, "0x3B4255")
 	; =======================================
 	; Lock Artifacts or Weapons
 	; =======================================
-	MenuArrow := IsColor(1839, 44, "0x3B4255")
 	; Backpack
 	If (MenuArrow and IsColor(75, 43, "0xD3BC8E") and IsColor(75, 1005, "0x3B4255")) {
 		If (TryToFindLocker(1746, 444))
@@ -2890,7 +2890,7 @@ PerformMenuActions() {
 	}
 
 	; Artifacts/Weapons enhancement menu
-	If (MenuArrow and IsColor(1096, 53, "0x3C4356")) {
+	If (MenuArrow and IsColor(1096, 53, "0x3B4255")) {
 		If (TryToFindLocker(1612, 505))
 			Return
 	}
@@ -2923,7 +2923,7 @@ PerformMenuActions() {
 	; =======================================
 	; Mystic Offering button
 	; =======================================
-	If (MenuArrow and IsColor(1646, 1014, "0xDCB132") and IsColor(1381, 469, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
+	If (MenuArrow and IsColor(1646, 1014, "0xDAB132") and IsColor(1381, 469, "0xE9E5DC") and not IsColor(847, 812, "0xC2C4C6")) {
 		ClickOnBottomRightButton()
 		Return
 	}
@@ -3099,14 +3099,14 @@ TryToFindTransparentLocker(TopX, TopY) {
 	; wrong due to text elements
 	LastY := 105
 	While (LastY < TopY) {
-		If (not PixelSearch(&FoundX, &FoundY, TopX, LastY, TopX, TopY, "0x978080", 30)) {
+		If (not PixelSearch(&FoundX, &FoundY, TopX, LastY, TopX, TopY, "0x8B97A2", 30)) {
 			Return False
 		}
-		If (not IsColor(FoundX, FoundY + 10, "0x978080", 30)) {
+		If (not IsColor(FoundX, FoundY + 10, "0x8B97A2", 30)) {
 			LastY := FoundY + 10
 			Continue
 		}
-		If (not PixelSearch(&_, &_, FoundX + 8, FoundY, FoundX + 8, FoundY, "0x978080", 30)) {
+		If (not PixelSearch(&_, &_, FoundX + 8, FoundY, FoundX + 8, FoundY, "0x8B97A2", 30)) {
 			Return False ; Not found
 		}
 		If (PixelSearch(&Px, &Py, FoundX - 8, FoundY, FoundX - 6, FoundY, "0xD3DAC7", 160)) { ; Unlocked
